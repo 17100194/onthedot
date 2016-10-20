@@ -17,12 +17,18 @@
 
     <!-- Scripts -->
     <script>
+        function startTime() {
+            var today = new Date();
+            document.getElementById('time').innerHTML =
+                    today;
+            var t = setTimeout(startTime, 1000);
+        }
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
         ]); ?>
     </script>
 </head>
-<body>
+<body onload="startTime()">
     <div id="app">
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
@@ -81,6 +87,40 @@
         </nav>
 
         @yield('content')
+        <div class="container" style="width: 100%; height: auto; background-color: White;">
+            <div class="row">
+                <div class="col-md-6">
+                    <form class="form-horizontal" style="text-align: center;">
+                        <h3><a>Contact Us</a></h3>
+                        <hr style="width: 90%; border-width: 4px; border-color: #d3d3d3;">
+                        <div class="form-group">
+                            <label for="id" class="col-md-3 control-label">ID:</label>
+                            <div class="col-md-6">
+                                <input id="id" name="id" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="message" class="col-md-3 control-label">Message:</label>
+                            <div class="col-md-6">
+                                <textarea id="message" name="message" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-1 col-md-offset-3">
+                                <button type="submit" class="btn btn-primary">
+                                    Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <div style="float: right;">
+                        <label style="color: #0080ff;">Server Time: </label> <label id="time"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->
