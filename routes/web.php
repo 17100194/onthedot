@@ -20,3 +20,6 @@ Route::get('/hello/{param}', 'Hello@index');
 Route::get('login', function() {
     //code here
 })->name('login');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
