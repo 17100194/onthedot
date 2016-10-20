@@ -1,0 +1,5 @@
+{
+    "require": {
+        "sven/artisan-view": "^1.3"
+    }
+}
