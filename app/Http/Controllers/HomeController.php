@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+
+        $courses = DB::table('user_has_course')
+            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+            ->where('user_has_course.userid', '=', Auth::id())->get();
+
+        return view('home', compact('courses'));
     }
+
+
 }
