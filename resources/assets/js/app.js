@@ -4,7 +4,6 @@
  * include Vue and Vue Resource. This gives a great starting point for
  * building robust, powerful web applications using Vue and Laravel.
  */
-
 require('./bootstrap');
 
 /**
@@ -17,4 +16,7 @@ Vue.component('example', require('./components/Example.vue'));
 
 const app = new Vue({
     el: '#app'
+});
+document.ready(function (){
+    document.getElementById("demo").innerHTML = Date();
 });

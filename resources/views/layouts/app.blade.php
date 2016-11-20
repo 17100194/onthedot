@@ -16,8 +16,9 @@
 
 
     <!-- Scripts -->
-    <script type="text/javascript" src="{{str_replace('/public', '', url('/resources/assets/js/app.js'))}})"></script>
-    var_dump({{str_replace('/public', '', url('/resources/assets/js/app.js'))}});
+    <script type="text/javascript" src="{{URL::asset('js/app.js')}}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
 
         window.Laravel = <?php echo json_encode([
@@ -86,8 +87,5 @@
 
         @yield('content')
     </div>
-
-    <!-- Scripts -->
-    <script src="/js/app.js"></script>
 </body>
 </html>

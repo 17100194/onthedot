@@ -14,8 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/hello/{param}', 'Hello@index');
+Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
 Route::get('login', function() {
 
