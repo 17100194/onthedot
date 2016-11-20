@@ -19,7 +19,15 @@ class MeetingsController extends Controller
         $query = $request->input('search');
         $users = DB::table('users')->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%')->paginate(10);
 
-        return view('meetings.search', compact('users', 'query'));
+        $usercourses = DB::table('users')
+            ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
+            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+            ->where('users.name', 'LIKE', '%' . $query . '%')
+            ->orwhere('users.campusid', 'LIKE', '%' . $query . '%')
+            ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
+            ->get();
+
+        return view('meetings.search', compact('users', 'usercourses', 'query'));
     }
 
     public function schedule()

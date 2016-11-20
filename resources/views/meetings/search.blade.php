@@ -16,8 +16,8 @@
                                 <div style="padding: 15px;">
                                     <?= $user->name ?>
                                     <br>
-                                    <?= $user->campusid ?>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-user_name="{{ $user->name }}" data-user_id="{{ $user->id }}" data-target="#UserTimetable">Schedule Meeting</button>
+                                        <?= $user->campusid ?>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#UserTimetable">Schedule Meeting</button>
 
                                         <div class="modal fade bs-example-modal-lg" id="UserTimetable" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
                                             <div class="modal-dialog modal-lg" role="document">
@@ -26,7 +26,7 @@
                                                         <p>Select a Time slot</p>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <table class="table">
+                                                        <table class="table table-bordered">
                                                             <thead>
                                                             <tr>
                                                                 <th></th>
@@ -38,14 +38,48 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <tr>
-                                                                <th scope="row"></th>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
+                                                                @foreach($usercourses as $course)
+                                                                    @if($course->userID == $user->id)
+                                                                        <tr>
+                                                                        <th scope="row"><?= $course->timing ?></th>
+                                                                        @if(strpos($course->days, 'Mon') !== false)
+                                                                            <td><?= $course->courseName ?>
+                                                                                <br>
+                                                                                Section: <?= $course->section ?></td>
+                                                                        @else
+                                                                            <td><button class="btn btn-primary">Select</button></td>
+                                                                        @endif
+                                                                        @if(strpos($course->days, 'Tu') !== false)
+                                                                            <td><?= $course->courseName ?>
+                                                                                <br>
+                                                                                Section: <?= $course->section ?></td>
+                                                                        @else
+                                                                            <td><button class="btn btn-primary">Select</button></td>
+                                                                        @endif
+                                                                        @if(strpos($course->days, 'Wed') !== false)
+                                                                            <td><?= $course->courseName ?>
+                                                                                <br>
+                                                                                Section: <?= $course->section ?></td>
+                                                                        @else
+                                                                            <td><button class="btn btn-primary">Select</button></td>
+                                                                        @endif
+                                                                        @if(strpos($course->days, 'Th') !== false)
+                                                                            <td><?= $course->courseName ?>
+                                                                                <br>
+                                                                                Section: <?= $course->section ?></td>
+                                                                        @else
+                                                                            <td><button class="btn btn-primary">Select</button></td>
+                                                                        @endif
+                                                                        @if(strpos($course->days, 'Fri') !== false)
+                                                                            <td><?= $course->courseName ?>
+                                                                                <br>
+                                                                                Section: <?= $course->section ?></td>
+                                                                        @else
+                                                                            <td><button class="btn btn-primary">Select</button></td>
+                                                                        @endif
+                                                                        </tr>
+                                                                    @endif
+                                                                @endforeach
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -54,7 +88,6 @@
                                         </div>
                                 </div>
                             </li>
-
                         @endforeach
                         </ul>
                     @endif
