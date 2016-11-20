@@ -30,8 +30,11 @@ class MeetingsController extends Controller
         return view('meetings.search', compact('users', 'usercourses', 'query'));
     }
 
-    public function schedule()
+    public function schedule(Request $request)
     {
-
+        $time = $request->Time;
+        $day = $request->Day;
+        $date = $request->Date;
+        return response()->json($time);
     }
 }
