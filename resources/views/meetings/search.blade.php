@@ -7,11 +7,10 @@
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     @if (count($users) === 0)
-
                     @elseif (count($users) >= 1)
                         <ul style="list-style: none;">
                         @foreach($users as $user)
-
+                            @if($user->id != Auth::id())
                             <li>
                                 <div style="padding: 15px;">
                                     <?= $user->name ?>
@@ -26,15 +25,15 @@
                                                         <p>Select a Time slot</p>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <table class="table table-bordered">
+                                                        <table id="timetable" class="table table-bordered">
                                                             <thead>
                                                             <tr>
                                                                 <th></th>
-                                                                <th>Monday</th>
-                                                                <th>Tuesday</th>
-                                                                <th>Wednesday</th>
-                                                                <th>Thursday</th>
-                                                                <th>Friday</th>
+                                                                <th>Monday <br> <?= date("d/m/Y",strtotime('monday')); ?></th>
+                                                                <th>Tuesday <br> <?= date("d/m/Y",strtotime('tuesday')); ?></th>
+                                                                <th>Wednesday <br> <?= date("d/m/Y",strtotime('wednesday')); ?></th>
+                                                                <th>Thursday <br> <?= date("d/m/Y",strtotime('thursday')); ?></th>
+                                                                <th>Friday <br> <?= date("d/m/Y",strtotime('friday')); ?></th>
                                                             </tr>
                                                             </thead>
                                                             <tbody>
@@ -47,35 +46,35 @@
                                                                                 <br>
                                                                                 Section: <?= $course->section ?></td>
                                                                         @else
-                                                                            <td><button class="btn btn-primary">Select</button></td>
+                                                                            <td><button id="select" type="submit" class="btn btn-primary">Select</button></td>
                                                                         @endif
                                                                         @if(strpos($course->days, 'Tu') !== false)
                                                                             <td><?= $course->courseName ?>
                                                                                 <br>
                                                                                 Section: <?= $course->section ?></td>
                                                                         @else
-                                                                            <td><button class="btn btn-primary">Select</button></td>
+                                                                            <td><button id="select" class="btn btn-primary">Select</button></td>
                                                                         @endif
                                                                         @if(strpos($course->days, 'Wed') !== false)
                                                                             <td><?= $course->courseName ?>
                                                                                 <br>
                                                                                 Section: <?= $course->section ?></td>
                                                                         @else
-                                                                            <td><button class="btn btn-primary">Select</button></td>
+                                                                            <td><button id="select" class="btn btn-primary">Select</button></td>
                                                                         @endif
                                                                         @if(strpos($course->days, 'Th') !== false)
                                                                             <td><?= $course->courseName ?>
                                                                                 <br>
                                                                                 Section: <?= $course->section ?></td>
                                                                         @else
-                                                                            <td><button class="btn btn-primary">Select</button></td>
+                                                                            <td><button id="select" class="btn btn-primary">Select</button></td>
                                                                         @endif
                                                                         @if(strpos($course->days, 'Fri') !== false)
                                                                             <td><?= $course->courseName ?>
                                                                                 <br>
                                                                                 Section: <?= $course->section ?></td>
                                                                         @else
-                                                                            <td><button class="btn btn-primary">Select</button></td>
+                                                                            <td><button id="select" class="btn btn-primary">Select</button></td>
                                                                         @endif
                                                                         </tr>
                                                                     @endif
@@ -86,13 +85,40 @@
                                                 </div>
                                             </div>
                                         </div>
-                                </div>
+                                    </div>
                             </li>
-                        @endforeach
+                            @endif
+                            @endforeach
                         </ul>
                     @endif
                 </div>
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        $('#select').on('click', function(){
+            var cell = $(this).closest('td');
+            var cellIndex = cell[0].cellIndex
+            var row = cell.closest('tr');
+            var rowIndex = row[0].rowIndex;
+            var time = document.getElementById('timetable').rows[rowIndex].cells[0].innerText;
+            var date = document.getElementById('timetable').rows[0].cells[cellIndex].innerText.split(' ')[1];
+            var day = document.getElementById('timetable').rows[0].cells[cellIndex].innerText.split(' ')[0];
+            $.ajax({
+                method: 'GET',
+                url: './schedule',
+                data: {
+                    Time: time,
+                    Date: date,
+                    Day: day
+                },
+                success: function(data) {
+                    alert(data);
+                },
+                error: function(response){
+                    alert('Error' + response);
+                }
+            });
+        });
+    </script>
 @endsection
