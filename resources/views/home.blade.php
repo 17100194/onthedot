@@ -12,7 +12,7 @@
                         <input name="search" class="form-control" placeholder="search for a user">
                         <input type="submit" class="btn btn-primary" value="Search"/>
                     </form>
-
+                    <h4><a>My Courses</a></h4>
                     @if (count($courses) > 0)
                         <ul style="list-style: none;">
                             @foreach($courses as $course)
@@ -25,7 +25,6 @@
                                         Section: <?= $course->section ?>
                                     </div>
                                 </li>
-
                             @endforeach
                         </ul>
                     @endif
