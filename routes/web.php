@@ -24,4 +24,4 @@ Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::get('/home', 'HomeController@index');
 Route::get('/meetings', 'MeetingsController@index');
 Route::get('/search', 'MeetingsController@q');
-Route::get('schedule', 'MeetingsController@schedule');
+Route::post('schedule', 'MeetingsController@schedule');
