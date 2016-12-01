@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -35,6 +36,10 @@ class MeetingsController extends Controller
         $time = $request->Time;
         $day = $request->Day;
         $date = $request->Date;
-        return response()->json($time);
+        $userid = $request->User;
+        $insert = DB::table('meetings')->insertGetId(array('time'=>$time, 'day'=>$day, 'date'=>$date, 'host'=>Auth::id()));
+        DB::table('user_has_meeting')->insert(array('userid'=>Auth::id(), 'meetingid'=>$insert));
+        DB::table('user_has_meeting')->insert(array('userid'=>$userid, 'meetingid'=>$insert));
+        return 'success';
     }
 }
