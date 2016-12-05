@@ -26,6 +26,7 @@ class MeetingsController extends Controller
             ->where('users.name', 'LIKE', '%' . $query . '%')
             ->orwhere('users.campusid', 'LIKE', '%' . $query . '%')
             ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
+            ->orderby('courses.timing', 'DESC')
             ->get();
 
         return view('meetings.search', compact('users', 'usercourses', 'query'));
@@ -37,9 +38,25 @@ class MeetingsController extends Controller
         $day = $request->Day;
         $date = $request->Date;
         $userid = $request->User;
-        $insert = DB::table('meetings')->insertGetId(array('time'=>$time, 'day'=>$day, 'date'=>$date, 'host'=>Auth::id()));
+        $insert = DB::table('meetings')->insertGetId(array('time'=>$time, 'day'=>$day, 'date'=>$date, 'host'=>Auth::id(), 'status' => 'pending'));
         DB::table('user_has_meeting')->insert(array('userid'=>Auth::id(), 'meetingid'=>$insert));
         DB::table('user_has_meeting')->insert(array('userid'=>$userid, 'meetingid'=>$insert));
         return 'success';
+    }
+
+    public function accept(Request $request) {
+        $meetingid = $request->meetingid;
+        DB::table('meetings')->where('id', '=', $meetingid)
+            ->update(['status' => 'accepted']);
+    }
+
+    public function reject(Request $request) {
+        $meetingid = $request->meetingid;
+        $message = $request->message;
+        DB::table('meetings')->where('id', '=', $meetingid)
+            ->update([
+                'status' => 'rejected',
+                'message' => $message
+            ]);
     }
 }

@@ -32,13 +32,18 @@ class HomeController extends Controller
             ->where('u1.userid', '=', Auth::id())
             ->where('u2.userid', '!=', Auth::id())->get();
 
-//        var_dump($meetings);
+        $requests = DB::table('meetings AS m')
+            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+            ->join('users AS u', 'u.id', '=', 'm.host')
+            ->where('um.userid', '=', Auth::id())
+            ->where('m.host', '!=', Auth::id())
+            ->where('m.status', '=', 'pending')->get();
 
         $courses = DB::table('user_has_course')
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
             ->where('user_has_course.userid', '=', Auth::id())->get();
 
-        return view('home', compact('courses', 'meetings'));
+        return view('home', compact('courses', 'meetings', 'requests'));
     }
 
 

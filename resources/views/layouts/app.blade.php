@@ -13,7 +13,7 @@
     <!-- Styles -->
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css" >
-
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css" >
 
     <!-- Scripts -->
     <script type="text/javascript" src="{{URL::asset('js/app.js')}}"></script>
@@ -49,7 +49,16 @@
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
-                        &nbsp;
+                        <li>
+                        </li>
+                        &nbsp;<li>
+                            <div class="searchbar">
+                                <form method="get" action="{{ action('MeetingsController@q') }}" class='form navbar-form navbar-right searchform'>
+                                    <input name="search" type="text" class="form-control" placeholder="Search for a user or a group...">
+                                    <input type="submit" class="btn btn-primary" value="Search"/>
+                                </form>
+                            </div>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -60,12 +69,16 @@
                             <li><a href="{{ url('/register') }}">Register</a></li>
                         @else
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <a href="{{ url('/home') }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
+                                        <a href="{{ url('/home') }}"
+                                           >
+                                            Profile
+                                        </a>
                                         <a href="{{ url('/logout') }}"
                                             onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
