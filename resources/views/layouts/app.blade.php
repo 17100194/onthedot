@@ -14,13 +14,17 @@
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css" >
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css" >
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 
     <!-- Scripts -->
-    <script type="text/javascript" src="{{URL::asset('js/app.js')}}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script>
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
 
+    <script type="text/javascript" src="{{URL::asset('js/app.js')}}"></script>
+
+    <script>
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
         ]); ?>
@@ -100,5 +104,8 @@
 
         @yield('content')
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js">
+
+    </script>
 </body>
 </html>

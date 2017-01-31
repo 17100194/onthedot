@@ -13,10 +13,7 @@
                                     <h2>SchedulerApp</h2>
                                     <h4>Scheduling meetings made 2x faster.</h4>
                                     <h4>Meetings now scheduled in minutes rather than days</h4>
-                                    <form method="get" action="{{ action('MeetingsController@q') }}" class='form navbar-form navbar-center searchform'>
-                                        <input name="search" style="width: 50%;" class="form-control" placeholder="Search for a user or a group...">
-                                        <input type="submit" class="btn btn-primary" value="Search"/>
-                                    </form>
+                                    <a href="<?php echo url('home')?>" class="btn btn-primary" style="font-size: 25px;">Get Started</a>
                                 </div>
                             </div>
                         </div>
