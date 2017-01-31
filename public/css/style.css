@@ -152,3 +152,7 @@ svg text {
 .searchbar input[type="text"] {
  width: 230px;
 }
+.searchuser {
+ width: 70%;
+ display: inline-block;
+}
