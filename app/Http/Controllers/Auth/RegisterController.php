@@ -62,9 +62,13 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $campusId = str_replace('-', '', trim($data['campusid']));
+        if (strlen($campusId) == 10) {
+            $campusId = substr($campusId, 2);
+        }
         return User::create([
             'name' => $data['name'],
-            'campusid' => $data['campusid'],
+            'campusid' => $campusId,
             'password' => bcrypt($data['password']),
         ]);
     }

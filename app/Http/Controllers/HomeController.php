@@ -38,12 +38,39 @@ class HomeController extends Controller
             ->where('um.userid', '=', Auth::id())
             ->where('m.host', '!=', Auth::id())
             ->where('m.status', '=', 'pending')->get();
-
+        $user = DB::table('users')->where('users.id', '=', Auth::id())->get();
+        $user = $user[0];
         $courses = DB::table('user_has_course')
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
             ->where('user_has_course.userid', '=', Auth::id())->get();
 
-        return view('home', compact('courses', 'meetings', 'requests'));
+        $groupRequestAccepted = DB::table('user_has_group_request')
+            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
+            ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')
+            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'groups.created_on', 'user_has_group_request.id as requestid')
+            ->where('id_sender', '=', Auth::id())
+            ->where('status', '=', 'accepted')
+            ->get();
+
+
+        $groupRequestRejected = DB::table('user_has_group_request')
+            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
+            ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')
+            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'groups.created_on', 'user_has_group_request.id as requestid')
+            ->where('id_sender', '=', Auth::id())
+            ->where('status', '=', 'rejected')
+            ->get();
+
+
+        $groupRequestPending = DB::table('user_has_group_request')
+            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
+            ->join('users', 'users.id', '=', 'user_has_group_request.id_sender')
+            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'groups.created_on', 'user_has_group_request.id as requestid')
+            ->where('id_receiver', '=', Auth::id())
+            ->where('status', '=', 'pending')
+            ->get();
+
+        return view('home', compact('courses', 'meetings', 'requests', 'user', 'groupRequestPending', 'groupRequestRejected', 'groupRequestAccepted'));
     }
 
 

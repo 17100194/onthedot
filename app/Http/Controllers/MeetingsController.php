@@ -16,10 +16,8 @@ class MeetingsController extends Controller
 
     public function q(Request $request)
     {
-
         $query = $request->input('search');
         $users = DB::table('users')->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%')->paginate(10);
-
         $usercourses = DB::table('users')
             ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
