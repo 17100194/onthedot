@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class CourseController
 {
@@ -104,6 +105,7 @@ class CourseController
             'section'=>$section,
             'timing'=>date('h:ia', strtotime($starttime)).'-'.date('h:ia', strtotime($endtime)),
             'instructorid'=>Auth::id()));
-        return view('home');
+
+        return Redirect::back()->with('message', 'Course Added Successfully!');;
     }
 }

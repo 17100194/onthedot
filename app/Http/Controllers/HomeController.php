@@ -70,7 +70,14 @@ class HomeController extends Controller
             ->where('status', '=', 'pending')
             ->get();
 
-        return view('home', compact('courses', 'meetings', 'requests', 'user', 'groupRequestPending', 'groupRequestRejected', 'groupRequestAccepted'));
+        $groups = DB::table('groups')
+            ->join('user_has_group', 'user_has_group.id_group', '=', 'groups.id')
+            ->join('users as u2', 'u2.id', '=', 'groups.id_creator')
+            ->where('user_has_group.id_user', '=', Auth::id())
+//            ->orwhere('groups.id_creator', '=', Auth::id())
+            ->select('groups.name as groupname', 'u2.name as creator')->get();
+
+        return view('home', compact('courses', 'meetings', 'requests', 'user', 'groupRequestPending', 'groupRequestRejected', 'groupRequestAccepted', 'groups'));
     }
 
 

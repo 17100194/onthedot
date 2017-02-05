@@ -36,7 +36,7 @@ class MeetingsController extends Controller
         $day = $request->Day;
         $date = $request->Date;
         $userid = $request->User;
-        $insert = DB::table('meetings')->insertGetId(array('time'=>$time, 'day'=>$day, 'date'=>$date, 'host'=>Auth::id(), 'status' => 'pending'));
+        $insert = DB::table('meetings')->insertGetId(array('time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>Auth::id(), 'status' => 'pending'));
         DB::table('user_has_meeting')->insert(array('userid'=>Auth::id(), 'meetingid'=>$insert));
         DB::table('user_has_meeting')->insert(array('userid'=>$userid, 'meetingid'=>$insert));
         return 'success';
