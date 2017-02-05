@@ -15,15 +15,14 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css" >
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css" >
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
     <!-- Scripts -->
-    <script
-            src="https://code.jquery.com/jquery-3.1.1.min.js"
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
             integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-            crossorigin="anonymous"></script>
-
+            crossorigin="anonymous">
+    </script>
     <script type="text/javascript" src="{{URL::asset('js/app.js')}}"></script>
-
     <script>
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
@@ -31,7 +30,7 @@
     </script>
 </head>
 <body>
-    <div id="app">
+    <div id="app" style="padding-top: 0px; top: 0px;">
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
                 <div class="navbar-header">
@@ -53,15 +52,15 @@
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
-                        <li>
-                        </li>
                         &nbsp;<li>
-                            <div class="searchbar">
-                                <form method="get" action="{{ action('MeetingsController@q') }}" class='form navbar-form navbar-right searchform'>
-                                    <input name="search" type="text" class="form-control" placeholder="Search for a user or a group...">
-                                    <input type="submit" class="btn btn-primary" value="Search"/>
-                                </form>
-                            </div>
+                            <form method="get" action="{{ action('MeetingsController@q') }}" class='form navbar-form navbar-right searchform'>
+                                    <div class="input-group" style="width: 300px;">
+                                        <input type="text" class="form-control" placeholder="Search for a user or group...">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="submit">Search</button>
+                                        </span>
+                                    </div>
+                            </form>
                         </li>
                     </ul>
 
@@ -73,10 +72,17 @@
                             <li><a href="{{ url('/register') }}">Register</a></li>
                         @else
                             <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                    <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                                </a>
+                                <ul id="notifications" class="dropdown-menu" role="menu" style="height: 200px; width: 350px; overflow-y: auto;">
+
+                                </ul>
+                            </li>
+                            <li class="dropdown">
                                 <a href="{{ url('/home') }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
-
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
                                         <a href="{{ url('/home') }}"
@@ -101,11 +107,10 @@
                 </div>
             </div>
         </nav>
-
         @yield('content')
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js">
-
     </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>

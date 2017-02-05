@@ -1,6 +1,7 @@
 @extends('layouts.sidemenu')
 
 @section('main')
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <div class="row">
         <div class="col-md-6">
             <h4><a>Meeting Requests <?php if(count($requests) > 0): ?>(<?=count($requests)?>)<?php endif; ?></a></h4>
@@ -29,7 +30,7 @@
                                         <strong>Meeting Rejected!</strong> The rejection reason will be shown on their profile.
                                     </div>
                                     <button type="button" class="btn btn-warning decline-request" data-placement="request_<?= $request->meetingid ?>" data-toggle="modal" data-target="#reject_<?= $request->meetingid ?>" style="margin: 20px auto; display: block;">Reject/Reschedule</button>
-                                    <div id="reject_<?= $request->meetingid ?>" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                    <div id="reject_<?= $request->meetingid ?>" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                                         <div class="modal-dialog modal-sm" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-body">
@@ -92,7 +93,7 @@
     </div>
     <hr>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h4><a>My Courses</a></h4>
             @if (count($courses) > 0)
                 <ul style="list-style: none;">
@@ -110,7 +111,7 @@
                 </ul>
             @endif
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h4 style="margin-left: 20px;"><a>My Meetings</a></h4>
             @if (count($meetings) > 0)
                 <ul style="list-style: none;">
@@ -132,6 +133,22 @@
                 </ul>
             @else
                 <p style="margin-left: 20px;">You have no meetings scheduled at the moment</p>
+            @endif
+        </div>
+        <div class="col-md-4">
+            <h4><a>My Groups</a></h4>
+            @if (count($groups) > 0)
+                <ul style="list-style: none;">
+                    @foreach($groups as $group)
+                        <li>
+                            <div style="padding: 15px; background: #e2e2e2; border-radius: 5px; margin: 3px; margin-bottom: 10px;">
+                                Group Name: <?= $group->groupname ?>
+                                <br>
+                                By: <?= $group->creator ?>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
             @endif
         </div>
     </div>

@@ -3,6 +3,9 @@
 @section('main')
     <h1>Create a Group</h1>
     <hr>
+    <div class="alert alert-success" style="display:none;">
+        <strong>Group Successfully Made!</strong> Requests have been sent to all members of the group.
+    </div>
     <form class="form-horizontal" role="form" method="POST" action="{{ url('/makegroup') }}">
         {{ csrf_field() }}
 
@@ -57,6 +60,12 @@
                         groupname: $('#group_name').val()
                     },
                     success: function(data) {
+                        $('.alert').show();
+                        window.setTimeout(function () {
+                            $(".alert").fadeTo(500, 0).slideUp(500, function () {
+                                $(this).remove();
+                            });
+                        }, 5000);
                     },
                     error: function (xhr, status) {
 //                    console.log(status);

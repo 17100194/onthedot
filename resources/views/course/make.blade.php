@@ -3,6 +3,11 @@
 @section('main')
     <h1>Add A Course</h1>
     <hr>
+    @if(session()->has('message'))
+        <div class="alert alert-success">
+            {{ session()->get('message') }}
+        </div>
+    @endif
     <form class="form-horizontal" role="form" method="POST" action="{{ url('/addcourse') }}">
         {{ csrf_field() }}
 
@@ -50,7 +55,6 @@
                 <input name="Friday" type="checkbox"> <label for="Friday">Friday</label>
             </div>
         </div>
-
         <div class="form-group">
             <div class="col-md-6 col-md-offset-4">
                 <button type="submit" class="btn btn-primary">
@@ -59,4 +63,14 @@
             </div>
         </div>
     </form>
+    <script type="text/javascript">
+        if($('.alert')) {
+            $('.alert').show();
+            window.setTimeout(function () {
+                $(".alert").fadeTo(500, 0).slideUp(500, function () {
+                    $(this).remove();
+                });
+            }, 5000);
+        }
+    </script>
 @endsection

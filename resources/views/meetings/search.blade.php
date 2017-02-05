@@ -4,7 +4,6 @@
     <style>
         .col-md-12 {
             padding: 0px;
-
         }
     </style>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -59,7 +58,7 @@
 
 
 
-                                                            <div class="modal fade bs-example-modal-lg" id="UserTimetable" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                                                            <div class="modal bs-example-modal-lg" id="UserTimetable" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
                                                                 <div class="modal-dialog modal-lg" role="document">
                                                                     <div class="modal-content">
                                                                         <div class="modal-header">
@@ -209,18 +208,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     <script type="text/javascript">
         $('.select').on('click', function(){
             var cell = $(this).closest('td');
@@ -236,6 +223,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+//            console.log(time, date, day, $('#userid').val())
             $.ajax({
                 method: "POST",
                 url: "./schedule",

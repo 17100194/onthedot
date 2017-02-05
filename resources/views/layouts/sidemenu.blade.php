@@ -1,23 +1,43 @@
 @extends('layouts.app')
 
 @section('content')
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <div class="container" >
+    <input id="activeTab" type="hidden">
     <div class="row">
-        <div class="col-md-3" style="padding-right: 0px;">
+        <div class="col-md-3" style="padding-right: 0px; padding-left: 0px;">
             <div class="panel panel-default dashboard-options">
-                <a href="javascript:void(0)" style="display:block;" class="active panel-heading" >Dashboard</a>
-                <a href="javascript:void(0)" style="display:block;" class="panel-heading">Scheduled</a>
-                <a href="javascript:void(0)" style="display:block;" class="panel-heading">Meeting Requests <?php if(count($requests) > 0): ?>(<?=count($requests)?>)<?php endif; ?></a>
-                <a href="javascript:void(0)" style="display:block;" class="panel-heading">View My Courses</a>
-                <a href="javascript:void(0)" style="display:block;" class="panel-heading">View My Meetings</a>
-                <a href="<?php echo url('/group/make') ?>" style="display:block;" class="panel-heading">Make a Group</a>
-                <?php if($user->type == 'student'): ?>
-                <a href="<?php echo url('/course/enroll') ?>" style="display:block;" class="panel-heading">Enroll in a Course</a>
-                <?php elseif ($user->type == 'teacher'): ?>
-                <a href="<?php echo url('/course/make') ?>" style="display:block;" class="panel-heading">Add a Course</a>
-                <?php endif; ?>
-                <a href="javascript:void(0)" style="display:block;" class="panel-heading">View My Timetable</a>
+                <ul style="list-style: none; padding-left: 0px;">
+                    <li>
+                        <a href="<?php echo url('/home') ?>" style="display:block;" class="active panel-heading">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" style="display:block;" class="panel-heading">Scheduled</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" style="display:block;" class="panel-heading">Meeting Requests <?php if(count($requests) > 0): ?>(<?=count($requests)?>)<?php endif; ?></a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" style="display:block;" class="panel-heading">View My Courses</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" style="display:block;" class="panel-heading">View My Meetings</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo url('/group/make') ?>" style="display:block;" class="panel-heading">Make a Group</a>
+                    </li>
+                    <?php if($user->type == 'student'): ?>
+                    <li>
+                        <a href="<?php echo url('/course/enroll') ?>" style="display:block;" class="panel-heading">Enroll in a Course</a>
+                    </li>
+                    <?php elseif ($user->type == 'teacher'): ?>
+                    <li>
+                        <a href="<?php echo url('/course/make') ?>" style="display:block;" class="panel-heading">Add a Course</a>
+                    </li>
+                    <?php endif; ?>
+                    <li>
+                        <a href="javascript:void(0)" style="display:block;" class="panel-heading">View My Timetable</a>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="col-md-9" style="padding-left: 0px;">
