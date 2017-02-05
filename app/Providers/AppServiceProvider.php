@@ -61,11 +61,16 @@ class AppServiceProvider extends ServiceProvider
                 ->where('status', '=', 'pending')
                 ->get();
 
+            $groups = DB::table('groups')
+                ->join('user_has_group', 'user_has_group.id_group', '=', 'groups.id')
+                ->where('user_has_group.id_user', '=', Auth::id())
+                ->orwhere('groups.id_creator', '=', Auth::id())->get();
+
 
             $view->groupRequestPending = $groupRequestPending;
             $view->groupRequestRejected = $groupRequestRejected;
             $view->groupRequestAccepted = $groupRequestAccepted;
-
+            $view->groups = $groups;
             $view->meetings = $meetings;
             $view->requests = $requests;
             $view->user = $user;
