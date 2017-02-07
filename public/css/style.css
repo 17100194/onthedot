@@ -156,3 +156,35 @@ svg text {
  width: 70%;
  display: inline-block;
 }
+
+#notifications {
+ height: auto;
+ overflow: visible;
+ padding: 0px;
+}
+
+#notifications ul {
+ padding: 0px;
+ /*padding: 5px;*/
+ /*padding*/
+}
+
+#notifications li {
+ /*width: 98%;*/
+ padding: 15px;
+ border-bottom: 1px solid #e2e2e2;
+ margin-bottom: 3px;
+}
+
+#notifications li:hover {
+ background: #E8E8E8;
+}
+
+#notifications li:last-child {
+ border: none;
+}
+
+#notifications li a {
+ color: inherit;
+ text-decoration: none;
+}

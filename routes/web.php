@@ -37,3 +37,4 @@ Route::get('/group/adduser','GroupController@searchuser');
 Route::post('/group/makegroup', 'GroupController@makegroup');
 Route::post('/acceptRequest', 'GroupController@acceptRequest');
 Route::post('/rejectRequest', 'GroupController@rejectRequest');
+Route::get('/notification', 'NotificationController@viewNotification');

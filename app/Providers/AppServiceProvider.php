@@ -4,6 +4,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -76,8 +77,69 @@ class AppServiceProvider extends ServiceProvider
             $view->user = $user;
             $view->courses = $courses;
         });
+
+        view()->composer('layouts.app', function ($view) {
+            $view->requests = $this->getAllNotifications();
+        });
     }
 
+    public function getAllNotifications() {
+        $requests = [];
+
+        $meetingRequests = DB::table('meetings AS m')
+            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+            ->join('users AS u', 'u.id', '=', 'm.host')
+            ->select('u.name AS username', 'm.time', 'u.campusid', 'm.id as meetingid', 'm.date')
+            ->where('um.userid', '=', Auth::id())
+            ->where('m.host', '!=', Auth::id())
+            ->where('m.status', '=', 'pending')->get();
+
+        foreach($meetingRequests as $row) {
+            $html = '<a href="'.url('/notification?type=meeting-request&id='. strval($row->meetingid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has requested to meet you at '.$row->time .' - ' . $row->date .'</a>';
+            $requests[] = $html;
+        }
+
+        $groupRequestAccepted = DB::table('user_has_group_request')
+            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
+            ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')
+            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'user_has_group_request.id as requestid')
+            ->where('id_sender', '=', Auth::id())
+            ->where('status', '=', 'accepted')
+            ->get();
+
+        foreach($groupRequestAccepted as $row) {
+            $html = '<a href="javascript:void(0);"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has accepted your request for the group <strong>'.$row->groupname.'</strong></a>';
+            $requests[] = $html;
+        }
+
+        $groupRequestRejected = DB::table('user_has_group_request')
+            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
+            ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')
+            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'user_has_group_request.id as requestid')
+            ->where('id_sender', '=', Auth::id())
+            ->where('status', '=', 'rejected')
+            ->get();
+
+        foreach($groupRequestRejected as $row) {
+            $html = '<a href="javascript:void(0);"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has rejected your request for the group <strong>'.$row->groupname.'</strong></a>';
+            $requests[] = $html;
+        }
+
+        $groupRequestPending = DB::table('user_has_group_request')
+            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
+            ->join('users', 'users.id', '=', 'user_has_group_request.id_sender')
+            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'user_has_group_request.id as requestid')
+            ->where('id_receiver', '=', Auth::id())
+            ->where('status', '=', 'pending')
+            ->get();
+
+        foreach($groupRequestPending as $row) {
+            $html = '<a href="'.url('/notification?type=group-pending&id='. strval($row->requestid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has requested you to join their group <strong>'.$row->groupname.'</strong></a>';
+            $requests[] = $html;
+        }
+
+        return $requests;
+    }
     /**
      * Register any application services.
      *

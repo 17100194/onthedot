@@ -27,7 +27,7 @@ class HomeController extends Controller
     {
         $meetings = DB::table('user_has_meeting AS u1')
             ->join('user_has_meeting as u2', 'u1.meetingid', '=', 'u2.meetingid')
-            ->join('users', 'u2.userid', '=', 'users.id')
+                ->join('users', 'u2.userid', '=', 'users.id')
             ->join('meetings', 'u2.meetingid', '=', 'meetings.id')
             ->where('u1.userid', '=', Auth::id())
             ->where('u2.userid', '!=', Auth::id())->get();

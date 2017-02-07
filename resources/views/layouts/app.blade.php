@@ -77,24 +77,24 @@
                         <li><a href="{{ url('/login') }}">Login</a></li>
                         <li><a href="{{ url('/register') }}">Register</a></li>
                     @else
-                        {{--<li class="dropdown">--}}
-                        {{--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">--}}
-                        {{--<i class="fa fa-dot-circle-o" aria-hidden="true"></i>--}}
-                        {{--</a>--}}
-                        {{--<ul id="notifications" class="dropdown-menu" role="menu" style="height: 200px; width: 350px; overflow-y: auto;">--}}
-                        {{--@if (count($requests) > 0)--}}
-                        {{--<ul style="list-style: none;">--}}
-                        {{--@foreach($requests as $request)--}}
-
-                        {{--@endforeach--}}
-                        {{--</ul>--}}
-                        {{--@else--}}
-                        {{--<ul>--}}
-                        {{--<h4>No requests at the moment</h4>--}}
-                        {{--</ul>--}}
-                        {{--@endif--}}
-                        {{--</ul>--}}
-                        {{--</li>--}}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                            </a>
+                            <ul id="notifications" class="dropdown-menu" role="menu" style="width: 350px; overflow-y: auto;">
+                            @if (count($requests) > 0)
+                                <ul style="list-style: none;">
+                                    @foreach($requests as $request)
+                                        <li><?= $request?></li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <ul>
+                                    <h4>No requests at the moment</h4>
+                                </ul>
+                            @endif
+                            </ul>
+                        </li>
                         <li class="dropdown">
                             <a href="{{ url('/home') }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->name }} <span class="caret"></span>
