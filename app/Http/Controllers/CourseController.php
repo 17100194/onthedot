@@ -15,6 +15,13 @@ use Illuminate\Support\Facades\Redirect;
 
 class CourseController
 {
+    public function all(){
+        $courses = DB::table('user_has_course')
+            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+            ->where('user_has_course.userid', '=', Auth::id())->get();
+        return view('course.all', compact('courses'));
+    }
+
     public function makeform()
     {
         return view('course.make');
@@ -70,6 +77,18 @@ class CourseController
         echo view('course.course_results')->with('courses', $courses)->render();
     }
 
+    public function course_exists($name, $section){
+        $course = DB::table('courses')
+            ->where('name', '=', $name)
+            ->where('section', '=', $section)->get();
+
+        if (count($course) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function addcourse(Request $request)
     {
         $coursename = $request->course_name;
@@ -98,6 +117,10 @@ class CourseController
             $days[] = "Friday";
         }
         $dayStr = implode(',', $days);
+
+        if($this->course_exists($coursename, $section) == true){
+            return Redirect::back()->with('error', 'Course Already Exists');;
+        }
 
         DB::table('courses')->insert(array(
             'name'=>$coursename,

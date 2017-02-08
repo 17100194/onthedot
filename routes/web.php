@@ -37,4 +37,8 @@ Route::get('/group/adduser','GroupController@searchuser');
 Route::post('/group/makegroup', 'GroupController@makegroup');
 Route::post('/acceptRequest', 'GroupController@acceptRequest');
 Route::post('/rejectRequest', 'GroupController@rejectRequest');
+Route::get('/course/all', 'CourseController@all');
+Route::get('/meetings/requests', 'MeetingsController@requests');
+Route::post('/rejectRequest', 'GroupController@rejectRequest');
+Route::post('/rejectRequest', 'GroupController@rejectRequest');
 Route::get('/notification', 'NotificationController@viewNotification');

@@ -25,7 +25,7 @@
 
             <!-- Tab panes -->
             <div class="tab-content">
-                <div class="tab-pane active" id="all" role="tabpanel">
+                <div class="tab-pane fade in active" id="all" role="tabpanel">
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
@@ -57,7 +57,7 @@
 
 
 
-                                                            <div class="modal bs-example-modal-lg" id="UserTimetable" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                                                            <div class="modal fade bs-example-modal-lg" id="UserTimetable" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
                                                                 <div class="modal-dialog modal-lg" role="document">
                                                                     <div class="modal-content">
                                                                         <div class="modal-header">
@@ -129,9 +129,6 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-
-
-
                                                         </div>
                                                     </li>
                                                 @endif
@@ -144,44 +141,7 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="students" role="tabpanel">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="panel panel-default">
-                                    @if (count($users) === 0)
-                                    @elseif (count($users) >= 1)
-                                        <ul style="list-style: none;">
-                                            @foreach($users as $user)
-                                                @if($user->id != Auth::id())
-                                                    <li>
-                                                        <div style="padding: 15px;">
-                                                            <div class="row">
-                                                                <div class="col-md-3">
-                                                                    <h4><?= $user->name ?></h4>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <h4>Student</h4>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <h4><?= $user->campusid ?></h4>
-                                                                </div>
-                                                                <div class="col-md-3">
 
-                                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#UserTimetable">Schedule Meeting</button>
-                                                                </div>
-                                                            </div>
-                                                            <input id="userid" style="display: block;" type="hidden" value="<?= $user->id ?>">
-
-                                                        </div>
-                                                    </li>
-                                                @endif
-                                            @endforeach
-                                        </ul>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="tab-pane" id="instructors" role="tabpanel">
 
@@ -192,11 +152,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-
 
     <script type="text/javascript">
         $('.search-tabs a').click(function (e) {

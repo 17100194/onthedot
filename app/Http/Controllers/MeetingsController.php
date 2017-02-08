@@ -11,7 +11,23 @@ class MeetingsController extends Controller
 {
     public function index()
     {
+        $meetings = DB::table('user_has_meeting AS u1')
+            ->join('user_has_meeting as u2', 'u1.meetingid', '=', 'u2.meetingid')
+            ->join('users', 'u2.userid', '=', 'users.id')
+            ->join('meetings', 'u2.meetingid', '=', 'meetings.id')
+            ->where('u1.userid', '=', Auth::id())
+            ->where('u2.userid', '!=', Auth::id())->get();
+        return view('meetings.scheduled', compact('meetings'));
+    }
 
+    public function requests(){
+        $requests = DB::table('meetings AS m')
+            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+            ->join('users AS u', 'u.id', '=', 'm.host')
+            ->where('um.userid', '=', Auth::id())
+            ->where('m.host', '!=', Auth::id())
+            ->where('m.status', '=', 'pending')->get();
+        return view('meetings.requests', compact('requests'));
     }
 
     public function q(Request $request)

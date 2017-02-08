@@ -95,8 +95,12 @@
         <div class="col-md-4">
             <h4><a>My Courses</a></h4>
             @if (count($courses) > 0)
+                <?php $count_courses = 0;?>
                 <ul style="list-style: none;">
                     @foreach($courses as $course)
+                        @if($count_courses == 3)
+                            @break;
+                        @endif
                         <li>
                             <div style="padding: 15px; background: #e2e2e2; border-radius: 5px; margin: 3px; margin-bottom: 10px;">
                                 Course: <?= $course->name ?>
@@ -106,15 +110,21 @@
                                 Section: <?= $course->section ?>
                             </div>
                         </li>
+                            <?php $count_courses = $count_courses + 1;?>
                     @endforeach
+                    <a href="<?php echo url('/course/all')?>">View All</a>
                 </ul>
             @endif
         </div>
         <div class="col-md-4">
             <h4 style="margin-left: 20px;"><a>My Meetings</a></h4>
             @if (count($meetings) > 0)
+                <?php $count_meeting = 0;?>
                 <ul style="list-style: none;">
                     @foreach($meetings as $meeting)
+                        @if($count_meeting == 3)
+                            @break;
+                        @endif
                         @if ($meeting->status != 'pending')
                             <li>
                                 <div style="padding: 15px; background: #e2e2e2; border-radius: 5px; margin: 3px; margin-bottom: 10px;">
@@ -127,8 +137,10 @@
                                     Meeting date: <?= $meeting->date ?>
                                 </div>
                             </li>
+                            <?php $count_meeting = $count_meeting + 1;?>
                         @endif
                     @endforeach
+                    <a href="<?php echo url('/meetings')?>">View All</a>
                 </ul>
             @else
                 <p style="margin-left: 20px;">You have no meetings scheduled at the moment</p>

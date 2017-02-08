@@ -8,6 +8,11 @@
             {{ session()->get('message') }}
         </div>
     @endif
+    @if(session()->has('error'))
+        <div class="alert alert-warning">
+            {{ session()->get('error') }}
+        </div>
+    @endif
     <form class="form-horizontal" role="form" method="POST" action="{{ url('/addcourse') }}">
         {{ csrf_field() }}
 
@@ -32,10 +37,10 @@
 
             <div class="col-md-6">
                 <div class="col-md-3">
-                    <label for="start_time">Start Time</label> <input name="start_time" type="time">
+                    <label for="start_time">Start Time</label> <input name="start_time" type="time" required>
                 </div>
                 <div class="col-md-3">
-                    <label for="end_time">End Time</label> <input name="end_time" type="time">
+                    <label for="end_time">End Time</label> <input name="end_time" type="time" required>
                 </div>
             </div>
         </div>

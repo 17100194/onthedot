@@ -23,7 +23,7 @@ class GroupController
             return;
         }
         $sql = "SELECT u.id, u.name, u.campusid FROM users u
-		WHERE u.name LIKE '%".$request->term."%'
+		WHERE u.name LIKE '%".$request->term."%' AND u.ID != ".Auth::id()."
 		LIMIT 10";
 
         $result = DB::select($sql);
@@ -34,7 +34,7 @@ class GroupController
             echo json_encode($json);
             return;
         }
-        return;
+        return json_encode([]);
 
     }
 

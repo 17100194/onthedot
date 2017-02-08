@@ -27,12 +27,44 @@
         </div>
     </form>
     <script type="text/javascript">
+
         $(document).ready(function() {
+
+            $('.makeGroup').click(function() {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                if ($('.searchuser').val() != '' && $('#group_name').val() != '') {
+
+                    $.ajax({
+                        method: "POST",
+                        url: "./makegroup",
+                        data: {
+                            ids: $('.searchuser').val(),
+                            groupname: $('#group_name').val()
+                        },
+                        success: function(data) {
+                            $('.alert').show();
+                            window.setTimeout(function () {
+                                $(".alert").fadeTo(500, 0).slideUp(500, function () {
+                                    $(this).remove();
+                                });
+                            }, 5000);
+                        },
+                        error: function (xhr, status) {
+//                    console.log(status);
+//                    console.log(xhr.responseText);
+                        }
+                    });
+                }
+            })
+
             $('.searchuser').select2({
                 placeholder: 'Select a User',
                 ajax: {
                     url: './adduser',
-                    type: 'get',
                     dataType: 'json',
                     delay: 250,
                     processResults: function (data) {
@@ -41,38 +73,12 @@
                         };
                     },
                     cache: true
-                }
+                },
+                allowClear: true,
+                minimumInputLength: 1
             });
         });
 
-        $('.makeGroup').click(function() {
-            if ($('.searchuser').val() != '' && $('#group_name').val() != '') {
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                $.ajax({
-                    method: "POST",
-                    url: "./makegroup",
-                    data: {
-                        ids: $('.searchuser').val(),
-                        groupname: $('#group_name').val()
-                    },
-                    success: function(data) {
-                        $('.alert').show();
-                        window.setTimeout(function () {
-                            $(".alert").fadeTo(500, 0).slideUp(500, function () {
-                                $(this).remove();
-                            });
-                        }, 5000);
-                    },
-                    error: function (xhr, status) {
-//                    console.log(status);
-//                    console.log(xhr.responseText);
-                    }
-                });
-            }
-        })
+
     </script>
 @endsection
