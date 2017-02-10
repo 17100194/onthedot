@@ -76,8 +76,8 @@ class HomeController extends Controller
             ->where('user_has_group.id_user', '=', Auth::id())
 //            ->orwhere('groups.id_creator', '=', Auth::id())
             ->select('groups.name as groupname', 'u2.name as creator')->get();
-
-        return view('home', compact('courses', 'meetings', 'requests', 'user', 'groupRequestPending', 'groupRequestRejected', 'groupRequestAccepted', 'groups'));
+        $active = 'dashboard';
+        return view('home', compact('courses', 'meetings', 'requests', 'user', 'groupRequestPending', 'groupRequestRejected', 'groupRequestAccepted', 'groups', 'active'));
     }
 
 

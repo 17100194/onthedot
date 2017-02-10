@@ -28,7 +28,7 @@
             <label for="section" class="col-md-4 control-label">Section</label>
 
             <div class="col-md-6">
-                <input id="section" type="text" class="form-control" name="section" required>
+                <input id="section" placeholder="Numeric value, 1 if only section..." type="text" class="form-control" name="section" required>
             </div>
         </div>
 
@@ -37,10 +37,10 @@
 
             <div class="col-md-6">
                 <div class="col-md-3">
-                    <label for="start_time">Start Time</label> <input name="start_time" type="time" required>
+                    <label for="start_time">Start Time</label> <input name="start_time" id="start_time" type="time" required>
                 </div>
                 <div class="col-md-3">
-                    <label for="end_time">End Time</label> <input name="end_time" type="time" required>
+                    <label for="end_time">End Time</label> <input name="end_time" id="end_time" type="time" required>
                 </div>
             </div>
         </div>
@@ -69,6 +69,45 @@
         </div>
     </form>
     <script type="text/javascript">
+        $(document).ready(function() {
+
+            $("#start_time").focusout(function() {
+                var starttime = $("#start_time").val();
+//                console.log(starttime);
+
+                if ( starttime === "")  {
+                    return false;
+                } else {
+                    var hrs = starttime.split(":")[0];
+                    var mins = starttime.split(":")[1];
+
+                    var newhr = hrs;
+                    var newmin = mins;
+
+
+                    if (parseInt(mins) >= 20) {
+                        newmin = (parseInt(mins) - 20).toString();
+                        newhr = (parseInt(hrs) + 1).toString();
+                        if (hrs ===  "23") {
+                            newhr = "00";
+
+                        }
+                        if (newhr.length === 1) {
+                            newhr = '0'+newhr;
+                        }
+                        if (newmin.length === 1) {
+                            newmin = '0'+newmin;
+                        }
+                    } else {
+                        newmin = (parseInt(mins) + 40).toString();
+                    }
+                    var newTime = newhr +":"+newmin;
+                    $("#end_time").val(newTime);
+                }
+
+            })
+
+        });
         if($('.alert')) {
             $('.alert').show();
             window.setTimeout(function () {

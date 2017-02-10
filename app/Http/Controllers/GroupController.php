@@ -15,12 +15,13 @@ use Illuminate\Support\Facades\Auth;
 class GroupController
 {
     public function createForm(){
-        return view('group.create');
+        $active = 'group';
+        return view('group.create', compact('active'));
     }
 
     public function searchuser(Request $request){
         if($request->term == ""){
-            return;
+            return json_encode([]);
         }
         $sql = "SELECT u.id, u.name, u.campusid FROM users u
 		WHERE u.name LIKE '%".$request->term."%' AND u.ID != ".Auth::id()."

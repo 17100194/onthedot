@@ -19,16 +19,19 @@ class CourseController
         $courses = DB::table('user_has_course')
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
             ->where('user_has_course.userid', '=', Auth::id())->get();
-        return view('course.all', compact('courses'));
+        $active = 'courses';
+        return view('course.all', compact('courses', 'active'));
     }
 
     public function makeform()
     {
-        return view('course.make');
+        $active = 'addcourse';
+        return view('course.make', compact('active'));
     }
 
     public function enroll(){
-        return view('course.enroll');
+        $active = 'addcourse';
+        return view('course.enroll', compact('active'));
     }
 
     public function enrollcourse(Request $request){

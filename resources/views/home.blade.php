@@ -13,7 +13,7 @@
                             </div>
                             <div class="row" id="request_<?= $request->meetingid ?>">
                                 <div class="col-md-6 center-block">
-                                    <div style="padding: 15px; background: #e2e2e2; border-radius: 5px; margin: 3px; margin-bottom: 10px;">
+                                    <div class="notification-box">
                                         Meeting requested by: <?= $request->name ?>
                                         <br>
                                         Timing: <?= $request->time ?>
@@ -59,15 +59,18 @@
                 <ul style="list-style: none;">
                     @foreach($groupRequestPending as $groupRequest)
                         <li>
-                            <div class="alert alert-success" style="display:none;">
+                            <div class="alert alert-success accept-g-request" style="display:none;">
                                 <strong>Request Accepted!</strong> It will appear as soon as the participant agrees.
+                            </div>
+                            <div class="alert alert-warning reject-g-request" style="display:none;">
+                                <strong>Request Rejected!</strong>
                             </div>
                             <div class="row" id="request_<?= $groupRequest->requestid ?>">
                                 <div class="col-sm-6 center-block">
-                                    <div style="padding: 15px; background: #e2e2e2; border-radius: 5px; margin: 3px; margin-bottom: 10px;">
-                                        Group name: <?= $groupRequest->groupname ?>
+                                    <div class="notification-box">
+                                        Group: <?= $groupRequest->groupname ?>
                                         <br>
-                                        Sent by: <?= $groupRequest->username . ' - ' . $groupRequest->campusid ?>
+                                         By: <?= $groupRequest->username . ' - ' . $groupRequest->campusid ?>
                                         <br>
                                         Sent on: <?= $groupRequest->created_on ?>
                                     </div>
@@ -75,12 +78,9 @@
                                 <div class="col-sm-3 center-block">
                                     <button type="button" class="btn btn-success accept-group-request" data-placement="request_<?= $groupRequest->requestid ?>" style="margin: 20px auto; display: block;">Accept</button>
                                 </div>
-                                <div class="col-sm-3 center-block">
-                                    <div class="alert alert-warning" style="display:none;">
-                                        <strong>Request Rejected!</strong> The rejection reason will be shown on their profile.
-                                    </div>
-                                    <button type="button" class="btn btn-warning decline-group-request" data-placement="request_<?= $groupRequest->requestid ?>" style="margin: 20px auto; display: block;">Reject</button>
-                                </div>
+
+                                <button type="button" class="btn btn-warning decline-group-request" data-placement="requestg_<?= $groupRequest->requestid ?>" style="margin: 20px auto; display: block;">Reject</button>
+
                             </div>
                         </li>
                     @endforeach
@@ -102,7 +102,7 @@
                             @break;
                         @endif
                         <li>
-                            <div style="padding: 15px; background: #e2e2e2; border-radius: 5px; margin: 3px; margin-bottom: 10px;">
+                            <div class="notification-box">
                                 Course: <?= $course->name ?>
                                 <br>
                                 Timing: <?= $course->timing ?>
@@ -117,7 +117,7 @@
             @endif
         </div>
         <div class="col-md-4">
-            <h4 style="margin-left: 20px;"><a>My Meetings</a></h4>
+            <h4><a>My Meetings</a></h4>
             @if (count($meetings) > 0)
                 <?php $count_meeting = 0;?>
                 <ul style="list-style: none;">
@@ -127,7 +127,7 @@
                         @endif
                         @if ($meeting->status != 'pending')
                             <li>
-                                <div style="padding: 15px; background: #e2e2e2; border-radius: 5px; margin: 3px; margin-bottom: 10px;">
+                                <div class="notification-box">
                                     Meeting with: <?= $meeting->name ?>
                                     <br>
                                     Meeting time: <?= $meeting->time ?>
@@ -152,7 +152,7 @@
                 <ul style="list-style: none;">
                     @foreach($groups as $group)
                         <li>
-                            <div style="padding: 15px; background: #e2e2e2; border-radius: 5px; margin: 3px; margin-bottom: 10px;">
+                            <div class="notification-box">
                                 Group Name: <?= $group->groupname ?>
                                 <br>
                                 By: <?= $group->creator ?>
@@ -208,9 +208,9 @@
                 },
                 success: function(data) {
                     $('#'+t.data('placement')).hide();
-                    t.parents('.row').siblings('.alert').show();
+                    t.parents('.row').siblings('.accept-g-request').show();
                     window.setTimeout(function () {
-                        t.parents('.row').siblings('.alert').fadeTo(500, 0).slideUp(500, function () {
+                        t.parents('.row').siblings('.accept-g-request').fadeTo(500, 0).slideUp(500, function () {
                             tp.remove();
                         });
                     }, 2000);
@@ -220,9 +220,10 @@
             });
         });
 
-        $('.reject-group-request').click(function() {
+        $('.decline-group-request').click(function() {
             var t = $(this);
-            var rId = t.data('placement').replace('request_', '')
+            var tp = t.parents('li');
+            var rId = t.data('placement').replace('requestg_', '')
 
             $.ajaxSetup({
                 headers: {
@@ -236,10 +237,10 @@
                     requestid: rId
                 },
                 success: function(data) {
-                    $('#reject_'+mId).hide();
-                    t.parents('.center-block').siblings('.alert').show();
+                    $('#request_'+rId).hide();
+                    t.parents('.row').siblings('.reject-g-request').show();
                     window.setTimeout(function () {
-                        t.parents('.center-block').siblings('.alert').fadeTo(500, 0).slideUp(500, function () {
+                        t.parents('.row').siblings('.reject-g-request').fadeTo(500, 0).slideUp(500, function () {
                             tp.remove();
                         });
                     }, 2000);

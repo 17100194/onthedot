@@ -17,7 +17,8 @@ class MeetingsController extends Controller
             ->join('meetings', 'u2.meetingid', '=', 'meetings.id')
             ->where('u1.userid', '=', Auth::id())
             ->where('u2.userid', '!=', Auth::id())->get();
-        return view('meetings.scheduled', compact('meetings'));
+        $active = 'view-meeting';
+        return view('meetings.scheduled', compact('meetings', 'active'));
     }
 
     public function requests(){
@@ -27,7 +28,8 @@ class MeetingsController extends Controller
             ->where('um.userid', '=', Auth::id())
             ->where('m.host', '!=', Auth::id())
             ->where('m.status', '=', 'pending')->get();
-        return view('meetings.requests', compact('requests'));
+        $active = 'requests';
+        return view('meetings.requests', compact('requests', 'active'));
     }
 
     public function q(Request $request)
@@ -42,8 +44,8 @@ class MeetingsController extends Controller
             ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
             ->orderby('courses.timing', 'DESC')
             ->get();
-
-        return view('meetings.search', compact('users', 'usercourses', 'query'));
+        $active = 'meeting';
+        return view('meetings.search', compact('users', 'usercourses', 'query', 'active'));
     }
 
     public function schedule(Request $request)

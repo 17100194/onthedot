@@ -67,7 +67,7 @@ class AppServiceProvider extends ServiceProvider
                 ->where('user_has_group.id_user', '=', Auth::id())
                 ->orwhere('groups.id_creator', '=', Auth::id())->get();
 
-
+//            $view->active = 'dashboard';
             $view->groupRequestPending = $groupRequestPending;
             $view->groupRequestRejected = $groupRequestRejected;
             $view->groupRequestAccepted = $groupRequestAccepted;
