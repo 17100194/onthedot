@@ -140,6 +140,33 @@ class AppServiceProvider extends ServiceProvider
             $requests[] = $html;
         }
 
+        $meetingRequests = DB::table('meetings AS m')
+            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+            ->join('users AS u', 'u.id', '=', 'm.host')
+            ->select('u.name AS username', 'm.message', 'u.campusid', 'm.id as meetingid', 'm.date')
+            ->where('um.userid', '=', Auth::id())
+            ->where('m.host', '!=', Auth::id())
+            ->where('m.status', '=', 'rejected')->get();
+
+        foreach($meetingRequests as $row) {
+            $html = '<a href="'.url('/notification?type=meeting-rejected&id='. strval($row->meetingid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has rejected your request to meet. Reason: <strong> '.$row->message .'</strong></a>';
+            $requests[] = $html;
+        }
+
+        $meetingRequests = DB::table('meetings AS m')
+            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+            ->join('users AS u', 'u.id', '=', 'm.host')
+            ->select('u.name AS username', 'm.time', 'u.campusid', 'm.id as meetingid', 'm.date')
+            ->where('um.userid', '=', Auth::id())
+            ->where('m.host', '!=', Auth::id())
+            ->where('m.status', '=', 'accepted')->get();
+
+        foreach($meetingRequests as $row) {
+            $html = '<a href="'.url('/notification?type=meeting-accepted&id='. strval($row->meetingid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has accepted your request you at '.$row->time .' - ' . $row->date .'</a>';
+            $requests[] = $html;
+        }
+
+
         $groupRequestAccepted = DB::table('user_has_group_request')
             ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
             ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')

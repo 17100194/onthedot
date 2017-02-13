@@ -8,7 +8,7 @@
     ?>
 <div class="container" >
     <div class="row">
-        <div class="col-md-3" style="padding-right: 0px; padding-left: 0px;">
+        <div class="col-md-2" style="padding-right: 0px; padding-left: 0px;">
 
             <div class="panel panel-default dashboard-options">
                 <a href="<?php echo url('/home') ?>" style="display:block;" class="panel-heading <?php if ($active == "dashboard"): ?>active<?php endif; ?>">Dashboard</a>
@@ -25,7 +25,7 @@
                 <a href="javascript:void(0)" style="display:block;" class="panel-heading">View My Timetable</a>
             </div>
         </div>
-        <div class="col-md-9" style="padding-left: 0px;">
+        <div class="col-md-10" style="padding-left: 0px;">
             <div class="panel panel-default">
                 <div class="panel-body">
                     @yield('main')

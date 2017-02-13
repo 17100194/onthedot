@@ -11,6 +11,9 @@
                             <div class="alert alert-success" style="display:none;">
                                 <strong>Meeting Request Send!</strong> It will appear as soon as the participant agrees.
                             </div>
+                            <div class="alert alert-warning" style="display:none;">
+                                <strong>Meeting Rejected!</strong> The rejection reason will be shown on their profile.
+                            </div>
                             <div class="row" id="request_<?= $request->meetingid ?>">
                                 <div class="col-md-6 center-block">
                                     <div class="notification-box">
@@ -21,24 +24,25 @@
                                         Date: <?= $request->date ?>
                                     </div>
                                 </div>
-                                <div class="col-md-3 center-block">
-                                    <button type="button" class="btn btn-success accept-request" data-placement="request_<?= $request->meetingid ?>" style="margin: 20px auto; display: block;">Accept</button>
+                                <div class="col-md-3 center-block actionbtn">
+                                    <button type="button" class="btn btn-success accept-request" data-placement="request_<?= $request->meetingid ?>" style="display: block;">Accept</button>
                                 </div>
-                                <div class="col-md-3 center-block">
-                                    <div class="alert alert-warning" style="display:none;">
-                                        <strong>Meeting Rejected!</strong> The rejection reason will be shown on their profile.
+                                <div class="col-md-3 center-block actionbtn">
+                                    <div class="col-md-3 center-block actionbtn">
+                                    <button type="button" class="btn btn-warning decline-request" data-placement="request_<?= $request->meetingid ?>" data-toggle="modal" data-target="#reject_<?= $request->meetingid ?>" style="display: block;">Reject/Reschedule</button>
                                     </div>
-                                    <button type="button" class="btn btn-warning decline-request" data-placement="request_<?= $request->meetingid ?>" data-toggle="modal" data-target="#reject_<?= $request->meetingid ?>" style="margin: 20px auto; display: block;">Reject/Reschedule</button>
-                                    <div id="reject_<?= $request->meetingid ?>" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                        <div id="reject_<?= $request->meetingid ?>" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                                         <div class="modal-dialog modal-sm" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-body">
                                                     <h4 class="text-center">Rejection Reason</h4>
                                                     <textarea style="width: 90%; height: 100px; margin: 10px;"></textarea>
-                                                    <button data-meetingid="<?= $request->meetingid ?>" type="button" class="reject-btn btn btn-danger" data-placement="" style="margin: 20px auto; margin-top: 0px; display: block;">Reject</button>
+                                                    <div class="actionbtn">
+                                                        <button data-meetingid="<?= $request->meetingid ?>" type="button" class="reject-btn btn btn-danger" data-placement="" style="margin-top: 0px; display: block;">Reject</button>
+                                                    </div>
                                                     <hr/>
                                                     <h4 class="text-center">You may also ask for the meeting to be rescheduled</h4>
-                                                    <button type="button" class="btn btn-primary" data-placement="" style="margin: 20px auto; display: block;">Reschedule</button>
+                                                    <button type="button" class="btn btn-primary" data-placement="" style="display: block;">Reschedule</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -75,12 +79,12 @@
                                         Sent on: <?= $groupRequest->created_on ?>
                                     </div>
                                 </div>
-                                <div class="col-sm-3 center-block">
-                                    <button type="button" class="btn btn-success accept-group-request" data-placement="request_<?= $groupRequest->requestid ?>" style="margin: 20px auto; display: block;">Accept</button>
+                                <div class="col-sm-3 center-block actionbtn">
+                                    <button type="button" class="btn btn-success accept-group-request" data-placement="request_<?= $groupRequest->requestid ?>" style="display: block;">Accept</button>
                                 </div>
-
-                                <button type="button" class="btn btn-warning decline-group-request" data-placement="requestg_<?= $groupRequest->requestid ?>" style="margin: 20px auto; display: block;">Reject</button>
-
+                                <div class="col-sm-3 center-block actionbtn">
+                                    <button type="button" class="btn btn-warning decline-group-request" data-placement="requestg_<?= $groupRequest->requestid ?>" style="display: block;">Reject</button>
+                                </div>
                             </div>
                         </li>
                     @endforeach
@@ -112,7 +116,8 @@
                         </li>
                             <?php $count_courses = $count_courses + 1;?>
                     @endforeach
-                    <a href="<?php echo url('/course/all')?>">View All</a>
+                    <li><a class="morelink" href="<?php echo url('/course/all')?>">View All</a></li>
+
                 </ul>
             @endif
         </div>
@@ -140,7 +145,8 @@
                             <?php $count_meeting = $count_meeting + 1;?>
                         @endif
                     @endforeach
-                    <a href="<?php echo url('/meetings')?>">View All</a>
+
+                    <li><a class="morelink" href="<?php echo url('/meetings')?>">View All</a></li>
                 </ul>
             @else
                 <p style="margin-left: 20px;">You have no meetings scheduled at the moment</p>
@@ -180,9 +186,9 @@
                 },
                 success: function(data) {
                     $('#'+t.data('placement')).hide();
-                    t.parents('.row').siblings('.alert').show();
+                    t.parents('.row').siblings('.alert-success').show();
                     window.setTimeout(function () {
-                        t.parents('.row').siblings('.alert').fadeTo(500, 0).slideUp(500, function () {
+                        t.parents('.row').siblings('.alert-success').fadeTo(500, 0).slideUp(500, function () {
                             tp.remove();
                         });
                     }, 2000);
@@ -253,8 +259,8 @@
         $('.reject-btn').click(function() {
             var t = $(this);
             var msg = t.siblings('textarea').val();
+            var tp = t.parents('li');
             var mId = t.attr('data-meetingid');
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -270,10 +276,10 @@
                 success: function(data) {
                     t.parents('.modal').modal('toggle');
                     $('.modal-backdrop').hide();
-                    $('#reject_'+mId).hide();
-                    t.parents('.center-block').siblings('.alert').show();
+                    $('#request_'+mId).hide();
+                    t.parents('.row').siblings('.alert-warning').show();
                     window.setTimeout(function () {
-                        t.parents('.center-block').siblings('.alert').fadeTo(500, 0).slideUp(500, function () {
+                        t.parents('.row').siblings('.alert-warning').fadeTo(500, 0).slideUp(500, function () {
                             tp.remove();
                         });
                     }, 2000);

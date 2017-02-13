@@ -1,7 +1,7 @@
 @extends('layouts.sidemenu')
 
 @section('main')
-    <div class="row">
+    <div class="row courses">
         <div class="col-md-12">
             <h4 style="margin-left: 20px;"><a>My Courses</a></h4>
             <hr>
@@ -9,7 +9,7 @@
                 <ul style="list-style: none; padding-left: 0px;">
                     @foreach($courses as $course)
                         <li style="display: inline-block; width: 49.5%;">
-                            <div style="padding: 15px; background: #e2e2e2; border-radius: 5px; margin: 3px; margin-bottom: 10px;">
+                            <div class="notification-box">
                                 Course: <?= $course->name ?>
                                 <br>
                                 Timing: <?= $course->timing ?>

@@ -1,16 +1,16 @@
 @extends('layouts.sidemenu')
 
 @section('main')
-<div class="row">
+<div class="row scheduled">
     <div class="col-md-12">
-        <h4 style="margin-left: 20px;"><a>My Scheduled Meetings</a></h4>
+        <h4><a>My Scheduled Meetings</a></h4>
         <hr>
         @if (count($meetings) > 0)
             <ul style="list-style: none; padding-left: 0px;">
                 @foreach($meetings as $meeting)
                     @if ($meeting->status != 'pending')
                         <li style="display: inline-block; width: 49.5%;">
-                            <div style="padding: 15px; background: #e2e2e2; border-radius: 5px; margin: 3px; margin-bottom: 10px;">
+                            <div class="notification-box">
                                 Meeting with: <?= $meeting->name ?>
                                 <br>
                                 Meeting time: <?= $meeting->time ?>

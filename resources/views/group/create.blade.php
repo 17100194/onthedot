@@ -1,7 +1,7 @@
 @extends('layouts.sidemenu')
 
 @section('main')
-    <h1>Create a Group</h1>
+    <h4><a>Create a Group</a></h4>
     <hr>
     <div class="alert alert-success" style="display:none;">
         <strong>Group Successfully Made!</strong> Requests have been sent to all members of the group.

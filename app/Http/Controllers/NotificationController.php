@@ -56,7 +56,28 @@ class NotificationController extends Controller
                 ->where('m.host', '!=', Auth::id())
                 ->where('m.status', '=', 'pending')->get();
 
+        } else if ($type == "meeting-deny") {
+
+            $req = DB::table('meetings AS m')
+                ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+                ->join('users AS u', 'u.id', '=', 'm.host')
+                ->where('m.id', '=', $id)
+                ->where('um.userid', '=', Auth::id())
+                ->where('m.host', '!=', Auth::id())
+                ->where('m.status', '=', 'rejected')->get();
+
+        } else if ($type == "meeting-accept") {
+
+            $req = DB::table('meetings AS m')
+                ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+                ->join('users AS u', 'u.id', '=', 'm.host')
+                ->where('m.id', '=', $id)
+                ->where('um.userid', '=', Auth::id())
+                ->where('m.host', '!=', Auth::id())
+                ->where('m.status', '=', 'accepted')->get();
+
         }
+
         if (count($req) > 0) {
             $req = $req[0];
         }

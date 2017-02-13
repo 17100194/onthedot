@@ -1,11 +1,15 @@
 @extends('layouts.sidemenu')
 
 @section('main')
-    <h1>Enroll in a Course</h1>
+    <h4><a>Enroll in a Course</a></h4>
     <div class="alert alert-success" style="display:none;">
         <strong>Course Enrolled Successfully!</strong> You can now view it in your courses.
     </div>
     <hr>
+    <div>
+        <p>Search for a course that you're taking this semester. You may search for the course code (example, CS100)
+        or the course name as well (example, Introduction to Computing).</p>
+    </div>
     <div class="searchbar">
         <div class='form navbar-form navbar-right searchform'>
             <input type="text" class="form-control search_term" placeholder="Search for a course...">
