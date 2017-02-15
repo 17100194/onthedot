@@ -129,7 +129,7 @@ class CourseController
             'name'=>$coursename,
             'days' => $dayStr,
             'section'=>$section,
-            'timing'=>date('h:ia', strtotime($starttime)).'-'.date('h:ia', strtotime($endtime)),
+            'timing'=>date('H:i', strtotime($starttime)).'-'.date('H:i', strtotime($endtime)),
             'instructorid'=>Auth::id()));
 
         return Redirect::back()->with('message', 'Course Added Successfully!');;

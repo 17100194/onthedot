@@ -12,7 +12,12 @@
                             <div class="notification-box">
                                 Course: <?= $course->name ?>
                                 <br>
-                                Timing: <?= $course->timing ?>
+                                <?php
+                                $strt = date('h:iA', strtotime(explode('-', $course->timing)[0]));
+                                $endt = date('h:iA', strtotime(explode('-', $course->timing)[1]));
+
+                                ?>
+                                Timing: <?= $strt .' - '.$endt ?>
                                 <br>
                                 Section: <?= $course->section ?>
                             </div>

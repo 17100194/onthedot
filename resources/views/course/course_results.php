@@ -18,7 +18,12 @@
                     <td><?= $course->name ?></td>
                     <td><?= $course->username ?></td>
                     <td><?= $course->section ?></td>
-                    <td><?= $course->timing ?></td>
+                    <?php
+                        $strt = date('h:iA', strtotime(explode('-', $course->timing)[0]));
+                        $endt = date('h:iA', strtotime(explode('-', $course->timing)[1]));
+
+                    ?>
+                    <td><?= $strt .' - '.$endt ?></td>
                     <td><?= $course->days ?></td>
                     <td>
                         <button data-courseid="<?= $course->courseid ?>" class="<?php if($course->enrolled): ?>btn btn-success disabled<?php else: ?>btn enroll btn-success<?php endif; ?>"><?php if($course->enrolled): ?> Enrolled <?php else: ?> Enroll <?php endif; ?></button>

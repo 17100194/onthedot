@@ -22,7 +22,7 @@
                 <?php elseif ($user->type == 'teacher'): ?>
                 <a href="<?php echo url('/course/make') ?>" style="display:block;" class="panel-heading <?php if ($active == "addcourse"): ?>active<?php endif; ?>">Add a Course</a>
                 <?php endif; ?>
-                <a href="javascript:void(0)" style="display:block;" class="panel-heading">View My Timetable</a>
+                <a href="<?php echo url('/timetable') ?>" style="display:block;" class="panel-heading <?php if ($active == "timetable"): ?>active<?php endif; ?>">View My Timetable</a>
             </div>
         </div>
         <div class="col-md-10" style="padding-left: 0px;">

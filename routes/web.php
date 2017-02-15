@@ -42,3 +42,4 @@ Route::get('/meetings/requests', 'MeetingsController@requests');
 Route::post('/rejectRequest', 'GroupController@rejectRequest');
 Route::post('/rejectRequest', 'GroupController@rejectRequest');
 Route::get('/notification', 'NotificationController@viewNotification');
+Route::get('/timetable', 'HomeController@Timetable');

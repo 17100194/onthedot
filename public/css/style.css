@@ -223,7 +223,7 @@ svg text {
 }
 
 #notifications {
- height: auto;
+ height: 400px;
  overflow: visible;
  padding: 0px;
 }
@@ -312,4 +312,19 @@ svg text {
 .courses .notification-box , .scheduled .notification-box {
  width: 90%;
  margin-bottom: 25px;
+}
+.timetable.table td, .timetable.table th {
+ text-align: center;
+ padding: 16px;
+}
+
+.courses {
+ position: relative;
+}
+.ttElement {
+ position: absolute;
+ background-color: #2a88bd;
+ width: 167px;
+ display: inline-block;
+ border: 1px solid #308A0E;
 }

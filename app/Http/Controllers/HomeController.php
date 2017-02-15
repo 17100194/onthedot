@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
+    public $timeTableStart = '08:00';
+    public $timeTableEnd = '18:00';
+    public $tableHeight = 550;
+    public $timeTableWidth = 167;
     /**
      * Create a new controller instance.
      *
@@ -77,7 +81,76 @@ class HomeController extends Controller
 //            ->orwhere('groups.id_creator', '=', Auth::id())
             ->select('groups.name as groupname', 'u2.name as creator')->get();
         $active = 'dashboard';
-        return view('home', compact('courses', 'meetings', 'requests', 'user', 'groupRequestPending', 'groupRequestRejected', 'groupRequestAccepted', 'groups', 'active'));
+
+        $allCourses[] = array();
+        foreach ($courses as $course) {
+
+            $app = app();
+            $courseData = $app->make('stdClass');
+            $courseData->name = $course->name;
+            $courseData->timing = $course->timing;
+            $courseData->section = $course->section;
+            $courseData->height = $this->timeToMins($course->timing);
+            $courseData->width = $this->timeTableWidth;
+            $courseData->days = explode(',', $course->days);
+            $courseData->max = $this->tableHeight;
+            $courseData->min = 0;
+
+            $allCourses[] = $courseData;
+        }
+
+
+        return view('home', compact('allCourses', 'courses', 'meetings', 'requests', 'user', 'groupRequestPending', 'groupRequestRejected', 'groupRequestAccepted', 'groups', 'active'));
+    }
+
+    public  function Timetable(){
+        $allCourses[] = array();
+        $courses = DB::table('user_has_course')
+            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+            ->where('user_has_course.userid', '=', Auth::id())->get();
+        $app = app();
+        foreach ($courses as $course) {
+
+
+            $courseData = $app->make('stdClass');
+            $courseData->name = $course->name;
+            $courseData->timing = $course->timing;
+            $courseData->section = $course->section;
+            $courseData->height = $this->timeToMins($course->timing);
+            $courseData->width = $this->timeTableWidth;
+            $courseData->days = explode(',', $course->days);
+            $courseData->max = $this->tableHeight;
+            $courseData->min = 0;
+            $courseData->startingHeight = $this->startingHeight($course->timing);
+
+            $allCourses[] = $courseData;
+        }
+
+        $active = 'timetable';
+        return view('timetable', compact('allCourses', 'active'));
+    }
+
+    public function timeToMins($time){
+        $startTime = strtotime(explode('-', $time)[0]);
+        $endTime = strtotime(explode('-', $time)[1]);
+        $minutes = abs($endTime - $startTime) / 60;
+
+        $totalMinutes = abs(strtotime($this->timeTableEnd) - strtotime($this->timeTableStart)) / 60;
+
+        return $minutes/$totalMinutes * $this->tableHeight;
+    }
+
+    public function startingHeight($time){
+        $startTime = strtotime($this->timeTableStart);
+        $endTime = strtotime(explode('-', $time)[0]);
+        if ($endTime == $startTime) {
+            return 0;
+        }
+        $minutes = abs($endTime - $startTime) / 60;
+
+        $totalHeight = ($this->tableHeight/(abs(strtotime($this->timeTableEnd) - strtotime($this->timeTableStart)) / 60)) * $minutes;
+
+        return $totalHeight;
     }
 
 
