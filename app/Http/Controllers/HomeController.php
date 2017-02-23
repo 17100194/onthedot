@@ -78,8 +78,9 @@ class HomeController extends Controller
             ->join('user_has_group', 'user_has_group.id_group', '=', 'groups.id')
             ->join('users as u2', 'u2.id', '=', 'groups.id_creator')
             ->where('user_has_group.id_user', '=', Auth::id())
-//            ->orwhere('groups.id_creator', '=', Auth::id())
-            ->select('groups.name as groupname', 'u2.name as creator')->get();
+            ->select('groups.name as groupname', 'u2.name as creator', 'groups.created_on')
+            ->orderby('groups.created_on', 'DESC')
+            ->get();
         $active = 'dashboard';
 
         $allCourses[] = array();

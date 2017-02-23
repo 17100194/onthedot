@@ -9,6 +9,11 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class MeetingsController extends Controller
 {
+    public $timeTableStart = '08:00';
+    public $timeTableEnd = '18:00';
+    public $tableHeight = 629;
+    public $timeTableWidth = 155;
+
     public function index()
     {
         $meetings = DB::table('user_has_meeting AS u1')
@@ -19,6 +24,11 @@ class MeetingsController extends Controller
             ->where('u2.userid', '!=', Auth::id())->get();
         $active = 'view-meeting';
         return view('meetings.scheduled', compact('meetings', 'active'));
+    }
+
+    public function cancelMeeting(Request $request){
+        $meetingid = $request->meetingid;
+        return var_dump($meetingid);
     }
 
     public function requests(){
@@ -44,8 +54,104 @@ class MeetingsController extends Controller
             ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
             ->orderby('courses.timing', 'DESC')
             ->get();
+        $allCourses[] = array();
+        foreach ($usercourses as $course) {
+
+            $app = app();
+            $courseData = $app->make('stdClass');
+            $courseData->name = $course->courseName;
+            $courseData->timing = $course->timing;
+            $courseData->section = $course->section;
+            $courseData->height = $this->timeToMins($course->timing);
+            $courseData->width = $this->timeTableWidth;
+            $courseData->days = explode(',', $course->days);
+            $courseData->max = $this->tableHeight;
+            $courseData->min = 0;
+            $courseData->userid = $course->userID;
+            $courseData->startingHeight = $this->startingHeight($course->timing);
+
+            $allCourses[] = $courseData;
+        }
         $active = 'meeting';
-        return view('meetings.search', compact('users', 'usercourses', 'query', 'active'));
+        return view('meetings.search', compact('allCourses', 'users', 'usercourses', 'query', 'active'));
+    }
+
+    public function timeToMins($time){
+        $startTime = strtotime(explode('-', $time)[0]);
+        $endTime = strtotime(explode('-', $time)[1]);
+        $minutes = abs($endTime - $startTime) / 60;
+
+        $totalMinutes = abs(strtotime($this->timeTableEnd) - strtotime($this->timeTableStart)) / 60;
+
+        return $minutes/$totalMinutes * $this->tableHeight;
+    }
+
+    public function startingHeight($time){
+        $startTime = strtotime($this->timeTableStart);
+        $endTime = strtotime(explode('-', $time)[0]);
+        if ($endTime == $startTime) {
+            return 0;
+        }
+        $minutes = abs($endTime - $startTime) / 60;
+
+        $totalHeight = ($this->tableHeight/(abs(strtotime($this->timeTableEnd) - strtotime($this->timeTableStart)) / 60)) * $minutes;
+
+        return $totalHeight;
+    }
+
+    public function checkConflict($hostid, $userid, $time, $day, $date){
+        // get day
+        // get courses of both users
+        // check courses for that day for both users
+        $user1Courses = DB::table('user_has_course')
+            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+            ->where('user_has_course.userid', '=', $userid)->get();
+
+        $user2Courses = DB::table('user_has_course')
+            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+            ->where('user_has_course.userid', '=', $hostid)->get();
+
+        foreach ($user1Courses as $course) {
+            $courseDays =  explode(',', $course->days);
+            foreach ($courseDays as $thisDay) {
+                if ($thisDay == $day) {
+                    // this course is on the day of the meeting
+                    $startTime = explode('-', $course->timing)[0];
+                    $endTime = explode('-', $course->timing)[1];
+
+                    $startTimeMeeting = explode('-', $time)[0];
+                    $endTimeMeeting = explode('-', $time)[1];
+                    if((strtotime($startTimeMeeting) > strtotime($startTime) && strtotime($startTimeMeeting) < strtotime($endTime)) ||
+                        (strtotime($endTimeMeeting) > strtotime($startTime) && strtotime($endTimeMeeting) < strtotime($endTime)) ||
+                        (strtotime($startTimeMeeting) < strtotime($startTime) && strtotime($endTimeMeeting) > strtotime($startTime))){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        foreach ($user2Courses as $course) {
+            $courseDays =  explode(',', $course->days);
+            foreach ($courseDays as $thisDay) {
+                if ($thisDay == $day) {
+                    // this course is on the day of the meeting
+                    $startTime = explode('-', $course->timing)[0];
+                    $endTime = explode('-', $course->timing)[1];
+
+                    $startTimeMeeting = explode('-', $time)[0];
+                    $endTimeMeeting = explode('-', $time)[1];
+                    if((strtotime($startTimeMeeting) > strtotime($startTime) && strtotime($startTimeMeeting) < strtotime($endTime)) ||
+                        (strtotime($endTimeMeeting) > strtotime($startTime) && strtotime($endTimeMeeting) < strtotime($endTime)) ||
+                        (strtotime($startTimeMeeting) < strtotime($startTime) && strtotime($endTimeMeeting) > strtotime($startTime))){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+            }
+        }
     }
 
     public function schedule(Request $request)
@@ -54,7 +160,11 @@ class MeetingsController extends Controller
         $day = $request->Day;
         $date = $request->Date;
         $userid = $request->User;
-        $insert = DB::table('meetings')->insertGetId(array('time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>Auth::id(), 'status' => 'pending'));
+        $time = str_replace(" ","",$time);
+        if($this->checkConflict(Auth::id(), $userid, $time, $day, $date) == false){
+            return 'error';
+        }
+        $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending']);
         DB::table('user_has_meeting')->insert(array('userid'=>Auth::id(), 'meetingid'=>$insert));
         DB::table('user_has_meeting')->insert(array('userid'=>$userid, 'meetingid'=>$insert));
         return 'success';

@@ -31,7 +31,7 @@
                                     <div class="col-md-3 center-block actionbtn">
                                     <button type="button" class="btn btn-warning decline-request" data-placement="request_<?= $request->meetingid ?>" data-toggle="modal" data-target="#reject_<?= $request->meetingid ?>" style="display: block;">Reject/Reschedule</button>
                                     </div>
-                                        <div id="reject_<?= $request->meetingid ?>" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                        <div id="reject_<?= $request->meetingid ?>" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                                         <div class="modal-dialog modal-sm" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-body">
@@ -160,16 +160,24 @@
         <div class="col-md-4">
             <h4><a>My Groups</a></h4>
             @if (count($groups) > 0)
+                <?php $count_groups = 0;?>
                 <ul style="list-style: none;">
                     @foreach($groups as $group)
+                        @if($count_groups == 3)
+                            @break;
+                        @endif
                         <li>
                             <div class="notification-box">
                                 Group Name: <?= $group->groupname ?>
                                 <br>
                                 By: <?= $group->creator ?>
+                                <br>
+                                Created On: <?= $group->created_on ?>
                             </div>
                         </li>
+                            <?php $count_groups = $count_groups + 1;?>
                     @endforeach
+                        <li><a class="morelink" href="<?php echo url('/group/all')?>">View All</a></li>
                 </ul>
             @endif
         </div>

@@ -39,6 +39,18 @@ class GroupController
 
     }
 
+    public function all(){
+        $groups = DB::table('groups')
+            ->join('user_has_group', 'user_has_group.id_group', '=', 'groups.id')
+            ->join('users as u2', 'u2.id', '=', 'groups.id_creator')
+            ->where('user_has_group.id_user', '=', Auth::id())
+            ->select('groups.name as groupname', 'u2.name as creator', 'groups.created_on')
+            ->orderby('groups.created_on', 'DESC')
+            ->get();
+        $active = 'mygroups';
+        return view('group.all', compact('groups', 'active'));
+    }
+
     public function acceptRequest(Request $request) {
         $requestid = $request->requestid;
         DB::table('user_has_group_request')->where('id', '=', $requestid)

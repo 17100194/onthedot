@@ -34,6 +34,13 @@ class CourseController
         return view('course.enroll', compact('active'));
     }
 
+    public function dropCourse(Request $request){
+        $courseId = $request->courseid;
+        DB::table('user_has_course')->where('userid', '=', Auth::id())->where('courseid', '=', intval($courseId))->delete();
+        session(['message' => 'Course Dropped Successfully']);
+        return 'success';
+    }
+
     public function enrollcourse(Request $request){
         $courseid = $request->course_id;
         $userid = Auth::id();

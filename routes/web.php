@@ -43,3 +43,6 @@ Route::post('/rejectRequest', 'GroupController@rejectRequest');
 Route::post('/rejectRequest', 'GroupController@rejectRequest');
 Route::get('/notification', 'NotificationController@viewNotification');
 Route::get('/timetable', 'HomeController@Timetable');
+Route::post('/course/dropcourse', 'CourseController@dropCourse');
+Route::get('/group/all', 'GroupController@all');
+Route::post('/cancelMeeting', 'MeetingsController@cancelMeeting');

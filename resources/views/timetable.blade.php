@@ -34,10 +34,25 @@
             ?>
             <div class="ttElement" style="padding: 5px; text-align: center; height: <?=$course->height?>px; top: <?= 78+$course->startingHeight?>px; left:<?=$left?>px;">
                 <label style="color: white;"><?=$course->name?></label>
+                <br>
+                <label style="color: white;"><?=$course->timing?></label>
             </div>
             <?php endforeach; ?>
 
         <?php endforeach; ?>
+    </div>
+        <div id="mySmallModalLabel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        Add an event
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
         <table id="timetable" class="table table-bordered timetable">
             <thead>
             <tr>
@@ -51,7 +66,15 @@
             </thead>
             <tbody>
                 <tr>
-                    <th>8AM</th>
+                    <th scope="row">8:00AM</th>
+                    <td></td>
+                    <td data-toggle="modal" data-target="#mySmallModalLabel"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th scope="row">9:00AM</th>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -59,7 +82,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <th>9AM</th>
+                    <th scope="row">10:00AM</th>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -67,7 +90,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <th>10AM</th>
+                    <th scope="row">11:00AM</th>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -75,7 +98,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <th>11AM</th>
+                    <th scope="row">12:00PM</th>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -83,7 +106,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <th>12PM</th>
+                    <th scope="row">1:00PM</th>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -91,7 +114,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <th>1PM</th>
+                    <th scope="row">2:00PM</th>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -99,7 +122,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <th>2PM</th>
+                    <th scope="row">3:00PM</th>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -107,7 +130,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <th>3PM</th>
+                    <th scope="row">4:00PM</th>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -115,15 +138,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <th>4PM</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th>5PM</th>
+                    <th scope="row">5:00PM</th>
                     <td></td>
                     <td></td>
                     <td></td>

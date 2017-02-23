@@ -5,12 +5,12 @@
     <hr>
     @if(session()->has('message'))
         <div class="alert alert-success">
-            {{ session()->get('message') }}
+            {{ session()->pull('message') }}
         </div>
     @endif
     @if(session()->has('error'))
         <div class="alert alert-warning">
-            {{ session()->get('error') }}
+            {{ session()->pull('error') }}
         </div>
     @endif
     <form class="form-horizontal" role="form" method="POST" action="{{ url('/addcourse') }}">
@@ -114,7 +114,7 @@
                 $(".alert").fadeTo(500, 0).slideUp(500, function () {
                     $(this).remove();
                 });
-            }, 5000);
+            }, 3000);
         }
     </script>
 @endsection

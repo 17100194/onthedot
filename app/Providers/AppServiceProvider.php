@@ -78,47 +78,6 @@ class AppServiceProvider extends ServiceProvider
             $view->courses = $courses;
         });
 
-//        view()->composer('layouts.app', function ($view) {
-//
-//            $requests = DB::table('meetings AS m')
-//                ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
-//                ->join('users AS u', 'u.id', '=', 'm.host')
-//                ->where('um.userid', '=', Auth::id())
-//                ->where('m.host', '!=', Auth::id())
-//                ->where('m.status', '=', 'pending')->get();
-//
-//            $groupRequestAccepted = DB::table('user_has_group_request')
-//                ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
-//                ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')
-//                ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'user_has_group_request.id as requestid')
-//                ->where('id_sender', '=', Auth::id())
-//                ->where('status', '=', 'accepted')
-//                ->get();
-//
-//
-//            $groupRequestRejected = DB::table('user_has_group_request')
-//                ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
-//                ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')
-//                ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'user_has_group_request.id as requestid')
-//                ->where('id_sender', '=', Auth::id())
-//                ->where('status', '=', 'rejected')
-//                ->get();
-//
-//
-//            $groupRequestPending = DB::table('user_has_group_request')
-//                ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
-//                ->join('users', 'users.id', '=', 'user_has_group_request.id_sender')
-//                ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'user_has_group_request.id as requestid')
-//                ->where('id_receiver', '=', Auth::id())
-//                ->where('status', '=', 'pending')
-//                ->get();
-//
-//            $view->groupRequestPending = $groupRequestPending;
-//            $view->groupRequestRejected = $groupRequestRejected;
-//            $view->groupRequestAccepted = $groupRequestAccepted;
-//            $view->requests = $requests;
-//        });
-
         view()->composer('layouts.app', function ($view) {
             $view->requests = $this->getAllNotifications();
         });
