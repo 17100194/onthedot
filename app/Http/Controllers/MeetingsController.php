@@ -26,9 +26,30 @@ class MeetingsController extends Controller
         return view('meetings.scheduled', compact('meetings', 'active'));
     }
 
-    public function cancelMeeting(Request $request){
+    public function cancelMeeting(Request $request) {
         $meetingid = $request->meetingid;
-        return var_dump($meetingid);
+        DB::table('user_has_meeting')->where('userid', '=', Auth::id())->where('meetingid', '=', intval($meetingid))->delete();
+        // get others notification that you left meeting
+        $userlist = DB::table('user_has_meeting')->where('meetingid', '=', intval($meetingid))->get();
+
+        $meeting = $this->getMeetingById($meetingid);
+
+        $users = array();
+        foreach ($userlist as $user) {
+            $users[] = $user->userid;
+        }
+
+        $notificationList = implode(',', $users);
+        $notificationList = ','.$notificationList.',';
+        $loggedIn = $this->getUserById(Auth::id());
+        $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> will not be attending the meeting hosted on <strong>'.$meeting->time .' - ' . $meeting->date .'</strong> .';
+        DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'meeting', 'userlist' => $notificationList));
+        if(count($userlist) < 2) {
+            DB::table('meetings')->where('id', '=', intval($meetingid))->delete();
+        }
+//        session(['message' => 'Meeting Cancelled Successfully']);
+        return 'success';
+
     }
 
     public function requests(){
@@ -76,7 +97,7 @@ class MeetingsController extends Controller
         return view('meetings.search', compact('allCourses', 'users', 'usercourses', 'query', 'active'));
     }
 
-    public function timeToMins($time){
+    public function timeToMins($time) {
         $startTime = strtotime(explode('-', $time)[0]);
         $endTime = strtotime(explode('-', $time)[1]);
         $minutes = abs($endTime - $startTime) / 60;
@@ -86,7 +107,7 @@ class MeetingsController extends Controller
         return $minutes/$totalMinutes * $this->tableHeight;
     }
 
-    public function startingHeight($time){
+    public function startingHeight($time) {
         $startTime = strtotime($this->timeTableStart);
         $endTime = strtotime(explode('-', $time)[0]);
         if ($endTime == $startTime) {

@@ -11,7 +11,7 @@
                     @if ($meeting->status != 'pending')
                         <li style="display: inline-block; width: 49.5%;">
                             <div id="meeting_<?= $meeting->id ?>" class="notification-box" style="position: relative;">
-                                <button style="position: absolute; top: 0px; right: 0px; padding: 3px; display: none;" data-toggle="modal" data-target="#dropModal_<?= $meeting->id?>" class="btn btn-danger drop">Cancel <i class="fa fa-window-close fa-lg" aria-hidden="true"></i></button>
+                                <button data-toggle="modal" data-target="#dropModal_<?= $meeting->id?>" class="hover-action btn btn-danger drop">Cancel <i class="fa fa-window-close fa-lg" aria-hidden="true"></i></button>
                                 Meeting with: <?= $meeting->name ?>
                                 <br>
                                 Meeting time: <?= $meeting->time ?>
@@ -50,13 +50,10 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.notification-box').hover(function () {
-            $(this).find('.drop').fadeIn();
-        }, function () {
-            $(this).find('.drop').fadeOut();
-        });
+
         $('.yes').on('click', function () {
             var meetingid = $(this).attr('id').split('_')[1];
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -69,12 +66,12 @@
                     meetingid: meetingid
                 },
                 success: function(data) {
-                    alert(data);
-//                    location.reload();
+//                    alert(data);
+                    location.reload();
                 },
                 error: function (xhr, status) {
-//                    console.log(status);
-//                    console.log(xhr.responseText);
+                    console.log(status);
+                    console.log(xhr.responseText);
                 }
             });
         });

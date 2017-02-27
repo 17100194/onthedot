@@ -15,7 +15,7 @@
                     @foreach($courses as $course)
                         <li style="display: inline-block; width: 49.5%;">
                             <div id="course_<?= $course->courseid ?>" class="notification-box" style="position: relative;">
-                                <button style="position: absolute; top: 0px; right: 0px; padding: 3px; display: none;" data-toggle="modal" data-target="#dropModal_<?= $course->courseid ?>" class="btn btn-danger drop">Drop <i class="fa fa-window-close fa-lg" aria-hidden="true"></i></button>
+                                <button data-toggle="modal" data-target="#dropModal_<?= $course->courseid ?>" class="hover-action btn btn-danger drop">Drop <i class="fa fa-window-close fa-lg" aria-hidden="true"></i></button>
                                 Course: <?= $course->name ?>
                                 <br>
                                 <?php

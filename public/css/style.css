@@ -333,10 +333,22 @@ svg text {
  -o-transition: height ease 1s;
  transition: height ease 1s;
 }
-.ttElement:hover{
- height:90px !important;
- -webkit-transition: height ease 1s;
- -moz-transition: height ease 1s;
- -o-transition: height ease 1s;
- transition: height ease 1s;
+/*.ttElement:hover{*/
+ /*height:90px !important;*/
+ /*-webkit-transition: height ease 1s;*/
+ /*-moz-transition: height ease 1s;*/
+ /*-o-transition: height ease 1s;*/
+ /*transition: height ease 1s;*/
+/*}*/
+
+.hover-action {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 4px;
+    display: none;
+}
+
+.hover-action i {
+    margin-left: 5px;
 }

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class GroupController
+class GroupController extends Controller
 {
     public function createForm(){
         $active = 'group';
@@ -44,11 +44,27 @@ class GroupController
             ->join('user_has_group', 'user_has_group.id_group', '=', 'groups.id')
             ->join('users as u2', 'u2.id', '=', 'groups.id_creator')
             ->where('user_has_group.id_user', '=', Auth::id())
-            ->select('groups.name as groupname', 'u2.name as creator', 'groups.created_on')
+            ->select('groups.name as groupname', 'groups.id', 'u2.name as creator', 'groups.created_on')
             ->orderby('groups.created_on', 'DESC')
             ->get();
         $active = 'mygroups';
         return view('group.all', compact('groups', 'active'));
+    }
+
+    public function leaveGroup(Request $request) {
+        $groupid = $request->groupid;
+        DB::table('user_has_group')->where('id_user', '=', Auth::id())->where('id_group', '=', intval($groupid))->delete();
+        // get others notification that you left group
+
+        $group = $this->getGroupById($groupid);
+        $notificationList = implode(',', $group->members);
+        $loggedIn = $this->getUserById(Auth::id());
+        $notificationList = ','.$notificationList.',';
+        $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has left the group <strong>'. $group->name .'</strong>';
+        DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => $notificationList));
+
+        session(['message' => 'Group Left Successfully']);
+        return 'success';
     }
 
     public function acceptRequest(Request $request) {

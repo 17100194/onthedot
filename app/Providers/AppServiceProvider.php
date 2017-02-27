@@ -160,6 +160,16 @@ class AppServiceProvider extends ServiceProvider
             ->where('status', '=', 'pending')
             ->get();
 
+
+        $generalNotifications = DB::table('user_notifications')
+            ->where('userlist', 'LIKE', '%,'.Auth::id().',%')
+            ->get();
+
+        foreach($generalNotifications as $row) {
+            $html = '<a href="javascript:void(0)">'.$row->notification_content.'</a>';
+            $requests[] = $html;
+        }
+
         foreach($groupRequestPending as $row) {
             $html = '<a href="'.url('/notification?type=group-pending&id='. strval($row->requestid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has requested you to join their group <strong>'.$row->groupname.'</strong></a>';
             $requests[] = $html;
