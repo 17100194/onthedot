@@ -80,7 +80,7 @@ class GroupController extends Controller
         $loggedIn = $this->getUserById(Auth::id());
         $group = $this->getGroupById($groupid);
         $txt = '<strong>'.$loggedIn->name.'</strong> has removed you from the group'.$group->name;
-        DB::table('user_notifications')->insert(array('notification_content' => $txt, 'type'=>'group', 'userlist'=> $userid));
+        DB::table('user_notifications')->insert(array('notification_content' => $txt, 'type'=>'group', 'userlist'=> ','.$userid.','));
         return 'success';
     }
 
@@ -97,7 +97,7 @@ class GroupController extends Controller
             $notificationList = implode(',', $group->members);
             $loggedIn = $this->getUserById(Auth::id());
             $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has left the group <strong>'. $group->name .'</strong>';
-            DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => $notificationList));
+            DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => ','.$notificationList.','));
         }
 
         session(['message' => 'Group Left Successfully']);
