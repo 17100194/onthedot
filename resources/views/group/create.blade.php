@@ -27,15 +27,14 @@
         </div>
     </form>
     <script type="text/javascript">
-
         $(document).ready(function() {
-
             $('.makeGroup').click(function() {
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
+                console.log($('.searchuser').val());
                 if ($('.searchuser').val() != '' && $('#group_name').val() != '') {
 
                     $.ajax({
@@ -49,7 +48,6 @@
                             $('.alert').show();
                             window.setTimeout(function () {
                                 $(".alert").fadeTo(500, 0).slideUp(500, function () {
-                                    $(this).remove();
                                 });
                             }, 3000);
                         },
@@ -59,7 +57,7 @@
                         }
                     });
                 }
-            })
+            });
 
             $('.searchuser').select2({
                 placeholder: 'Select a User',
@@ -78,7 +76,5 @@
                 minimumInputLength: 2
             });
         });
-
-
     </script>
 @endsection

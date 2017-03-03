@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use phpDocumentor\Reflection\Types\Null_;
 
 class GroupController extends Controller
 {
@@ -44,24 +45,60 @@ class GroupController extends Controller
             ->join('user_has_group', 'user_has_group.id_group', '=', 'groups.id')
             ->join('users as u2', 'u2.id', '=', 'groups.id_creator')
             ->where('user_has_group.id_user', '=', Auth::id())
-            ->select('groups.name as groupname', 'groups.id', 'u2.name as creator', 'groups.created_on')
+            ->select('groups.name as groupname', 'groups.id', 'u2.name as creator', 'groups.created_on', 'groups.id_creator')
             ->orderby('groups.created_on', 'DESC')
             ->get();
+        foreach ($groups as $group){
+            $groupMembers = DB::table('user_has_group')->where('id_group', '=', $group->id)->select('id_user')->get();
+            if (count($groupMembers) > 0) {
+                foreach ($groupMembers as $groupMember) {
+                    $group->members[] = $this->getUserById($groupMember->id_user);
+                }
+            }
+        }
         $active = 'mygroups';
         return view('group.all', compact('groups', 'active'));
     }
 
+    public function sendGroupRequest(Request $request){
+        $users = $request->ids;
+        $groupid = $request->groupid;
+        foreach($users as $user) {
+            DB::table('user_has_group_request')->insert(array(
+                'id_group'=>$groupid,
+                'id_sender' => Auth::id(),
+                'id_receiver'=>$user,
+                'status'=>'pending'));
+        }
+        return 'success';
+    }
+
+    public function removeMember(Request $request){
+        $userid = $request->userid;
+        $groupid = $request->groupid;
+        DB::table('user_has_group')->where('id_user', '=', $userid)->where('id_group', '=', $groupid)->delete();
+        $loggedIn = $this->getUserById(Auth::id());
+        $group = $this->getGroupById($groupid);
+        $txt = '<strong>'.$loggedIn->name.'</strong> has removed you from the group'.$group->name;
+        DB::table('user_notifications')->insert(array('notification_content' => $txt, 'type'=>'group', 'userlist'=> $userid));
+        return 'success';
+    }
+
     public function leaveGroup(Request $request) {
         $groupid = $request->groupid;
+        $adminid = $request->adminid;
         DB::table('user_has_group')->where('id_user', '=', Auth::id())->where('id_group', '=', intval($groupid))->delete();
+        DB::table('groups')->where('id', '=', $groupid)->update(['id_creator' => $adminid]);
         // get others notification that you left group
 
         $group = $this->getGroupById($groupid);
-        $notificationList = implode(',', $group->members);
-        $loggedIn = $this->getUserById(Auth::id());
-        $notificationList = ','.$notificationList.',';
-        $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has left the group <strong>'. $group->name .'</strong>';
-        DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => $notificationList));
+
+        if (count($group->members) > 0) {
+            $notificationList = implode(',', $group->members);
+            $loggedIn = $this->getUserById(Auth::id());
+            $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has left the group <strong>'. $group->name .'</strong>';
+            DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => $notificationList));
+        }
 
         session(['message' => 'Group Left Successfully']);
         return 'success';

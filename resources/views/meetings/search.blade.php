@@ -9,7 +9,7 @@
     <div class="container">
         <div class="row">
             <ul class="nav search-tabs nav-tabs" role="tablist">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link active" data-toggle="tab" href="#all" role="tab">All</a>
                 </li>
                 <li class="nav-item">
@@ -30,6 +30,7 @@
                             <div class="col-md-12">
                                 <div class="panel panel-default">
                                     @if (count($users) === 0)
+                                        No users found with the query
                                     @elseif (count($users) >= 1)
                                         <ul style="list-style: none;">
                                             @foreach($users as $user)
@@ -195,14 +196,7 @@
                                                                                 <h4>Enter Meeting Details</h4>
                                                                                 <form role="form" class="form-horizontal">
                                                                                     <div class="form-group">
-                                                                                        <label for="purpose" class="col-md-4 control-label">Purpose of Meeting</label>
-                                                                                        <div class="col-md-6">
-                                                                                            <input id="purpose" type="text" class="form-control" name="purpose" required autofocus>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="form-group">
                                                                                         <label for="timing" class="col-md-4 control-label">Timing</label>
-
                                                                                         <div class="col-md-8">
                                                                                             <div class="col-md-4">
                                                                                                 <label for="start_time">Start Time</label>
@@ -255,7 +249,52 @@
 
                 </div>
                 <div class="tab-pane" id="groups" role="tabpanel">
-
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-default">
+                                    @if (count($groups) === 0)
+                                        No groups with the query
+                                    @elseif (count($groups) >= 1)
+                                        <ul style="list-style: none;">
+                                            @foreach($groups as $group)
+                                                <li>
+                                                    <div style="padding: 15px;">
+                                                        <div class="row">
+                                                            <div class="col-md-3">
+                                                                <h4><?= $group->name ?></h4>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <h4><?= $group->creator_name->name ?> (<?= $group->creator_name->campusid ?>)</h4>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <h4><?= $group->created_on ?></h4>
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <button type="button" class="btn btn-primary schedule" data-toggle="modal" data-target="#Group_<?= $group->id ?>">Schedule Meeting</button>
+                                                            </div>
+                                                        </div>
+                                                        <input id="groupid" style="display: block;" type="hidden" value="<?= $group->id ?>">
+                                                        <div class="modal fade bs-example-modal-lg" id="Group_<?= $group->id ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                                                            <div class="modal-dialog modal-lg" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <p>Select a Time slot</p>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -326,30 +365,29 @@
                     User: id
                 },
                 success: function(data) {
-                        if(data == 'error'){
-                            $('.alert-warning').show();
-                            window.setTimeout(function () {
-                                $(".alert-warning").fadeTo(500, 0).slideUp(500, function () {
-                                    {{--window.location.href = "{{URL::to('/home')}}";--}}
-                                });
-                            }, 3000);
+                    if(data == 'error'){
+                        $('.alert-warning').show();
+                        window.setTimeout(function () {
+                            $(".alert-warning").fadeTo(500, 0).slideUp(500, function () {
+                                {{--window.location.href = "{{URL::to('/home')}}";--}}
+                            });
+                        }, 3000);
 
-                        } else {
-                            $('.alert-success').show();
-                            window.setTimeout(function () {
-                                $(".alert-success").fadeTo(500, 0).slideUp(500, function () {
-                                    window.location.href = "{{URL::to('/home')}}";
-                                });
-                            }, 3000);
-                        }
-
+                    } else {
+                        $('.alert-success').show();
+                        window.setTimeout(function () {
+                            $(".alert-success").fadeTo(500, 0).slideUp(500, function () {
+                                window.location.href = "{{URL::to('/home')}}";
+                            });
+                        }, 3000);
+                    }
                 },
                 error: function (xhr, status) {
                 }
             });
         });
         $('.timetable td:not(:first)').hover(function () {
-           $(this).css('background-color', 'green')
+            $(this).css('background-color', 'green')
             $(this).click(function () {
                 $('.slot_details_'+id).show()
                 var time = $(this).closest('tr').children('th').text();

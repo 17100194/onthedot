@@ -40,7 +40,7 @@
         </div>
         <div class="row" id="request_<?= $req->meetingid ?>">
             <div class="col-md-6 center-block">
-                <div style="padding: 15px; background: #e2e2e2; border-radius: 5px; margin: 3px; margin-bottom: 10px;">
+                <div style="padding: 15px; width: 50%; background: #e2e2e2; border-radius: 5px; margin: 3px; margin-bottom: 10px; text-align: center;">
                     Meeting requested by: <?= $req->name ?>
                     <br>
                     Timing: <?= $req->time ?>

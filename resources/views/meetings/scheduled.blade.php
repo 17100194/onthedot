@@ -5,6 +5,11 @@
     <div class="col-md-12">
         <h4><a>My Scheduled Meetings</a></h4>
         <hr>
+        @if(session('message'))
+            <div class="alert alert-success">
+                {{ session()->pull('message') }}
+            </div>
+        @endif
         @if (count($meetings) > 0)
             <ul style="list-style: none; padding-left: 0px;">
                 @foreach($meetings as $meeting)

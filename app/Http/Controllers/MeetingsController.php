@@ -47,7 +47,7 @@ class MeetingsController extends Controller
         if(count($userlist) < 2) {
             DB::table('meetings')->where('id', '=', intval($meetingid))->delete();
         }
-//        session(['message' => 'Meeting Cancelled Successfully']);
+        session(['message' => 'Meeting Cancelled Successfully']);
         return 'success';
 
     }
@@ -66,6 +66,10 @@ class MeetingsController extends Controller
     public function q(Request $request)
     {
         $query = $request->input('search');
+        $groups = DB::table('groups')->where('name', 'LIKE', '%' . $query . '%')->paginate(10);
+        foreach ($groups as $group){
+            $group->creator_name = $this->getUserById($group->id_creator);
+        }
         $users = DB::table('users')->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%')->paginate(10);
         $usercourses = DB::table('users')
             ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
@@ -94,7 +98,7 @@ class MeetingsController extends Controller
             $allCourses[] = $courseData;
         }
         $active = 'meeting';
-        return view('meetings.search', compact('allCourses', 'users', 'usercourses', 'query', 'active'));
+        return view('meetings.search', compact('allCourses', 'users', 'usercourses', 'query', 'groups', 'active'));
     }
 
     public function timeToMins($time) {

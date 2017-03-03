@@ -16,18 +16,22 @@ class Controller extends BaseController
 
     public function getUserById($userId) {
         return DB::table('users')
-            ->where('id', '=', $userId)->select('id', 'name', 'campusid', 'type', 'created_at')->get()[0];
+            ->where('id', '=', $userId)
+            ->select('id', 'name', 'campusid', 'type', 'created_at')
+            ->get()[0];
     }
 
     public function getGroupById($groupId) {
         $sql = DB::table('groups')
             ->join('user_has_group', 'user_has_group.id_group', 'groups.id')
-            ->where('groups.id', '=', $groupId)->get();
+            ->where('groups.id', '=', $groupId)
+            ->get();
 
         $app = app();
         $groupInfo = $app->make('stdClass');
         $groupUsers = array();
         $first = true;
+        $groupInfo->members = array();
         foreach ($sql as $group) {
             if ($first) {
                 $groupInfo->id = $group->id;
@@ -39,7 +43,7 @@ class Controller extends BaseController
             $groupUsers[] = $group->id_user;
             $first = false;
         }
-        var_dump($groupInfo);
+//        var_dump($groupInfo);
         if (count($groupUsers) > 0) {
             $groupInfo->members = $groupUsers;
         }
