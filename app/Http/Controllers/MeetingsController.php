@@ -65,7 +65,17 @@ class MeetingsController extends Controller
 
     public function q(Request $request)
     {
-        $query = $request->input('search');
+        $query = $request->input('q');
+        $allCourses[] = array();
+        $active = 'meeting';
+        $users = [];
+        $groups = [];
+        $usercourses = [];
+
+        if (!$query) {
+            $active = 'meeting';
+            return view('meetings.search', compact('allCourses', 'users', 'usercourses', 'query', 'groups', 'active'));
+        }
         $groups = DB::table('groups')->where('name', 'LIKE', '%' . $query . '%')->paginate(10);
         foreach ($groups as $group){
             $group->creator_name = $this->getUserById($group->id_creator);
@@ -74,12 +84,22 @@ class MeetingsController extends Controller
         $usercourses = DB::table('users')
             ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+            ->where('users.id', '!=', Auth::id())
             ->where('users.name', 'LIKE', '%' . $query . '%')
             ->orwhere('users.campusid', 'LIKE', '%' . $query . '%')
             ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
             ->orderby('courses.timing', 'DESC')
             ->get();
-        $allCourses[] = array();
+//        var_dump($usercourses);
+        $loggedInCourses = DB::table('users')
+            ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
+            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+            ->where('users.id', '=', Auth::id())
+            ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
+            ->orderby('courses.timing', 'DESC')
+            ->get();
+
+
         foreach ($usercourses as $course) {
 
             $app = app();
@@ -94,10 +114,33 @@ class MeetingsController extends Controller
             $courseData->min = 0;
             $courseData->userid = $course->userID;
             $courseData->startingHeight = $this->startingHeight($course->timing);
+            $courseData->color = "#2a88bd";
+            $courseData->loggedIn = false;
 
             $allCourses[] = $courseData;
         }
-        $active = 'meeting';
+
+        foreach($loggedInCourses as $course) {
+            $app = app();
+            $courseData = $app->make('stdClass');
+            $courseData->name = $course->courseName;
+            $courseData->timing = $course->timing;
+            $courseData->section = $course->section;
+            $courseData->height = $this->timeToMins($course->timing);
+            $courseData->width = $this->timeTableWidth;
+            $courseData->days = explode(',', $course->days);
+            $courseData->max = $this->tableHeight;
+            $courseData->min = 0;
+            $courseData->userid = $course->userID;
+            $courseData->startingHeight = $this->startingHeight($course->timing);
+            $courseData->color = "#2ca02c";
+            $courseData->loggedIn = true;
+
+            $allCourses[] = $courseData;
+        }
+
+//        var_dump($allCourses);
+
         return view('meetings.search', compact('allCourses', 'users', 'usercourses', 'query', 'groups', 'active'));
     }
 
@@ -136,6 +179,7 @@ class MeetingsController extends Controller
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
             ->where('user_has_course.userid', '=', $hostid)->get();
 
+        $ret = true;
         foreach ($user1Courses as $course) {
             $courseDays =  explode(',', $course->days);
             foreach ($courseDays as $thisDay) {
@@ -146,12 +190,13 @@ class MeetingsController extends Controller
 
                     $startTimeMeeting = explode('-', $time)[0];
                     $endTimeMeeting = explode('-', $time)[1];
-                    if((strtotime($startTimeMeeting) > strtotime($startTime) && strtotime($startTimeMeeting) < strtotime($endTime)) ||
-                        (strtotime($endTimeMeeting) > strtotime($startTime) && strtotime($endTimeMeeting) < strtotime($endTime)) ||
-                        (strtotime($startTimeMeeting) < strtotime($startTime) && strtotime($endTimeMeeting) > strtotime($startTime))){
+                    if((strtotime($startTimeMeeting) >= strtotime($startTime) && strtotime($startTimeMeeting) <= strtotime($endTime)) ||
+                        (strtotime($endTimeMeeting) >= strtotime($startTime) && strtotime($endTimeMeeting) <= strtotime($endTime)) ||
+                        (strtotime($startTimeMeeting) <= strtotime($startTime) && strtotime($endTimeMeeting) >= strtotime($endTime))){
+                        $ret = false;
                         return false;
                     } else {
-                        return true;
+                        $ret = true;
                     }
                 }
             }
@@ -167,16 +212,19 @@ class MeetingsController extends Controller
 
                     $startTimeMeeting = explode('-', $time)[0];
                     $endTimeMeeting = explode('-', $time)[1];
-                    if((strtotime($startTimeMeeting) > strtotime($startTime) && strtotime($startTimeMeeting) < strtotime($endTime)) ||
-                        (strtotime($endTimeMeeting) > strtotime($startTime) && strtotime($endTimeMeeting) < strtotime($endTime)) ||
-                        (strtotime($startTimeMeeting) < strtotime($startTime) && strtotime($endTimeMeeting) > strtotime($startTime))){
+                    if ((strtotime($startTimeMeeting) >= strtotime($startTime) && strtotime($startTimeMeeting) <= strtotime($endTime)) ||
+                        (strtotime($endTimeMeeting) >= strtotime($startTime) && strtotime($endTimeMeeting) <= strtotime($endTime)) ||
+                        (strtotime($startTimeMeeting) <= strtotime($startTime) && strtotime($endTimeMeeting) >= strtotime($endTime))) {
+                        $ret = false;
                         return false;
                     } else {
-                        return true;
+                        $ret = true;
                     }
                 }
             }
         }
+
+        return $ret;
     }
 
     public function schedule(Request $request)
@@ -186,9 +234,10 @@ class MeetingsController extends Controller
         $date = $request->Date;
         $userid = $request->User;
         $time = str_replace(" ","",$time);
-        if($this->checkConflict(Auth::id(), $userid, $time, $day, $date) == false){
+        if($this->checkConflict(Auth::id(), $userid, $time, $day, $date) == false) {
             return 'error';
         }
+
         $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending']);
         DB::table('user_has_meeting')->insert(array('userid'=>Auth::id(), 'meetingid'=>$insert));
         DB::table('user_has_meeting')->insert(array('userid'=>$userid, 'meetingid'=>$insert));
@@ -209,5 +258,11 @@ class MeetingsController extends Controller
                 'status' => 'rejected',
                 'message' => $message
             ]);
+        $meeting = $this->getMeetingById($meetingid);
+        $loggedIn = $this->getUserById(Auth::id());
+        $notificationList = ','.$meeting->host.',';
+        $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has rejected your request for meeting on <strong>'.$meeting->time .' - ' . $meeting->date .'</strong> with reason: <strong>'.$message.'</strong>';
+        DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'meeting', 'userlist' => $notificationList));
+
     }
 }

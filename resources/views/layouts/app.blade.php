@@ -65,7 +65,7 @@
                     &nbsp;<li>
                         <form method="get" action="{{ action('MeetingsController@q') }}" class='form navbar-form navbar-right'>
                             <div class="input-group" style="width: 300px;">
-                                <input type="text" class="form-control" placeholder="Search for a user or group...">
+                                <input type="text" class="form-control" name="q" placeholder="Search for a user or group...">
                                 <span class="input-group-btn">
                                             <button class="btn btn-primary" type="submit">Search</button>
                                         </span>

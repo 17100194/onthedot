@@ -321,6 +321,11 @@ svg text {
 .courses {
  position: relative;
 }
+
+.myCourseColor {
+    background-color: #2ca02c;
+}
+
 .ttElement {
  position: absolute;
  background-color: #2a88bd;

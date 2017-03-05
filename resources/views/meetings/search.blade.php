@@ -64,7 +64,7 @@
                                                                                 <?php
                                                                                 $left = 0;
                                                                                 ?>
-                                                                                <?php if(!$course || $course->userid != $user->id): ?>
+                                                                                <?php if(!$course): ?>
                                                                                 <?php continue; ?>
                                                                                 <?php else: ?>
                                                                                 <?php foreach($course->days as $day): ?>
@@ -88,10 +88,9 @@
                                                                                         break;
                                                                                 }
                                                                                 ?>
-                                                                                <div class="ttElement" style="padding: 5px; width: 155px; text-align: center; height: <?=$course->height?>px; top: <?= 78+$course->startingHeight?>px; left:<?=$left?>px;">
+                                                                                <div class="ttElement" style="<?php if($course->loggedIn): ?>z-index: 3000; opacity: 0.5;<?php else: ?>z-index: 2000; <?php endif; ?>background-color: <?=$course->color?>;padding: 5px; width: 155px; text-align: center; height: <?=$course->height?>px; top: <?= 78+$course->startingHeight?>px; left:<?=$left?>px;">
                                                                                     <label style="color: white;"><?=$course->name?></label>
-                                                                                    <br>
-                                                                                    <label style="color: white;"><?=$course->timing?></label>
+
                                                                                 </div>
                                                                                 <?php endforeach; ?>
                                                                                     <?php endif; ?>
@@ -311,7 +310,6 @@
         var id;
         $('.schedule').click(function () {
            id = $(this).data('target').split('_')[1];
-            console.log(id);
         });
         $('#select').on('click', function(){
             var start_time = $('#hr_'+id).text()+$('#minute_'+id).val()+$('#ampm_'+id).text();
@@ -365,6 +363,7 @@
                     User: id
                 },
                 success: function(data) {
+                    console.log(data);
                     if(data == 'error'){
                         $('.alert-warning').show();
                         window.setTimeout(function () {
@@ -375,11 +374,11 @@
 
                     } else {
                         $('.alert-success').show();
-                        window.setTimeout(function () {
-                            $(".alert-success").fadeTo(500, 0).slideUp(500, function () {
-                                window.location.href = "{{URL::to('/home')}}";
-                            });
-                        }, 3000);
+                        {{--window.setTimeout(function () {--}}
+                            {{--$(".alert-success").fadeTo(500, 0).slideUp(500, function () {--}}
+                                {{--window.location.href = "{{URL::to('/home')}}";--}}
+                            {{--});--}}
+                        {{--}, 3000);--}}
                     }
                 },
                 error: function (xhr, status) {

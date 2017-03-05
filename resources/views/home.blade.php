@@ -271,7 +271,7 @@
 
         $('.reject-btn').click(function() {
             var t = $(this);
-            var msg = t.siblings('textarea').val();
+            var msg = t.parents('.modal-dialog').find('textarea').val();
             var tp = t.parents('li');
             var mId = t.attr('data-meetingid');
             $.ajaxSetup({
@@ -287,7 +287,8 @@
                     message: msg
                 },
                 success: function(data) {
-                    t.parents('.modal').modal('toggle');
+                    t.parents('.modal-dialog').hide();
+                    $('body').css('overflow-y', 'scroll');
                     $('.modal-backdrop').hide();
                     $('#request_'+mId).hide();
                     t.parents('.row').siblings('.alert-warning').show();
