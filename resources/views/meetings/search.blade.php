@@ -64,7 +64,7 @@
                                                                                 <?php
                                                                                 $left = 0;
                                                                                 ?>
-                                                                                <?php if(!$course || $course->userid != $user->id): ?>
+                                                                                <?php if(!$course): ?>
                                                                                 <?php continue; ?>
                                                                                 <?php else: ?>
                                                                                 <?php foreach($course->days as $day): ?>
@@ -88,10 +88,9 @@
                                                                                         break;
                                                                                 }
                                                                                 ?>
-                                                                                <div class="ttElement" style="padding: 5px; width: 155px; text-align: center; height: <?=$course->height?>px; top: <?= 78+$course->startingHeight?>px; left:<?=$left?>px;">
+                                                                                <div class="ttElement" style="<?php if($course->loggedIn): ?>z-index: 3000; opacity: 0.5;<?php else: ?>z-index: 2000; <?php endif; ?>background-color: <?=$course->color?>;padding: 5px; width: 155px; text-align: center; height: <?=$course->height?>px; top: <?= 78+$course->startingHeight?>px; left:<?=$left?>px;">
                                                                                     <label style="color: white;"><?=$course->name?></label>
-                                                                                    <br>
-                                                                                    <label style="color: white;"><?=$course->timing?></label>
+
                                                                                 </div>
                                                                                 <?php endforeach; ?>
                                                                                     <?php endif; ?>
@@ -192,7 +191,7 @@
                                                                                 </tbody>
                                                                             </table>
                                                                             <hr>
-                                                                            <div class="slot_details" style="display:none;">
+                                                                            <div class="slot_details_<?= $user->id ?>" style="display:none;">
                                                                                 <h4>Enter Meeting Details</h4>
                                                                                 <form role="form" class="form-horizontal">
                                                                                     <div class="form-group">
@@ -201,23 +200,23 @@
                                                                                             <div class="col-md-4">
                                                                                                 <label for="start_time">Start Time</label>
                                                                                                 <div class="input-group">
-                                                                                                    <span class="input-group-addon hr"></span>
-                                                                                                    <input type="number" min="0" max="59" class="form-control minute" aria-describedby="hr"><span class="input-group-addon ampm" id="ampm_<?= $user->id ?>"></span>
+                                                                                                    <span id="hr_<?= $user->id ?>" class="input-group-addon hr"></span>
+                                                                                                    <input type="number" min="0" max="59" id="minute_<?= $user->id ?>" class="form-control minute" aria-describedby="hr"><span class="input-group-addon ampm" id="ampm_<?= $user->id ?>"></span>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <div class="col-md-4">
                                                                                                 <label for="end_time">Duration</label>
-                                                                                                <input  type="number" min="0" class="form-control duration" placeholder="Minutes">
+                                                                                                <input id="duration_<?= $user->id ?>" type="number" min="0" class="form-control" placeholder="Minutes">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="form-group">
                                                                                         <label for="day" class="col-md-4 control-label">Date</label>
-                                                                                        <label class="day col-md-3 control-label"></label>
+                                                                                        <label id="day_<?= $user->id ?>" class="day col-md-3 control-label"></label>
                                                                                     </div>
                                                                                     <hr>
                                                                                     <div class="form-group" style="text-align: center;">
-                                                                                            <a class="btn btn-primary select">Send Meeting Request</a>
+                                                                                            <a id="select" class="btn btn-primary">Send Meeting Request</a>
                                                                                     </div>
                                                                                 </form>
                                                                             </div>
@@ -308,62 +307,47 @@
     </script>
 
     <script type="text/javascript">
-        $('.select').on('click', function(){
-            if ($(this).parents('.modal-body').find('.minute').val() == ''){
-                alert('Minutes cannot be empty');
+        var id;
+        $('.schedule').click(function () {
+           id = $(this).data('target').split('_')[1];
+        });
+        $('#select').on('click', function(){
+            var start_time = $('#hr_'+id).text()+$('#minute_'+id).val()+$('#ampm_'+id).text();
+            var hrs = start_time.split(":")[0];
+            var mins = start_time.split(":")[1].substr(1,2);
+            var amPM = start_time.split(":")[1].substr(3,4);
+            var duration = $('#duration_'+id).val();
+            var day = $('#day_'+id).text().split(' ')[0];
+            var date = $('#day_'+id).text().split(' ')[1];
+            if(parseInt(mins) >= 60){
+                alert('Invalid Start Time');
                 return;
             }
-            var start_time = $(this).parents('.modal-body').find('.hr').text()+$(this).parents('.modal-body').find('.minute').val()+$(this).parents('.modal-body').find('.ampm').text();
-            start_time = start_time.replace(/\s+/g, '');
-            var hrs = parseInt(start_time.split(":")[0]);
-            if(start_time.split(":")[1].length == 3){
-                var mins = ("0"+start_time.split(":")[1]).substr(0,2);
-                if (mins >= 60 || mins < 0){
-                    alert('Minutes should be between 0 and 59');
-                    return;
-                }
-            }
-            else {
-                var mins = parseInt(start_time.split(":")[1].substr(0,2));
-                if (mins >= 60 || mins < 0){
-                    alert('Minutes should be between 0 and 59');
-                    return;
-                }
-            }
-            var amPM = start_time.split(":")[1].slice(-2);
-            var duration = $(this).parents('.modal-body').find('.duration').val();
-            if(duration == ''){
-                alert('Duration cannot be empty');
-                return;
-            }
-            if(duration < 0){
-                alert('Duration cannot be negative');
-                return;
-            }
-            var day = $(this).parents('.modal-body').find('.day').text().split(' ')[0];
-            var date = $(this).parents('.modal-body').find('.day').text().split(' ')[1];
-            var newMins = parseInt(mins) + parseInt(duration);
-            if(newMins >= 60){
-                newMins = parseInt(newMins) % 60;
-                var newHrs = parseInt(hrs) + 1;
-                if(newHrs >= 12 && hrs < 12){
-                    if(amPM == "PM"){
-                        amPM = "AM";
+            else{
+                mins = (parseInt(mins) + parseInt(duration)).toString();
+                if(parseInt(mins) >= 60) {
+                    mins = (parseInt(mins) - 60).toString();
+                    hrs = (parseInt(hrs) + 1).toString();
+                    if(parseInt(hrs) >= 12){
+                        if(parseInt(hrs) == 12){
+                            hrs = hrs;
+                            if(amPM == 'AM'){
+                                amPM = 'PM';
+                            } else {
+                                amPM = 'AM';
+                            }
+                        } else {
+                            hrs = (parseInt(hrs) - 12).toString();
+                        }
                     }
-                    else {
-                        amPM = "PM";
+                    if (mins.length === 1) {
+                        mins = '0'+mins;
                     }
                 }
             }
-            newHrs = parseInt(newHrs) % 12;
-            if(newHrs == 0){
-                newHrs = '12';
-            }
-            if(newMins < 10){
-                newMins = "0"+newMins;
-            }
-            var end_time = newHrs.toString()+":"+newMins.toString()+amPM.toString();
-            var time = start_time.toString()+"-"+end_time.toString();
+            var end_time = hrs +":"+mins+amPM;
+            var time = start_time + '-' + end_time;
+            time = time.replace(" ", "");
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -376,9 +360,10 @@
                     Time: time,
                     Date: date,
                     Day: day,
-                    User: $(this).parents('.modal').attr('id').split("_")[1]
+                    User: id
                 },
                 success: function(data) {
+                    console.log(data);
                     if(data == 'error'){
                         $('.alert-warning').show();
                         window.setTimeout(function () {
@@ -389,11 +374,11 @@
 
                     } else {
                         $('.alert-success').show();
-                        window.setTimeout(function () {
-                            $(".alert-success").fadeTo(500, 0).slideUp(500, function () {
-                                window.location.href = "{{URL::to('/home')}}";
-                            });
-                        }, 3000);
+                        {{--window.setTimeout(function () {--}}
+                            {{--$(".alert-success").fadeTo(500, 0).slideUp(500, function () {--}}
+                                {{--window.location.href = "{{URL::to('/home')}}";--}}
+                            {{--});--}}
+                        {{--}, 3000);--}}
                     }
                 },
                 error: function (xhr, status) {
@@ -403,13 +388,13 @@
         $('.timetable td:not(:first)').hover(function () {
             $(this).css('background-color', 'green')
             $(this).click(function () {
-                $(this).parents('.modal-body').find('.slot_details').show();
+                $('.slot_details_'+id).show()
                 var time = $(this).closest('tr').children('th').text();
-                $(this).parents('.modal-body').find('.hr').html(time.split(':')[0]+" : ");
-                $(this).parents('.modal-body').find('.ampm').html(time.slice(-2));
+                $('.hr').html(time.split(':')[0]+" : ");
+                $('.ampm').html(time.slice(-2));
                 var cell = $(this).closest('td');
                 var cellIndex = cell[0].cellIndex
-                $(this).parents('.modal-body').find('.day').html(document.getElementById('timetable').rows[0].cells[cellIndex].innerText);
+                $('.day').html(document.getElementById('timetable').rows[0].cells[cellIndex].innerText);
             });
         }, function () {
             $(this).css('background-color', '')

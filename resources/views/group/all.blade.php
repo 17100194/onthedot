@@ -124,10 +124,6 @@
             $('.yes').on('click', function () {
                 var groupid = $(this).attr('id').split('_')[1];
                 var adminid = $(this).parents('.modal-content').find('.makeAdmin:checked').val();
-                if (adminid == ''){
-                    alert('Please select an admin');
-                    return;
-                }
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
