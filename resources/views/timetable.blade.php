@@ -32,7 +32,7 @@
                     break;
             }
             ?>
-            <div class="ttElement" style="padding: 5px; text-align: center; height: <?=$course->height?>px; top: <?= 78+$course->startingHeight?>px; left:<?=$left?>px;">
+            <div class="ttElement" style="<?php if($course->color != ""): ?>background: <?= $course->color ?>;<?php endif; ?>padding: 5px; text-align: center; height: <?=$course->height?>px; top: <?= 78+$course->startingHeight?>px; left:<?=$left?>px;">
                 <label style="color: white;"><?=$course->name?></label>
                 <br>
                 <label style="color: white;"><?=$course->timing?></label>

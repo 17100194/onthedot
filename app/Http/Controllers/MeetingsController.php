@@ -99,6 +99,9 @@ class MeetingsController extends Controller
             ->orderby('courses.timing', 'DESC')
             ->get();
 
+//        $loggedInMeetings = $this->getUserMeetings(Auth::id());
+//
+//        $userMeetings = $this->getUserMeetings(Auth::id());
 
         foreach ($usercourses as $course) {
 
@@ -112,7 +115,7 @@ class MeetingsController extends Controller
             $courseData->days = explode(',', $course->days);
             $courseData->max = $this->tableHeight;
             $courseData->min = 0;
-            $courseData->userid = $course->userID;
+//            $courseData->userid = $course->userID;
             $courseData->startingHeight = $this->startingHeight($course->timing);
             $courseData->color = "#2a88bd";
             $courseData->loggedIn = false;
@@ -131,13 +134,34 @@ class MeetingsController extends Controller
             $courseData->days = explode(',', $course->days);
             $courseData->max = $this->tableHeight;
             $courseData->min = 0;
-            $courseData->userid = $course->userID;
+//            $courseData->userid = $course->userID;
             $courseData->startingHeight = $this->startingHeight($course->timing);
             $courseData->color = "#2ca02c";
             $courseData->loggedIn = true;
 
             $allCourses[] = $courseData;
         }
+
+//        foreach($loggedInMeetings as $meeting) {
+//            $app = app();
+//            $meetingData = $app->make('stdClass');
+//            $meetingData->name = $meeting->date;
+//            $meetingData->timing = $meeting->time;
+//            $meetingData->section = "";
+//            $meetingData->height = $this->timeToMins($meeting->time);
+//            $meetingData->width = $this->timeTableWidth;
+//            $meetingData->days = $meeting->day;
+//            $meetingData->max = $this->tableHeight;
+//            $meetingData->min = 0;
+////            $meetingData->userid = $meeting->userID;
+//            $meetingData->startingHeight = $this->startingHeight($meeting->timing);
+//            $meetingData->color = "#2ca02c";
+//            $meetingData->loggedIn = true;
+//
+//            $allCourses[] = $meetingData;
+//        }
+
+
 
 //        var_dump($allCourses);
 
@@ -171,13 +195,12 @@ class MeetingsController extends Controller
         // get day
         // get courses of both users
         // check courses for that day for both users
-        $user1Courses = DB::table('user_has_course')
-            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-            ->where('user_has_course.userid', '=', $userid)->get();
+        $user1Courses = $this->getUserCourses($userid);
+        $user2Courses = $this->getUserCourses($hostid);
 
-        $user2Courses = DB::table('user_has_course')
-            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-            ->where('user_has_course.userid', '=', $hostid)->get();
+        $user1Meetings = $this->getUserMeetings($userid);
+        $user2Meetings = $this->getUserMeetings($hostid);
+
 
         $ret = true;
         foreach ($user1Courses as $course) {
@@ -224,6 +247,54 @@ class MeetingsController extends Controller
             }
         }
 
+        // check for meetings
+        foreach ($user1Meetings as $meeting) {
+            if ($meeting->status == "accepted") {
+                $meetingDay =  $meeting->day;
+                if ($meetingDay == $day) {
+                    // this meeting is on the day of the meeting
+                    $startTime = explode('-', $meeting->time)[0];
+                    $endTime = explode('-', $meeting->time)[1];
+
+                    $startTimeMeeting = explode('-', $time)[0];
+                    $endTimeMeeting = explode('-', $time)[1];
+                    if((strtotime($startTimeMeeting) >= strtotime($startTime) && strtotime($startTimeMeeting) <= strtotime($endTime)) ||
+                        (strtotime($endTimeMeeting) >= strtotime($startTime) && strtotime($endTimeMeeting) <= strtotime($endTime)) ||
+                        (strtotime($startTimeMeeting) <= strtotime($startTime) && strtotime($endTimeMeeting) >= strtotime($endTime))){
+                        $ret = false;
+                        return false;
+                    } else {
+                        $ret = true;
+                    }
+                }
+            }
+
+        }
+
+        foreach ($user2Meetings as $meeting) {
+            if ($meeting->status == "accepted") {
+                $meetingDay =  $meeting->day;
+                if ($meetingDay == $day) {
+                    // this meeting is on the day of the meeting
+                    $startTime = explode('-', $meeting->time)[0];
+                    $endTime = explode('-', $meeting->time)[1];
+
+                    $startTimeMeeting = explode('-', $time)[0];
+                    $endTimeMeeting = explode('-', $time)[1];
+                    if((strtotime($startTimeMeeting) >= strtotime($startTime) && strtotime($startTimeMeeting) <= strtotime($endTime)) ||
+                        (strtotime($endTimeMeeting) >= strtotime($startTime) && strtotime($endTimeMeeting) <= strtotime($endTime)) ||
+                        (strtotime($startTimeMeeting) <= strtotime($startTime) && strtotime($endTimeMeeting) >= strtotime($endTime))){
+                        $ret = false;
+                        return false;
+                    } else {
+                        $ret = true;
+                    }
+                }
+            }
+
+        }
+
+
         return $ret;
     }
 
@@ -241,6 +312,15 @@ class MeetingsController extends Controller
         $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending']);
         DB::table('user_has_meeting')->insert(array('userid'=>Auth::id(), 'meetingid'=>$insert));
         DB::table('user_has_meeting')->insert(array('userid'=>$userid, 'meetingid'=>$insert));
+
+        // attach notification
+
+        $notificationList = ','.$userid.',';
+        $loggedIn = $this->getUserById(Auth::id());
+        $html = '<a href="'.url('/notification?type=meeting-request&id='. strval($insert)).'"><strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has requested to meet you at '.strval($time) .' - ' . strval($date) .'</a>';
+        DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
+
+
         return 'success';
     }
 
@@ -248,6 +328,14 @@ class MeetingsController extends Controller
         $meetingid = $request->meetingid;
         DB::table('meetings')->where('id', '=', $meetingid)
             ->update(['status' => 'accepted']);
+
+        $meeting = $this->getMeetingById($meetingid);
+
+        $notificationList = ','.$meeting->host.',';
+        $loggedIn = $this->getUserById(Auth::id());
+        $html = '<a href="'.url('/notification?type=meeting-accepted&id='. strval($meetingid)).'"><strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has accepted your request you at '.$meeting->time .' - ' . $meeting->date .'</a>';
+        DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
+
     }
 
     public function reject(Request $request) {
@@ -258,11 +346,12 @@ class MeetingsController extends Controller
                 'status' => 'rejected',
                 'message' => $message
             ]);
+
         $meeting = $this->getMeetingById($meetingid);
         $loggedIn = $this->getUserById(Auth::id());
         $notificationList = ','.$meeting->host.',';
-        $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has rejected your request for meeting on <strong>'.$meeting->time .' - ' . $meeting->date .'</strong> with reason: <strong>'.$message.'</strong>';
-        DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'meeting', 'userlist' => $notificationList));
+        $html = '<a href="'.url('/notification?type=meeting-rejected&id='. strval($meetingid)).'"><strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong>'. ' has rejected your request to meet. Reason: <strong> '.$message .'</strong></a>';
+        DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
 
     }
 }

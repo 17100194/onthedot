@@ -63,13 +63,19 @@ class GroupController extends Controller
     public function sendGroupRequest(Request $request){
         $users = $request->ids;
         $groupid = $request->groupid;
+        $group = $this->getGroupById($groupid);
         foreach($users as $user) {
-            DB::table('user_has_group_request')->insert(array(
+            $insert = DB::table('user_has_group_request')->insertGetId(array(
                 'id_group'=>$groupid,
                 'id_sender' => Auth::id(),
                 'id_receiver'=>$user,
                 'status'=>'pending'));
+            $notificationList = ','.$user.',';
+            $loggedIn = $this->getUserById(Auth::id());
+            $html = '<a href="'.url('/notification?type=group-pending&id='. strval($insert)).'"><strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong>'. ' has requested you to join their group <strong>'.$group->name.'</strong></a>';
+            DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group', 'userlist' => $notificationList));
         }
+
         return 'success';
     }
 
@@ -94,7 +100,7 @@ class GroupController extends Controller
         $group = $this->getGroupById($groupid);
 
         if (count($group->members) > 0) {
-            $notificationList = implode(',', $group->members);
+            $notificationList = ','.implode(',', $group->members).',';
             $loggedIn = $this->getUserById(Auth::id());
             $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has left the group <strong>'. $group->name .'</strong>';
             DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => ','.$notificationList.','));
@@ -109,8 +115,12 @@ class GroupController extends Controller
         DB::table('user_has_group_request')->where('id', '=', $requestid)
             ->update(['status' => 'accepted']);
 
-        $groupid = DB::table('user_has_group_request')->where('id', $requestid)
-            ->value('id_group');
+        $groupid = DB::table('user_has_group_request')->where('id', $requestid)->get()[0]->id_group;
+        $group = $this->getGroupById($groupid);
+        $notificationList = ','.$group->idcreator.',';
+        $loggedIn = $this->getUserById(Auth::id());
+        $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has accepted the request for group <strong>'.$group->name .'</strong>';
+        DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => $notificationList));
 
         DB::table('user_has_group')->insert(array(
             'id_user'=>Auth::id(),
@@ -124,6 +134,15 @@ class GroupController extends Controller
             ->update([
                 'status' => 'rejected'
             ]);
+
+
+
+        $group = $this->getGroupByRequestId($requestid);
+        $notificationList = ','.$group->idcreator.',';
+        $loggedIn = $this->getUserById(Auth::id());
+        $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has rejected the request for group <strong>'.$group->name .'</strong>';
+        DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => $notificationList));
+
     }
 
     public function makegroup(Request $request){
@@ -138,11 +157,18 @@ class GroupController extends Controller
             'id_group' => $groupid));
 
         foreach($users as $user) {
-            DB::table('user_has_group_request')->insert(array(
+            $insert = DB::table('user_has_group_request')->insertGetId(array(
                 'id_group'=>$groupid,
                 'id_sender' => Auth::id(),
                 'id_receiver'=>$user,
                 'status'=>'pending'));
+
+            $notificationList = ','.strval($user).',';
+            $loggedIn = $this->getUserById(Auth::id());
+            $url = url("/notification?type=group-pending&id=". strval($insert));
+            $html = '<a href="'.$url.'"><strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has requested you to join their group <strong>'.$groupname.'</strong></a>';
+            DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group', 'userlist' => $notificationList));
+
         }
         echo 'success';
     }

@@ -14,6 +14,12 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    /**
+     * Returns user details by ID user
+     *
+     * @param $userId
+     * @return Array of Objects
+     */
     public function getUserById($userId) {
         return DB::table('users')
             ->where('id', '=', $userId)
@@ -21,6 +27,12 @@ class Controller extends BaseController
             ->get()[0];
     }
 
+    /**
+     * Returns group details by ID group
+     *
+     * @param $groupId
+     * @return Array of Objects
+     */
     public function getGroupById($groupId) {
         $sql = DB::table('groups')
             ->join('user_has_group', 'user_has_group.id_group', 'groups.id')
@@ -52,8 +64,45 @@ class Controller extends BaseController
 
     }
 
+    /**
+     * Returns the details of a meeting by it'd ID
+     *
+     * @param $idMeeting
+     * @return Array of Objects
+     */
     public function getMeetingById($idMeeting) {
         return DB::table('meetings')
             ->where('id', '=', $idMeeting)->get()[0];
     }
+
+    /**
+     * Returns meetings for the provided user ID
+     * @param $idUser
+     * @return Array of Objects
+     */
+    public function getUserMeetings($idUser) {
+        return DB::table('user_has_meeting AS u1')
+            ->join('user_has_meeting as u2', 'u1.meetingid', '=', 'u2.meetingid')
+            ->join('users', 'u2.userid', '=', 'users.id')
+            ->join('meetings', 'u2.meetingid', '=', 'meetings.id')
+            ->where('u1.userid', '=', $idUser)
+            ->where('u2.userid', '!=', $idUser)->get();
+    }
+
+    public function getGroupByRequestId($idRequest) {
+        $idgroup = DB::table('user_has_group_request')->where('id', '=', $idRequest)->get()[0]->id_group;
+        return $this->getGroupById($idgroup);
+    }
+
+    /**
+     * Returns courses for the specific userID
+     * @param $idUser
+     * @return mixed
+     */
+    public function getUserCourses($idUser) {
+        return DB::table('user_has_course')
+            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+            ->where('user_has_course.userid', '=', $idUser)->get();
+    }
+
 }

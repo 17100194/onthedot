@@ -86,94 +86,94 @@ class AppServiceProvider extends ServiceProvider
     public function getAllNotifications() {
         $requests = [];
 
-        $meetingRequests = DB::table('meetings AS m')
-            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
-            ->join('users AS u', 'u.id', '=', 'm.host')
-            ->select('u.name AS username', 'm.time', 'u.campusid', 'm.id as meetingid', 'm.date')
-            ->where('um.userid', '=', Auth::id())
-            ->where('m.host', '!=', Auth::id())
-            ->where('m.status', '=', 'pending')->get();
+//        $meetingRequests = DB::table('meetings AS m')
+//            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+//            ->join('users AS u', 'u.id', '=', 'm.host')
+//            ->select('u.name AS username', 'm.time', 'u.campusid', 'm.id as meetingid', 'm.date')
+//            ->where('um.userid', '=', Auth::id())
+//            ->where('m.host', '!=', Auth::id())
+//            ->where('m.status', '=', 'pending')->get();
+//
+//        foreach($meetingRequests as $row) {
+//            $html = '<a href="'.url('/notification?type=meeting-request&id='. strval($row->meetingid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has requested to meet you at '.$row->time .' - ' . $row->date .'</a>';
+//            $requests[] = $html;
+//        }
+//
+//        $meetingRequests = DB::table('meetings AS m')
+//            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+//            ->join('users AS u', 'u.id', '=', 'm.host')
+//            ->select('u.name AS username', 'm.message', 'u.campusid', 'm.id as meetingid', 'm.date')
+//            ->where('um.userid', '=', Auth::id())
+//            ->where('m.host', '!=', Auth::id())
+//            ->where('m.status', '=', 'rejected')->get();
+//
+//        foreach($meetingRequests as $row) {
+//            $html = '<a href="'.url('/notification?type=meeting-rejected&id='. strval($row->meetingid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has rejected your request to meet. Reason: <strong> '.$row->message .'</strong></a>';
+//            $requests[] = $html;
+//        }
+//
+//        $meetingRequests = DB::table('meetings AS m')
+//            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+//            ->join('users AS u', 'u.id', '=', 'm.host')
+//            ->select('u.name AS username', 'm.time', 'u.campusid', 'm.id as meetingid', 'm.date')
+//            ->where('um.userid', '=', Auth::id())
+//            ->where('m.host', '!=', Auth::id())
+//            ->where('m.status', '=', 'accepted')->get();
+//
+//        foreach($meetingRequests as $row) {
+//            $html = '<a href="'.url('/notification?type=meeting-accepted&id='. strval($row->meetingid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has accepted your request you at '.$row->time .' - ' . $row->date .'</a>';
+//            $requests[] = $html;
+//        }
+//
 
-        foreach($meetingRequests as $row) {
-            $html = '<a href="'.url('/notification?type=meeting-request&id='. strval($row->meetingid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has requested to meet you at '.$row->time .' - ' . $row->date .'</a>';
-            $requests[] = $html;
-        }
-
-        $meetingRequests = DB::table('meetings AS m')
-            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
-            ->join('users AS u', 'u.id', '=', 'm.host')
-            ->select('u.name AS username', 'm.message', 'u.campusid', 'm.id as meetingid', 'm.date')
-            ->where('um.userid', '=', Auth::id())
-            ->where('m.host', '!=', Auth::id())
-            ->where('m.status', '=', 'rejected')->get();
-
-        foreach($meetingRequests as $row) {
-            $html = '<a href="'.url('/notification?type=meeting-rejected&id='. strval($row->meetingid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has rejected your request to meet. Reason: <strong> '.$row->message .'</strong></a>';
-            $requests[] = $html;
-        }
-
-        $meetingRequests = DB::table('meetings AS m')
-            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
-            ->join('users AS u', 'u.id', '=', 'm.host')
-            ->select('u.name AS username', 'm.time', 'u.campusid', 'm.id as meetingid', 'm.date')
-            ->where('um.userid', '=', Auth::id())
-            ->where('m.host', '!=', Auth::id())
-            ->where('m.status', '=', 'accepted')->get();
-
-        foreach($meetingRequests as $row) {
-            $html = '<a href="'.url('/notification?type=meeting-accepted&id='. strval($row->meetingid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has accepted your request you at '.$row->time .' - ' . $row->date .'</a>';
-            $requests[] = $html;
-        }
-
-
-        $groupRequestAccepted = DB::table('user_has_group_request')
-            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
-            ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')
-            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'user_has_group_request.id as requestid')
-            ->where('id_sender', '=', Auth::id())
-            ->where('status', '=', 'accepted')
-            ->get();
-
-        foreach($groupRequestAccepted as $row) {
-            $html = '<a href="javascript:void(0);"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has accepted your request for the group <strong>'.$row->groupname.'</strong></a>';
-            $requests[] = $html;
-        }
-
-        $groupRequestRejected = DB::table('user_has_group_request')
-            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
-            ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')
-            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'user_has_group_request.id as requestid')
-            ->where('id_sender', '=', Auth::id())
-            ->where('status', '=', 'rejected')
-            ->get();
-
-        foreach($groupRequestRejected as $row) {
-            $html = '<a href="javascript:void(0);"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has rejected your request for the group <strong>'.$row->groupname.'</strong></a>';
-            $requests[] = $html;
-        }
-
-        $groupRequestPending = DB::table('user_has_group_request')
-            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
-            ->join('users', 'users.id', '=', 'user_has_group_request.id_sender')
-            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'user_has_group_request.id as requestid')
-            ->where('id_receiver', '=', Auth::id())
-            ->where('status', '=', 'pending')
-            ->get();
+//        $groupRequestAccepted = DB::table('user_has_group_request')
+//            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
+//            ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')
+//            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'user_has_group_request.id as requestid')
+//            ->where('id_sender', '=', Auth::id())
+//            ->where('status', '=', 'accepted')
+//            ->get();
+//
+//        foreach($groupRequestAccepted as $row) {
+//            $html = '<a href="javascript:void(0);"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has accepted your request for the group <strong>'.$row->groupname.'</strong></a>';
+//            $requests[] = $html;
+//        }
+//
+//        $groupRequestRejected = DB::table('user_has_group_request')
+//            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
+//            ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')
+//            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'user_has_group_request.id as requestid')
+//            ->where('id_sender', '=', Auth::id())
+//            ->where('status', '=', 'rejected')
+//            ->get();
+//
+//        foreach($groupRequestRejected as $row) {
+//            $html = '<a href="javascript:void(0);"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has rejected your request for the group <strong>'.$row->groupname.'</strong></a>';
+//            $requests[] = $html;
+//        }
+//
+//        $groupRequestPending = DB::table('user_has_group_request')
+//            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
+//            ->join('users', 'users.id', '=', 'user_has_group_request.id_sender')
+//            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'user_has_group_request.id as requestid')
+//            ->where('id_receiver', '=', Auth::id())
+//            ->where('status', '=', 'pending')
+//            ->get();
 
 
         $generalNotifications = DB::table('user_notifications')
             ->where('userlist', 'LIKE', '%,'.Auth::id().',%')
+            ->orderBy('created_on', 'desc')
             ->get();
 
         foreach($generalNotifications as $row) {
-            $html = '<a href="javascript:void(0)">'.$row->notification_content.'</a>';
-            $requests[] = $html;
+            $requests[] = $row->notification_content;
         }
 
-        foreach($groupRequestPending as $row) {
-            $html = '<a href="'.url('/notification?type=group-pending&id='. strval($row->requestid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has requested you to join their group <strong>'.$row->groupname.'</strong></a>';
-            $requests[] = $html;
-        }
+//        foreach($groupRequestPending as $row) {
+//            $html = '<a href="'.url('/notification?type=group-pending&id='. strval($row->requestid)).'"><strong>'.$row->username . ' ('.$row->campusid.')</strong>'. ' has requested you to join their group <strong>'.$row->groupname.'</strong></a>';
+//            $requests[] = $html;
+//        }
 
         return $requests;
     }

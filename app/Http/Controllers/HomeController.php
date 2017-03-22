@@ -65,7 +65,7 @@ class HomeController extends Controller
             ->where('status', '=', 'rejected')
             ->get();
 
-
+//
         $groupRequestPending = DB::table('user_has_group_request')
             ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
             ->join('users', 'users.id', '=', 'user_has_group_request.id_sender')
@@ -110,6 +110,9 @@ class HomeController extends Controller
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
             ->where('user_has_course.userid', '=', Auth::id())->get();
         $app = app();
+
+        $meetings = $this->getUserMeetings(Auth::id());
+
         foreach ($courses as $course) {
 
 
@@ -123,8 +126,28 @@ class HomeController extends Controller
             $courseData->max = $this->tableHeight;
             $courseData->min = 0;
             $courseData->startingHeight = $this->startingHeight($course->timing);
-
+            $courseData->color = "";
             $allCourses[] = $courseData;
+        }
+
+        foreach ($meetings as $meeting) {
+
+            if ($meeting->status == "accepted") {
+                $meetingData = $app->make('stdClass');
+                $meetingData->name = $meeting->date;
+                $meetingData->timing = $meeting->time;
+                $meetingData->section = "";
+                $meetingData->height = $this->timeToMins($meeting->time);
+                $meetingData->width = $this->timeTableWidth;
+                $meetingData->days = array($meeting->day);
+                $meetingData->max = $this->tableHeight;
+                $meetingData->min = 0;
+                $meetingData->color = "#3EA608";
+                $meetingData->startingHeight = $this->startingHeight($meeting->time);
+
+                $allCourses[] = $meetingData;
+            }
+
         }
 
         $active = 'timetable';
