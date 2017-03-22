@@ -81,17 +81,8 @@ class MeetingsController extends Controller
             $group->creator_name = $this->getUserById($group->id_creator);
         }
         $users = DB::table('users')->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%')->paginate(10);
-        $usercourses = DB::table('users')
-            ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
-            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-            ->where('users.id', '!=', Auth::id())
-            ->where('users.name', 'LIKE', '%' . $query . '%')
-            ->orwhere('users.campusid', 'LIKE', '%' . $query . '%')
-            ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
-            ->orderby('courses.timing', 'DESC')
-            ->get();
-//        var_dump($usercourses);
-        $loggedInCourses = DB::table('users')
+
+        $loggedInCoursesQ = DB::table('users')
             ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
             ->where('users.id', '=', Auth::id())
@@ -99,31 +90,13 @@ class MeetingsController extends Controller
             ->orderby('courses.timing', 'DESC')
             ->get();
 
-//        $loggedInMeetings = $this->getUserMeetings(Auth::id());
-//
-//        $userMeetings = $this->getUserMeetings(Auth::id());
 
-        foreach ($usercourses as $course) {
-
-            $app = app();
-            $courseData = $app->make('stdClass');
-            $courseData->name = $course->courseName;
-            $courseData->timing = $course->timing;
-            $courseData->section = $course->section;
-            $courseData->height = $this->timeToMins($course->timing);
-            $courseData->width = $this->timeTableWidth;
-            $courseData->days = explode(',', $course->days);
-            $courseData->max = $this->tableHeight;
-            $courseData->min = 0;
-//            $courseData->userid = $course->userID;
-            $courseData->startingHeight = $this->startingHeight($course->timing);
-            $courseData->color = "#2a88bd";
-            $courseData->loggedIn = false;
-
-            $allCourses[] = $courseData;
-        }
-
-        foreach($loggedInCourses as $course) {
+//        $loggedInMeetings = array();
+        //logged in data
+        $loggedInCourses = array();
+        $loggedInMeetingsQ = $this->getUserMeetings(Auth::id())->all();
+//        var_dump($this->getUserMeetings(Auth::id())->all());
+        foreach($loggedInCoursesQ as $course) {
             $app = app();
             $courseData = $app->make('stdClass');
             $courseData->name = $course->courseName;
@@ -139,33 +112,73 @@ class MeetingsController extends Controller
             $courseData->color = "#2ca02c";
             $courseData->loggedIn = true;
 
-            $allCourses[] = $courseData;
+            $loggedInCourses[] = $courseData;
         }
 
-//        foreach($loggedInMeetings as $meeting) {
-//            $app = app();
-//            $meetingData = $app->make('stdClass');
-//            $meetingData->name = $meeting->date;
-//            $meetingData->timing = $meeting->time;
-//            $meetingData->section = "";
-//            $meetingData->height = $this->timeToMins($meeting->time);
-//            $meetingData->width = $this->timeTableWidth;
-//            $meetingData->days = $meeting->day;
-//            $meetingData->max = $this->tableHeight;
-//            $meetingData->min = 0;
-////            $meetingData->userid = $meeting->userID;
-//            $meetingData->startingHeight = $this->startingHeight($meeting->timing);
-//            $meetingData->color = "#2ca02c";
-//            $meetingData->loggedIn = true;
-//
-//            $allCourses[] = $meetingData;
-//        }
+        if (count($loggedInMeetingsQ) > 0) {
+            foreach($loggedInMeetingsQ as $meeting) {
+//                var_dump('asdasdddddddddddd');
+                $app = app();
+                $meetingData = $app->make('stdClass');
+                $meetingData->name = $meeting->date;
+                $meetingData->timing = $meeting->time;
+                $meetingData->section = "";
+                $meetingData->height = $this->timeToMins($meeting->time);
+                $meetingData->width = $this->timeTableWidth;
+                $meetingData->days = array($meeting->day);
+                $meetingData->max = $this->tableHeight;
+                $meetingData->min = 0;
+//            $meetingData->userid = $meeting->userID;
+                $meetingData->startingHeight = $this->startingHeight($meeting->time);
+                $meetingData->color = "#2ca02c";
+                $meetingData->loggedIn = true;
+
+                $meetingList[] = $meetingData;
+            }
+        }
 
 
 
-//        var_dump($allCourses);
+        $hashMap = array();
+        foreach ($users as $user) {
+            $userCourses = DB::table('users')
+                ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
+                ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+                ->where('users.id', '=', $user->id)
+                ->where('users.id', '!=', Auth::id())
+                ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
+                ->orderby('courses.timing', 'DESC')
+                ->get();
 
-        return view('meetings.search', compact('allCourses', 'users', 'usercourses', 'query', 'groups', 'active'));
+            $userData = array();
+
+            foreach($userCourses as $course) {
+                $app = app();
+                $courseData = $app->make('stdClass');
+                $courseData->name = $course->courseName;
+                $courseData->timing = $course->timing;
+                $courseData->section = $course->section;
+                $courseData->height = $this->timeToMins($course->timing);
+                $courseData->width = $this->timeTableWidth;
+                $courseData->days = explode(',', $course->days);
+                $courseData->max = $this->tableHeight;
+                $courseData->min = 0;
+//            $courseData->userid = $course->userID;
+                $courseData->startingHeight = $this->startingHeight($course->timing);
+                $courseData->color = "#2a88bd";
+                $courseData->loggedIn = false;
+
+                $userData[] = $courseData;
+            }
+//            $loggedInMeetings = array();
+            $array1 = array_merge($loggedInCourses, $userData);
+//            var_dump($meetingList);
+//            var_dump($array1);
+            $hashMap[$user->id] = array_merge($array1, $meetingList);
+
+        }
+//        var_dump($hashMap);
+        return view('meetings.search', compact('allCourses', 'users', 'hashMap', 'query', 'groups', 'active'));
     }
 
     public function timeToMins($time) {

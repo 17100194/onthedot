@@ -60,7 +60,7 @@
                                                                         </div>
                                                                         <div class="modal-body">
                                                                             <div class="courses">
-                                                                                <?php foreach($allCourses as $course): ?>
+                                                                                <?php foreach($hashMap[$user->id] as $course): ?>
                                                                                 <?php
                                                                                 $left = 0;
                                                                                 ?>
