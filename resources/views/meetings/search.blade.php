@@ -280,6 +280,43 @@
                                                                         <p>Select a Time slot</p>
                                                                     </div>
                                                                     <div class="modal-body">
+                                                                        <div class="courses">
+                                                                            <?php foreach($groupMap[$group->id] as $course): ?>
+                                                                            <?php
+                                                                            $left = 0;
+                                                                            ?>
+                                                                            <?php if(!$course): ?>
+                                                                                <?php continue; ?>
+                                                                                <?php else: ?>
+                                                                            <?php foreach($course->days as $day): ?>
+                                                                            <?php
+                                                                            $left = 90;
+                                                                            switch ($day) {
+                                                                                case "Monday":
+//
+                                                                                    break;
+                                                                                case "Tuesday":
+                                                                                    $left += 155;
+                                                                                    break;
+                                                                                case "Wednesday":
+                                                                                    $left += 155*2;
+                                                                                    break;
+                                                                                case "Thursday":
+                                                                                    $left += 155*3;
+                                                                                    break;
+                                                                                case "Friday":
+                                                                                    $left += 155*4;
+                                                                                    break;
+                                                                            }
+                                                                            ?>
+                                                                            <div class="ttElement" style="<?php if($course->loggedIn): ?>z-index: 3000; opacity: 0.5;<?php else: ?>z-index: 2000; <?php endif; ?>background-color: <?=$course->color?>;padding: 5px; width: 155px; text-align: center; height: <?=$course->height?>px; top: <?= 78+$course->startingHeight?>px; left:<?=$left?>px;">
+                                                                                <label style="color: white;"><?=$course->name?></label>
+
+                                                                            </div>
+                                                                            <?php endforeach; ?>
+                                                                            <?php endif; ?>
+                                                                            <?php endforeach; ?>
+                                                                        </div>
                                                                         <input id="groupid" style="display: block;" type="hidden" value="<?= $group->id ?>">
                                                                         <table class="table table-bordered timetable">
                                                                             <thead>
@@ -431,7 +468,7 @@
     <script type="text/javascript">
         $('.search-tabs a').click(function (e) {
             e.preventDefault();
-            $(this).tab('show');
+//            $(this).tab('show');
         })
     </script>
 
@@ -444,6 +481,7 @@
             var duration = $(this).parents('.modal-body').find('#duration').val();
             var day = $(this).parents('.modal-body').find('#day').text().split(' ')[0];
             var date = $(this).parents('.modal-body').find('#day').text().split(' ')[1];
+            var t = $(this);
             if(parseInt(mins) >= 60){
                 alert('Invalid Start Time');
                 return;
@@ -484,17 +522,17 @@
                 success: function(data) {
                     console.log(data);
                     if(data == 'error'){
-                        $(this).parents('.modal-body').find('.alert-warning').show();
+                        t.parents('.modal-body').find('.alert-warning').show();
                         window.setTimeout(function () {
-                            $(this).parents('.modal-body').find(".alert-warning").hide();
+                            t.parents('.modal-body').find(".alert-warning").hide();
                             {{--$(".alert-warning").fadeTo(500, 0).slideUp(500, function () {--}}
                                 {{--window.location.href = "{{URL::to('/home')}}";--}}
                             {{--});--}}
                         }, 3000);
                     } else {
-                        $(this).parents('.modal-body').find('.alert-success').show();
+                        t.parents('.modal-body').find('.alert-success').show();
                         window.setTimeout(function () {
-                            $(this).parents('.modal-body').find(".alert-success").hide();
+                            t.parents('.modal-body').find(".alert-success").hide();
                             {{--$(".alert-warning").fadeTo(500, 0).slideUp(500, function () {--}}
                             {{--window.location.href = "{{URL::to('/home')}}";--}}
                             {{--});--}}
@@ -513,11 +551,11 @@
             var duration = $(this).parents('.modal-body').find('#duration').val();
             var day = $(this).parents('.modal-body').find('#day').text().split(' ')[0];
             var date = $(this).parents('.modal-body').find('#day').text().split(' ')[1];
+            var t = $(this);
             if(parseInt(mins) >= 60){
                 alert('Invalid Start Time');
                 return;
-            }
-            else{
+            } else {
                 mins = (parseInt(mins) + parseInt(duration)).toString();
                 var hrs_to_add = Math.floor(parseInt(mins) / 60);
                 mins = (parseInt(mins) % 60).toString();
@@ -551,20 +589,19 @@
                     Group: $(this).parents('.modal-body').find('#groupid').val()
                 },
                 success: function(data) {
-                    console.log(data);
                     if(data == 'error'){
-                        $(this).parents('.modal-body').find('.alert-warning').show();
+                        t.parents('.modal-body').find('.alert-warning').show();
                         window.setTimeout(function () {
-                            $(this).parents('.modal-body').find(".alert-warning").hide();
+                            t.parents('.modal-body').find(".alert-warning").hide();
                             {{--$(".alert-warning").fadeTo(500, 0).slideUp(500, function () {--}}
                             {{--window.location.href = "{{URL::to('/home')}}";--}}
                             {{--});--}}
                         }, 3000);
 
                     } else {
-                        $(this).parents('.modal-body').find('.alert-success').show();
+                        t.parents('.modal-body').find('.alert-success').show();
                         window.setTimeout(function () {
-                            $(this).parents('.modal-body').find(".alert-success").hide();
+                            t.parents('.modal-body').find(".alert-success").hide();
                             {{--$(".alert-warning").fadeTo(500, 0).slideUp(500, function () {--}}
                             {{--window.location.href = "{{URL::to('/home')}}";--}}
                             {{--});--}}
@@ -576,6 +613,10 @@
             });
         });
         $('.timetable td:not(:first)').hover(function () {
+
+
+
+            var t = $(this);
             $(this).css('background-color', 'green')
             $(this).click(function () {
                 $(this).parents('.modal-body').find('.slot_details').show();
@@ -583,8 +624,14 @@
                 $('.hr').html(time.split(':')[0]+" : ");
                 $('.ampm').html(time.slice(-2));
                 var cell = $(this).closest('td');
+                console.log();
                 var cellIndex = cell[0].cellIndex
-                $('.day').html(document.getElementById('timetable').rows[0].cells[cellIndex].innerText);
+                $('.day').html(t.parents('.modal-body').find('.timetable')[0].rows[0].cells[cellIndex].innerText);
+//                $('body').animate({
+//                    scrollTop: 0
+//                }, 1000, function() {
+//                    console.log('llz');
+//                });
             });
         }, function () {
             $(this).css('background-color', '')

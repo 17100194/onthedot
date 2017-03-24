@@ -11,7 +11,7 @@ class MeetingsController extends Controller
 {
     public $timeTableStart = '08:00';
     public $timeTableEnd = '18:00';
-    public $tableHeight = 629;
+    public $tableHeight = 550;
     public $timeTableWidth = 155;
 
     public function index()
@@ -63,20 +63,6 @@ class MeetingsController extends Controller
         return view('meetings.requests', compact('requests', 'active'));
     }
 
-    public function scheduleGroupMeeting(Request $request){
-        $time = $request->Time;
-        $day = $request->Day;
-        $date = $request->Date;
-        $groupid = $request->Group;
-        $time = str_replace(" ","",$time);
-        $group = $this->getGroupById($groupid);
-        $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending']);
-        foreach ($group->members as $member){
-            DB::table('user_has_meeting')->insert(array('userid'=>$member, 'meetingid'=>$insert));
-        }
-        return 'success';
-    }
-
     public function q(Request $request)
     {
         $query = $request->input('q');
@@ -92,8 +78,12 @@ class MeetingsController extends Controller
         }
         $groups = DB::table('groups')->where('name', 'LIKE', '%' . $query . '%')->paginate(10);
         foreach ($groups as $group){
+            $groupInfo = $this->getGroupById($group->id);
             $group->creator_name = $this->getUserById($group->id_creator);
+            $group->members = $groupInfo->members;
         }
+
+
         $users = DB::table('users')->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%')->paginate(10);
 
         $loggedInCoursesQ = DB::table('users')
@@ -109,7 +99,7 @@ class MeetingsController extends Controller
         //logged in data
         $loggedInCourses = array();
         $loggedInMeetingsQ = $this->getUserMeetings(Auth::id())->all();
-//        var_dump($this->getUserMeetings(Auth::id())->all());
+
         foreach($loggedInCoursesQ as $course) {
             $app = app();
             $courseData = $app->make('stdClass');
@@ -121,7 +111,6 @@ class MeetingsController extends Controller
             $courseData->days = explode(',', $course->days);
             $courseData->max = $this->tableHeight;
             $courseData->min = 0;
-//            $courseData->userid = $course->userID;
             $courseData->startingHeight = $this->startingHeight($course->timing);
             $courseData->color = "#2ca02c";
             $courseData->loggedIn = true;
@@ -131,30 +120,102 @@ class MeetingsController extends Controller
 
         if (count($loggedInMeetingsQ) > 0) {
             foreach($loggedInMeetingsQ as $meeting) {
-//                var_dump('asdasdddddddddddd');
-                $app = app();
-                $meetingData = $app->make('stdClass');
-                $meetingData->name = $meeting->date;
-                $meetingData->timing = $meeting->time;
-                $meetingData->section = "";
-                $meetingData->height = $this->timeToMins($meeting->time);
-                $meetingData->width = $this->timeTableWidth;
-                $meetingData->days = array($meeting->day);
-                $meetingData->max = $this->tableHeight;
-                $meetingData->min = 0;
-//            $meetingData->userid = $meeting->userID;
-                $meetingData->startingHeight = $this->startingHeight($meeting->time);
-                $meetingData->color = "#2ca02c";
-                $meetingData->loggedIn = true;
+                if ($meeting->status == "accepted") {
+                    $app = app();
+                    $meetingData = $app->make('stdClass');
+                    $meetingData->name = $meeting->date;
+                    $meetingData->timing = $meeting->time;
+                    $meetingData->section = "";
+                    $meetingData->height = $this->timeToMins($meeting->time);
+                    $meetingData->width = $this->timeTableWidth;
+                    $meetingData->days = array($meeting->day);
+                    $meetingData->max = $this->tableHeight;
+                    $meetingData->min = 0;
+                    $meetingData->startingHeight = $this->startingHeight($meeting->time);
+                    $meetingData->color = "#2ca02c";
+                    $meetingData->loggedIn = true;
 
-                $meetingList[] = $meetingData;
+                    $meetingList[] = $meetingData;
+                }
             }
         }
         else{
             $meetingList = [];
         }
 
+        // loggedin users
+        // foreach groups
+        //      foreach members as member
+        //      add logged in user at end
 
+        $groupMap = array();
+
+        if (count($groups) > 0) {
+            foreach ($groups as $group) {
+                $aggregate = array();
+                foreach($group->members as $user) {
+                    $userCourses = DB::table('users')
+                        ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
+                        ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+                        ->where('users.id', '=', $user)
+                        ->where('users.id', '!=', Auth::id())
+                        ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
+                        ->orderby('courses.timing', 'DESC')
+                        ->get();
+                    if (Auth::id() != $user) {
+                        $userMeetings = $this->getUserMeetings($user)->all();
+
+                        $meetingArr = array();
+
+                        foreach($userMeetings as $meeting) {
+                            if ($meeting->status == "accepted") {
+                                $app = app();
+                                $meetingData = $app->make('stdClass');
+                                $meetingData->name = $meeting->date;
+                                $meetingData->timing = $meeting->time;
+                                $meetingData->section = "";
+                                $meetingData->height = $this->timeToMins($meeting->time);
+                                $meetingData->width = $this->timeTableWidth;
+                                $meetingData->days = array($meeting->day);
+                                $meetingData->max = $this->tableHeight;
+                                $meetingData->min = 0;
+                                $meetingData->startingHeight = $this->startingHeight($meeting->time);
+                                $meetingData->color = "#2ca02c";
+                                $meetingData->loggedIn = true;
+
+                                $meetingArr[] = $meetingData;
+                            }
+                        }
+                    } else {
+                        $meetingArr = array();
+                    }
+
+                    $userData = array();
+
+                    foreach($userCourses as $course) {
+                        $app = app();
+                        $courseData = $app->make('stdClass');
+                        $courseData->name = $course->courseName;
+                        $courseData->timing = $course->timing;
+                        $courseData->section = $course->section;
+                        $courseData->height = $this->timeToMins($course->timing);
+                        $courseData->width = $this->timeTableWidth;
+                        $courseData->days = explode(',', $course->days);
+                        $courseData->max = $this->tableHeight;
+                        $courseData->min = 0;
+                        $courseData->startingHeight = $this->startingHeight($course->timing);
+                        $courseData->color = "#2a88bd";
+                        $courseData->loggedIn = false;
+
+                        $userData[] = $courseData;
+                    }
+                    $transition = array_merge($meetingArr, $userData);
+                    $aggregate = array_merge($aggregate, $transition);
+                }
+                $temp = array_merge($meetingList, $loggedInCourses);
+                $groupMap[$group->id] = array_merge($aggregate, $temp);
+            }
+        }
 
         $hashMap = array();
         foreach ($users as $user) {
@@ -180,22 +241,19 @@ class MeetingsController extends Controller
                 $courseData->days = explode(',', $course->days);
                 $courseData->max = $this->tableHeight;
                 $courseData->min = 0;
-//            $courseData->userid = $course->userID;
                 $courseData->startingHeight = $this->startingHeight($course->timing);
                 $courseData->color = "#2a88bd";
                 $courseData->loggedIn = false;
 
                 $userData[] = $courseData;
             }
-//            $loggedInMeetings = array();
             $array1 = array_merge($loggedInCourses, $userData);
-//            var_dump($meetingList);
-//            var_dump($array1);
+
             $hashMap[$user->id] = array_merge($array1, $meetingList);
 
         }
-//        var_dump($hashMap);
-        return view('meetings.search', compact('allCourses', 'users', 'hashMap', 'query', 'groups', 'active'));
+
+        return view('meetings.search', compact('allCourses', 'users', 'hashMap', 'query', 'groups', 'active', 'groupMap'));
     }
 
     public function timeToMins($time) {
@@ -219,6 +277,63 @@ class MeetingsController extends Controller
         $totalHeight = ($this->tableHeight/(abs(strtotime($this->timeTableEnd) - strtotime($this->timeTableStart)) / 60)) * $minutes;
 
         return $totalHeight;
+    }
+
+    public function singleConflict($userid, $time, $day, $date){
+
+        $user1Courses = $this->getUserCourses($userid);
+
+        $user1Meetings = $this->getUserMeetings($userid);
+
+
+        $ret = true;
+        foreach ($user1Courses as $course) {
+            $courseDays =  explode(',', $course->days);
+            foreach ($courseDays as $thisDay) {
+                if ($thisDay == $day) {
+                    // this course is on the day of the meeting
+                    $startTime = explode('-', $course->timing)[0];
+                    $endTime = explode('-', $course->timing)[1];
+
+                    $startTimeMeeting = explode('-', $time)[0];
+                    $endTimeMeeting = explode('-', $time)[1];
+                    if((strtotime($startTimeMeeting) >= strtotime($startTime) && strtotime($startTimeMeeting) <= strtotime($endTime)) ||
+                        (strtotime($endTimeMeeting) >= strtotime($startTime) && strtotime($endTimeMeeting) <= strtotime($endTime)) ||
+                        (strtotime($startTimeMeeting) <= strtotime($startTime) && strtotime($endTimeMeeting) >= strtotime($endTime))){
+                        $ret = false;
+                        return false;
+                    } else {
+                        $ret = true;
+                    }
+                }
+            }
+        }
+
+        // check for meetings
+        foreach ($user1Meetings as $meeting) {
+            if ($meeting->status == "accepted") {
+                $meetingDay =  $meeting->day;
+                if ($meetingDay == $day) {
+                    // this meeting is on the day of the meeting
+                    $startTime = explode('-', $meeting->time)[0];
+                    $endTime = explode('-', $meeting->time)[1];
+
+                    $startTimeMeeting = explode('-', $time)[0];
+                    $endTimeMeeting = explode('-', $time)[1];
+                    if((strtotime($startTimeMeeting) >= strtotime($startTime) && strtotime($startTimeMeeting) <= strtotime($endTime)) ||
+                        (strtotime($endTimeMeeting) >= strtotime($startTime) && strtotime($endTimeMeeting) <= strtotime($endTime)) ||
+                        (strtotime($startTimeMeeting) <= strtotime($startTime) && strtotime($endTimeMeeting) >= strtotime($endTime))){
+                        $ret = false;
+                        return false;
+                    } else {
+                        $ret = true;
+                    }
+                }
+            }
+
+        }
+
+        return $ret;
     }
 
     public function checkConflict($hostid, $userid, $time, $day, $date){
@@ -352,6 +467,30 @@ class MeetingsController extends Controller
 
 
         return 'success';
+    }
+
+    public function scheduleGroupMeeting(Request $request){
+        $time = $request->Time;
+        $day = $request->Day;
+        $date = $request->Date;
+        $groupid = $request->Group;
+        $time = str_replace(" ","",$time);
+        $group = $this->getGroupById($groupid);
+
+        $first = true;
+        foreach ($group->members as $user) {
+            if($this->singleConflict($user, $time, $day, $date) == false) {
+                return 'error';
+            }
+            if ($first) {
+                $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending']);
+                $first = false;
+            }
+            DB::table('user_has_meeting')->insert(array('userid'=>$user, 'meetingid'=>$insert));
+
+        }
+
+        return "success";
     }
 
     public function accept(Request $request) {

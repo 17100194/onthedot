@@ -38,7 +38,6 @@ class Controller extends BaseController
             ->join('user_has_group', 'user_has_group.id_group', 'groups.id')
             ->where('groups.id', '=', $groupId)
             ->get();
-
         $app = app();
         $groupInfo = $app->make('stdClass');
         $groupUsers = array();
