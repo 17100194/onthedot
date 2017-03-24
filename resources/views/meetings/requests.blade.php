@@ -103,12 +103,13 @@
                     message: msg
                 },
                 success: function(data) {
-                    t.parents('.modal').modal('toggle');
+                    t.parents('.modal-dialog').hide();
+                    $('body').css('overflow-y', 'scroll');
                     $('.modal-backdrop').hide();
-                    $('#reject_'+mId).hide();
-                    t.parents('.center-block').siblings('.alert').show();
+                    $('#request_'+mId).hide();
+                    t.parents('.row').siblings('.alert-warning').show();
                     window.setTimeout(function () {
-                        t.parents('.center-block').siblings('.alert').fadeTo(500, 0).slideUp(500, function () {
+                        t.parents('.row').siblings('.alert-warning').fadeTo(500, 0).slideUp(500, function () {
                             tp.remove();
                         });
                     }, 2000);

@@ -63,6 +63,20 @@ class MeetingsController extends Controller
         return view('meetings.requests', compact('requests', 'active'));
     }
 
+    public function scheduleGroupMeeting(Request $request){
+        $time = $request->Time;
+        $day = $request->Day;
+        $date = $request->Date;
+        $groupid = $request->Group;
+        $time = str_replace(" ","",$time);
+        $group = $this->getGroupById($groupid);
+        $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending']);
+        foreach ($group->members as $member){
+            DB::table('user_has_meeting')->insert(array('userid'=>$member, 'meetingid'=>$insert));
+        }
+        return 'success';
+    }
+
     public function q(Request $request)
     {
         $query = $request->input('q');
@@ -135,6 +149,9 @@ class MeetingsController extends Controller
 
                 $meetingList[] = $meetingData;
             }
+        }
+        else{
+            $meetingList = [];
         }
 
 
@@ -346,7 +363,7 @@ class MeetingsController extends Controller
 
         $notificationList = ','.$meeting->host.',';
         $loggedIn = $this->getUserById(Auth::id());
-        $html = '<a href="'.url('/notification?type=meeting-accepted&id='. strval($meetingid)).'"><strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has accepted your request you at '.$meeting->time .' - ' . $meeting->date .'</a>';
+        $html = '<a href="'.url('/notification?type=meeting-accepted&id='. strval($meetingid)).'"><strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has accepted your request for meeting at '.$meeting->time .' - ' . $meeting->date .'</a>';
         DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
 
     }

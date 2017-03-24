@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.min.js"></script>
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -28,7 +29,7 @@
                             <label for="campusid" class="col-md-4 control-label">Campus ID</label>
 
                             <div class="col-md-6">
-                                <input id="campusid" type="text" class="form-control" name="campusid" value="{{ old('email') }}" required>
+                                <input id="campusid" type="text" class="form-control" name="campusid" value="{{ old('campusid') }}" required>
 
                                 @if ($errors->has('campusid'))
                                     <span class="help-block">
@@ -79,4 +80,7 @@
         </div>
     </div>
 </div>
+    <script>
+        $("#campusid").mask('0000-00-0000');
+    </script>
 @endsection

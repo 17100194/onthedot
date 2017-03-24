@@ -48,17 +48,17 @@
                                                                     <h4><?= $user->campusid ?></h4>
                                                                 </div>
                                                                 <div class="col-md-3">
-                                                                    <button type="button" class="btn btn-primary schedule" data-toggle="modal" data-target="#UserTimetable_<?= $user->id ?>">Schedule Meeting</button>
+                                                                    <button type="button" class="btn btn-primary schedule" data-toggle="modal" data-target="#UserTimetable_user<?= $user->id ?>">Schedule Meeting</button>
                                                                 </div>
                                                             </div>
-                                                            <input id="userid" style="display: block;" type="hidden" value="<?= $user->id ?>">
-                                                            <div class="modal fade bs-example-modal-lg" id="UserTimetable_<?= $user->id ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                                                            <div class="modal fade bs-example-modal-lg" id="UserTimetable_user<?= $user->id ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
                                                                 <div class="modal-dialog modal-lg" role="document">
                                                                     <div class="modal-content">
                                                                         <div class="modal-header">
                                                                             <p>Select a Time slot</p>
                                                                         </div>
                                                                         <div class="modal-body">
+                                                                            <input id="userid" type="hidden" value="<?= $user->id ?>">
                                                                             <div class="courses">
                                                                                 <?php foreach($hashMap[$user->id] as $course): ?>
                                                                                 <?php
@@ -191,7 +191,7 @@
                                                                                 </tbody>
                                                                             </table>
                                                                             <hr>
-                                                                            <div class="slot_details_<?= $user->id ?>" style="display:none;">
+                                                                            <div class="slot_details" style="display:none;">
                                                                                 <h4>Enter Meeting Details</h4>
                                                                                 <form role="form" class="form-horizontal">
                                                                                     <div class="form-group">
@@ -200,23 +200,23 @@
                                                                                             <div class="col-md-4">
                                                                                                 <label for="start_time">Start Time</label>
                                                                                                 <div class="input-group">
-                                                                                                    <span id="hr_<?= $user->id ?>" class="input-group-addon hr"></span>
-                                                                                                    <input type="number" min="0" max="59" id="minute_<?= $user->id ?>" class="form-control minute" aria-describedby="hr"><span class="input-group-addon ampm" id="ampm_<?= $user->id ?>"></span>
+                                                                                                    <span id="hr" class="input-group-addon hr"></span>
+                                                                                                    <input type="number" min="0" max="59" id="minute" class="form-control minute" aria-describedby="hr"><span class="input-group-addon ampm" id="ampm"></span>
                                                                                                 </div>
                                                                                             </div>
                                                                                             <div class="col-md-4">
                                                                                                 <label for="end_time">Duration</label>
-                                                                                                <input id="duration_<?= $user->id ?>" type="number" min="0" class="form-control" placeholder="Minutes">
+                                                                                                <input id="duration" type="number" min="0" class="form-control" placeholder="Minutes">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="form-group">
                                                                                         <label for="day" class="col-md-4 control-label">Date</label>
-                                                                                        <label id="day_<?= $user->id ?>" class="day col-md-3 control-label"></label>
+                                                                                        <label id="day" class="day col-md-3 control-label"></label>
                                                                                     </div>
                                                                                     <hr>
                                                                                     <div class="form-group" style="text-align: center;">
-                                                                                            <a id="select" class="btn btn-primary">Send Meeting Request</a>
+                                                                                            <a id="select_user" class="btn btn-primary">Send Meeting Request</a>
                                                                                     </div>
                                                                                 </form>
                                                                             </div>
@@ -273,7 +273,6 @@
                                                                 <button type="button" class="btn btn-primary schedule" data-toggle="modal" data-target="#Group_<?= $group->id ?>">Schedule Meeting</button>
                                                             </div>
                                                         </div>
-                                                        <input id="groupid" style="display: block;" type="hidden" value="<?= $group->id ?>">
                                                         <div class="modal fade bs-example-modal-lg" id="Group_<?= $group->id ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
                                                             <div class="modal-dialog modal-lg" role="document">
                                                                 <div class="modal-content">
@@ -281,6 +280,136 @@
                                                                         <p>Select a Time slot</p>
                                                                     </div>
                                                                     <div class="modal-body">
+                                                                        <input id="groupid" style="display: block;" type="hidden" value="<?= $group->id ?>">
+                                                                        <table class="table table-bordered timetable">
+                                                                            <thead>
+                                                                            <tr>
+                                                                                <th></th>
+                                                                                <th style="width: 156px;">Monday <?= date("d/m/Y",strtotime('monday')); ?></th>
+                                                                                <th style="width: 156px;">Tuesday <?= date("d/m/Y",strtotime('tuesday')); ?></th>
+                                                                                <th style="width: 156px;">Wednesday <?= date("d/m/Y",strtotime('wednesday')); ?></th>
+                                                                                <th style="width: 156px;">Thursday <?= date("d/m/Y",strtotime('thursday')); ?></th>
+                                                                                <th style="width: 156px;">Friday <?= date("d/m/Y",strtotime('friday')); ?></th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            <tr>
+                                                                                <th>8:00am</th>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>9:00AM</th>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>10:00AM</th>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>11:00AM</th>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>12:00PM</th>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>1:00PM</th>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>2:00PM</th>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>3:00PM</th>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>4:00PM</th>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>5:00PM</th>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                            </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                        <div class="slot_details" style="display:none;">
+                                                                            <h4>Enter Meeting Details</h4>
+                                                                            <form role="form" class="form-horizontal">
+                                                                                <div class="form-group">
+                                                                                    <label for="timing" class="col-md-4 control-label">Timing</label>
+                                                                                    <div class="col-md-8">
+                                                                                        <div class="col-md-4">
+                                                                                            <label for="start_time">Start Time</label>
+                                                                                            <div class="input-group">
+                                                                                                <span id="hr" class="input-group-addon hr"></span>
+                                                                                                <input type="number" min="0" max="59" id="minute" class="form-control minute" aria-describedby="hr"><span class="input-group-addon ampm" id="ampm"></span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-md-4">
+                                                                                            <label for="end_time">Duration</label>
+                                                                                            <input id="duration" type="number" min="0" class="form-control" placeholder="Minutes">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label for="day" class="col-md-4 control-label">Date</label>
+                                                                                    <label id="day" class="day col-md-3 control-label"></label>
+                                                                                </div>
+                                                                                <hr>
+                                                                                <div class="form-group" style="text-align: center;">
+                                                                                    <a id="select_group" class="btn btn-primary">Send Meeting Request</a>
+                                                                                </div>
+                                                                            </form>
+                                                                        </div>
+                                                                        <div class="alert alert-success" style="display:none;">
+                                                                            <strong>Meeting Request Send!</strong> It will appear as soon as the participant agrees.
+                                                                        </div>
+                                                                        <div class="alert alert-warning" style="display:none;">
+                                                                            <strong>Conflict Detected!</strong> Meeting cannot be requested at the given time.
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -307,47 +436,37 @@
     </script>
 
     <script type="text/javascript">
-        var id;
-        $('.schedule').click(function () {
-           id = $(this).data('target').split('_')[1];
-        });
-        $('#select').on('click', function(){
-            var start_time = $('#hr_'+id).text()+$('#minute_'+id).val()+$('#ampm_'+id).text();
+        $('#select_user').on('click', function(){
+            var start_time = $(this).parents('.modal-body').find('#hr').text()+$(this).parents('.modal-body').find('#minute').val()+$(this).parents('.modal-body').find('#ampm').text();
             var hrs = start_time.split(":")[0];
             var mins = start_time.split(":")[1].substr(1,2);
             var amPM = start_time.split(":")[1].substr(3,4);
-            var duration = $('#duration_'+id).val();
-            var day = $('#day_'+id).text().split(' ')[0];
-            var date = $('#day_'+id).text().split(' ')[1];
+            var duration = $(this).parents('.modal-body').find('#duration').val();
+            var day = $(this).parents('.modal-body').find('#day').text().split(' ')[0];
+            var date = $(this).parents('.modal-body').find('#day').text().split(' ')[1];
             if(parseInt(mins) >= 60){
                 alert('Invalid Start Time');
                 return;
             }
             else{
                 mins = (parseInt(mins) + parseInt(duration)).toString();
-                if(parseInt(mins) >= 60) {
-                    mins = (parseInt(mins) - 60).toString();
-                    hrs = (parseInt(hrs) + 1).toString();
-                    if(parseInt(hrs) >= 12){
-                        if(parseInt(hrs) == 12){
-                            hrs = hrs;
+                var hrs_to_add = Math.floor(parseInt(mins) / 60);
+                    mins = (parseInt(mins) % 60).toString();
+                    var newhrs = (parseInt(hrs) + hrs_to_add).toString();
+                    if(parseInt(newhrs) >= 12 && parseInt(hrs) < 12){
+                            newhrs = parseInt(newhrs) % 12;
                             if(amPM == 'AM'){
                                 amPM = 'PM';
                             } else {
                                 amPM = 'AM';
                             }
-                        } else {
-                            hrs = (parseInt(hrs) - 12).toString();
-                        }
                     }
                     if (mins.length === 1) {
                         mins = '0'+mins;
                     }
-                }
             }
-            var end_time = hrs +":"+mins+amPM;
+            var end_time = newhrs +":"+mins+amPM;
             var time = start_time + '-' + end_time;
-            time = time.replace(" ", "");
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -360,25 +479,96 @@
                     Time: time,
                     Date: date,
                     Day: day,
-                    User: id
+                    User: $(this).parents('.modal-body').find('#userid').val()
                 },
                 success: function(data) {
                     console.log(data);
                     if(data == 'error'){
-                        $('.alert-warning').show();
+                        $(this).parents('.modal-body').find('.alert-warning').show();
                         window.setTimeout(function () {
-                            $(".alert-warning").fadeTo(500, 0).slideUp(500, function () {
+                            $(this).parents('.modal-body').find(".alert-warning").hide();
+                            {{--$(".alert-warning").fadeTo(500, 0).slideUp(500, function () {--}}
                                 {{--window.location.href = "{{URL::to('/home')}}";--}}
-                            });
+                            {{--});--}}
+                        }, 3000);
+                    } else {
+                        $(this).parents('.modal-body').find('.alert-success').show();
+                        window.setTimeout(function () {
+                            $(this).parents('.modal-body').find(".alert-success").hide();
+                            {{--$(".alert-warning").fadeTo(500, 0).slideUp(500, function () {--}}
+                            {{--window.location.href = "{{URL::to('/home')}}";--}}
+                            {{--});--}}
+                        }, 3000);
+                    }
+                },
+                error: function (xhr, status) {
+                }
+            });
+        });
+        $('#select_group').on('click', function(){
+            var start_time = $(this).parents('.modal-body').find('#hr').text()+$(this).parents('.modal-body').find('#minute').val()+$(this).parents('.modal-body').find('#ampm').text();
+            var hrs = start_time.split(":")[0];
+            var mins = start_time.split(":")[1].substr(1,2);
+            var amPM = start_time.split(":")[1].substr(3,4);
+            var duration = $(this).parents('.modal-body').find('#duration').val();
+            var day = $(this).parents('.modal-body').find('#day').text().split(' ')[0];
+            var date = $(this).parents('.modal-body').find('#day').text().split(' ')[1];
+            if(parseInt(mins) >= 60){
+                alert('Invalid Start Time');
+                return;
+            }
+            else{
+                mins = (parseInt(mins) + parseInt(duration)).toString();
+                var hrs_to_add = Math.floor(parseInt(mins) / 60);
+                mins = (parseInt(mins) % 60).toString();
+                var newhrs = (parseInt(hrs) + hrs_to_add).toString();
+                if(parseInt(newhrs) >= 12 && parseInt(hrs) < 12){
+                    newhrs = parseInt(newhrs) % 12;
+                    if(amPM == 'AM'){
+                        amPM = 'PM';
+                    } else {
+                        amPM = 'AM';
+                    }
+                }
+                if (mins.length === 1) {
+                    mins = '0'+mins;
+                }
+            }
+            var end_time = newhrs +":"+mins+amPM;
+            var time = start_time + '-' + end_time;
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                method: "POST",
+                url: "./scheduleGroup",
+                data: {
+                    Time: time,
+                    Date: date,
+                    Day: day,
+                    Group: $(this).parents('.modal-body').find('#groupid').val()
+                },
+                success: function(data) {
+                    console.log(data);
+                    if(data == 'error'){
+                        $(this).parents('.modal-body').find('.alert-warning').show();
+                        window.setTimeout(function () {
+                            $(this).parents('.modal-body').find(".alert-warning").hide();
+                            {{--$(".alert-warning").fadeTo(500, 0).slideUp(500, function () {--}}
+                            {{--window.location.href = "{{URL::to('/home')}}";--}}
+                            {{--});--}}
                         }, 3000);
 
                     } else {
-                        $('.alert-success').show();
-                        {{--window.setTimeout(function () {--}}
-                            {{--$(".alert-success").fadeTo(500, 0).slideUp(500, function () {--}}
-                                {{--window.location.href = "{{URL::to('/home')}}";--}}
+                        $(this).parents('.modal-body').find('.alert-success').show();
+                        window.setTimeout(function () {
+                            $(this).parents('.modal-body').find(".alert-success").hide();
+                            {{--$(".alert-warning").fadeTo(500, 0).slideUp(500, function () {--}}
+                            {{--window.location.href = "{{URL::to('/home')}}";--}}
                             {{--});--}}
-                        {{--}, 3000);--}}
+                        }, 3000);
                     }
                 },
                 error: function (xhr, status) {
@@ -388,7 +578,7 @@
         $('.timetable td:not(:first)').hover(function () {
             $(this).css('background-color', 'green')
             $(this).click(function () {
-                $('.slot_details_'+id).show()
+                $(this).parents('.modal-body').find('.slot_details').show();
                 var time = $(this).closest('tr').children('th').text();
                 $('.hr').html(time.split(':')[0]+" : ");
                 $('.ampm').html(time.slice(-2));

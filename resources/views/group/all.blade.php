@@ -6,7 +6,7 @@
             <h4><a>My Groups</a></h4>
             <hr>
             @if(session('message'))
-                <div class="alert alert-success">
+                <div class="alert alert-success groupMessage">
                     {{ session()->pull('message') }}
                 </div>
             @endif
@@ -27,9 +27,14 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header" style="text-align: center;">
-                                            <h2>Select an admin before you leave the group</h2>
+                                            @if(count($group->members) > 1 && $group->id_creator == Auth::id())
+                                                <h2>Select an admin before you leave the group</h2>
+                                            @else
+                                                <h2>Are you sure you want to leave the group?</h2>
+                                            @endif
                                         </div>
                                         <div class="modal-body">
+                                            @if($group->id_creator == Auth::id())
                                             <table class="table">
                                                 <thead>
                                                 <th>Name</th>
@@ -37,7 +42,7 @@
                                                 <th>Campusid</th>
                                                 </thead>
                                                 <tbody>
-                                                @if(count($group->members) > 0)
+                                                @if(count($group->members) > 1)
                                                     @foreach($group->members as $groupMember)
                                                         @if($groupMember->id != Auth::id())
                                                             <tr>
@@ -50,9 +55,14 @@
                                                             </tr>
                                                         @endif
                                                     @endforeach
+                                                @else
+                                                    <tr>
+                                                        <td>Group has no other members at the moment</td>
+                                                    </tr>
                                                 @endif
                                                 </tbody>
                                             </table>
+                                            @endif
                                             <div class="row" style="text-align: center;">
                                                 <div class="col-md-12">
                                                     <button id="yes_<?= $group->id ?>" class="btn btn-danger btn-lg yes">Leave Group</button>
@@ -91,7 +101,7 @@
                                                     <th>Campusid</th>
                                                 </thead>
                                                 <tbody>
-                                                @if(count($group->members) > 0)
+                                                @if(count($group->members) > 1)
                                                     @foreach($group->members as $groupMember)
                                                         @if($groupMember->id != Auth::id())
                                                         <tr>
@@ -104,6 +114,10 @@
                                                         </tr>
                                                         @endif
                                                     @endforeach
+                                                @else
+                                                    <tr>
+                                                        <td>Group has no other members at the moment</td>
+                                                    </tr>
                                                 @endif
                                                 </tbody>
                                             </table>
@@ -124,6 +138,13 @@
             $('.yes').on('click', function () {
                 var groupid = $(this).attr('id').split('_')[1];
                 var adminid = $(this).parents('.modal-content').find('.makeAdmin:checked').val();
+                if(adminid == null && $(this).parents('.modal-content').find('.makeAdmin').length){
+                    alert('Please select an admin');
+                    return;
+                }
+                if (!$(this).parents('.modal-content').find('.makeAdmin').length){
+                    adminid = 'empty';
+                }
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -231,6 +252,12 @@
                 });
             });
         });
-
+        if($('.groupMessage')) {
+            $('.groupMessage').show();
+            window.setTimeout(function () {
+                $(".groupMessage").fadeTo(500, 0).slideUp(500, function () {
+                });
+            }, 3000);
+        }
     </script>
 @endsection

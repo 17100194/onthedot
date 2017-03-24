@@ -93,6 +93,22 @@ class GroupController extends Controller
     public function leaveGroup(Request $request) {
         $groupid = $request->groupid;
         $adminid = $request->adminid;
+        if($adminid == 'empty'){
+            DB::table('user_has_group')->where('id_user', '=', Auth::id())->where('id_group', '=', intval($groupid))->delete();
+            $group = $this->getGroupById($groupid);
+            if (count($group->members) > 0){
+                $notificationList = implode(',', $group->members);
+                $loggedIn = $this->getUserById(Auth::id());
+                $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has left the group <strong>'. $group->name .'</strong>';
+                DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => ','.$notificationList.','));
+                session(['message' => 'Group Left Successfully!']);
+                return;
+            } else {
+                DB::table('groups')->where('id', '=', $groupid)->delete();
+                session(['message' => 'Group Left Successfully!']);
+                return;
+            }
+        }
         DB::table('user_has_group')->where('id_user', '=', Auth::id())->where('id_group', '=', intval($groupid))->delete();
         DB::table('groups')->where('id', '=', $groupid)->update(['id_creator' => $adminid]);
         // get others notification that you left group
@@ -105,9 +121,8 @@ class GroupController extends Controller
             $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has left the group <strong>'. $group->name .'</strong>';
             DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => ','.$notificationList.','));
         }
-
-        session(['message' => 'Group Left Successfully']);
-        return 'success';
+        session(['message' => 'Group Left Successfully!']);
+        return;
     }
 
     public function acceptRequest(Request $request) {

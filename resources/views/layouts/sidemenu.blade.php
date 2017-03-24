@@ -12,7 +12,6 @@
 
             <div class="panel panel-default dashboard-options">
                 <a href="<?php echo url('/home') ?>" style="display:block;" class="panel-heading <?php if ($active == "dashboard"): ?>active<?php endif; ?>">Dashboard</a>
-                <a href="<?php echo url('/search') ?>" style="display:block;" class="panel-heading <?php if ($active == "meeting"): ?>active<?php endif; ?>">Schedule Meeting</a>
                 <a href="<?php echo url('/meetings/requests') ?>" style="display:block;" class="panel-heading <?php if ($active == "requests"): ?>active<?php endif; ?>">Meeting Requests (<?=count($requests)?>)</a>
                 <a href="<?php echo url('/course/all') ?>" style="display:block;" class="panel-heading <?php if ($active == "courses"): ?>active<?php endif; ?>">View My Courses</a>
                 <a href="<?php echo url('/meetings') ?>" style="display:block;" class="panel-heading <?php if ($active == "view-meeting"): ?>active<?php endif; ?>">View My Meetings</a>
