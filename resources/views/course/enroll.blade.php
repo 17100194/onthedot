@@ -1,7 +1,7 @@
 @extends('layouts.sidemenu')
 
 @section('main')
-    <h4><a>Enroll in a Course</a></h4>
+    <h4 style="text-align: center;"><a>Enroll in a Course</a></h4>
     <div class="alert alert-success" style="display:none;">
         <strong>Course Enrolled Successfully!</strong> You can now view it in your courses.
     </div>

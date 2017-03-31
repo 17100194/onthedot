@@ -13,12 +13,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
-class CourseController
+class CourseController extends Controller
 {
     public function all(){
         $courses = DB::table('user_has_course')
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
             ->where('user_has_course.userid', '=', Auth::id())->get();
+        foreach ($courses as $course){
+            $course->instructor = $this->getUserById($course->instructorid);
+        }
         $active = 'courses';
         return view('course.all', compact('courses', 'active'));
     }
@@ -103,6 +106,7 @@ class CourseController
     {
         $coursename = $request->course_name;
         $section = $request->section;
+        $coursecode = $request->course_code;
         $starttime = $request->start_time;
         $endtime = $request->end_time;
         $monday = $request->Monday;
@@ -136,6 +140,7 @@ class CourseController
             'name'=>$coursename,
             'days' => $dayStr,
             'section'=>$section,
+            'coursecode'=>$coursecode,
             'timing'=>date('H:i', strtotime($starttime)).'-'.date('H:i', strtotime($endtime)),
             'instructorid'=>Auth::id()));
 

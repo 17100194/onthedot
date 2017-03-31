@@ -3,7 +3,7 @@
 @section('main')
     <div class="row courses">
         <div class="col-md-12">
-            <h4 style="margin-left: 20px;"><a>My Courses</a></h4>
+            <h4 style="text-align: center;"><a>My Courses</a></h4>
             <hr>
             @if(session('message'))
                 <div class="alert alert-success">
@@ -13,18 +13,20 @@
             @if (count($courses) > 0)
                 <ul style="list-style: none; padding-left: 0px;">
                     @foreach($courses as $course)
-                        <li style="display: inline-block; width: 49.5%;">
+                        <li style="display: inline-block; width: 45%;">
                             <div id="course_<?= $course->courseid ?>" class="notification-box" style="position: relative;">
                                 <button data-toggle="modal" data-target="#dropModal_<?= $course->courseid ?>" class="hover-action btn btn-danger drop">Drop <i class="fa fa-window-close fa-lg" aria-hidden="true"></i></button>
-                                Course: <?= $course->name ?>
+                                <?= $course->coursecode ?> - <?= $course->section ?>
+                                <br>
+                                (<?= $course->name ?>)
+                                <hr>
+                                Instructor: <?= $course->instructor->name ?> (<?= $course->instructor->campusid ?>)
                                 <br>
                                 <?php
                                 $strt = date('h:iA', strtotime(explode('-', $course->timing)[0]));
                                 $endt = date('h:iA', strtotime(explode('-', $course->timing)[1]));
                                 ?>
                                 Timing: <?= $strt .' - '.$endt ?>
-                                <br>
-                                Section: <?= $course->section ?>
                                 <br>
                                 Days: <?= $course->days ?>
                             </div>
@@ -37,10 +39,10 @@
                                         <div class="modal-body">
                                             <div class="row" style="text-align: center;">
                                                 <div class="col-md-6">
-                                                    <button id="yes_<?= $course->courseid ?>" class="btn btn-success btn-lg yes">Yes</button>
+                                                    <button id="yes_<?= $course->courseid ?>" class="button_sliding_bg_2 yes">Yes</button>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <button id="no_<?= $course->courseid ?>" class="btn btn-warning btn-lg no">No</button>
+                                                    <button id="no_<?= $course->courseid ?>" class="button_sliding_bg_2 no">No</button>
                                                 </div>
                                             </div>
                                         </div>

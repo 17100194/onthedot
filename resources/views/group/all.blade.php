@@ -3,7 +3,7 @@
 @section('main')
     <div class="row scheduled">
         <div class="col-md-12">
-            <h4><a>My Groups</a></h4>
+            <h4 style="text-align: center;"><a>My Groups</a></h4>
             <hr>
             @if(session('message'))
                 <div class="alert alert-success groupMessage">
@@ -16,10 +16,10 @@
                         <li style="display: inline-block; width: 49.5%;">
                             <div id="group_<?= $group->id ?>" class="notification-box" style="position: relative;">
                                 <button data-toggle="modal" data-target="#dropModal_<?= $group->id?>" class="btn btn-danger drop hover-action">Leave <i class="fa fa-window-close fa-lg" aria-hidden="true"></i></button>
-                                <button style="right: 77%;" data-toggle="modal" data-target="#infoModal_<?= $group->id?>" class="btn btn-danger drop hover-action">Group Info <i class="fa fa-info fa-lg" aria-hidden="true"></i></button>
+                                <button style="left:0pt;" data-toggle="modal" data-target="#infoModal_<?= $group->id?>" class="btn btn-danger drop hover-action">Group Info <i class="fa fa-info fa-lg" aria-hidden="true"></i></button>
                                 Group Name: <?= $group->groupname ?>
                                 <br>
-                                By: <?= $group->creator ?>
+                                Admin: <?= $group->creator ?>
                                 <br>
                                 Created On: <?= $group->created_on ?>
                             </div>
@@ -46,9 +46,9 @@
                                                     @foreach($group->members as $groupMember)
                                                         @if($groupMember->id != Auth::id())
                                                             <tr>
-                                                                <td><?= $groupMember->name?></td>
-                                                                <td><?= $groupMember->type?></td>
-                                                                <td><?= $groupMember->campusid?></td>
+                                                                <td><h4><?= $groupMember->name?></h4></td>
+                                                                <td><h4><?= $groupMember->type?></h4></td>
+                                                                <td><h4><?= $groupMember->campusid?></h4></td>
                                                                 <?php if ($group->id_creator == Auth::id()): ?>
                                                                     <td><input class="makeAdmin" type="radio" name="makeAdmin" value="<?=$groupMember->id?>"> Make Admin</td>
                                                                 <?php endif?>
@@ -57,7 +57,7 @@
                                                     @endforeach
                                                 @else
                                                     <tr>
-                                                        <td>Group has no other members at the moment</td>
+                                                        <td><h4>Group has no other members at the moment</h4></td>
                                                     </tr>
                                                 @endif
                                                 </tbody>
@@ -65,7 +65,7 @@
                                             @endif
                                             <div class="row" style="text-align: center;">
                                                 <div class="col-md-12">
-                                                    <button id="yes_<?= $group->id ?>" class="btn btn-danger btn-lg yes">Leave Group</button>
+                                                    <button id="yes_<?= $group->id ?>" class="button_sliding_bg_2 yes">Leave Group</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -81,7 +81,7 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <select class="searchuser" multiple="multiple" style="width: 70%;"></select>
-                                                        <input type="button" data-groupid="<?= $group->id ?>" class="addUser btn btn-primary" value="Add Users">
+                                                        <input type="button" data-groupid="<?= $group->id ?>" class="addUser button1" value="Add Users">
                                                     </div>
                                                 </div>
                                                 <div class="alert alert-success requestMessage" style="display:none;">
@@ -105,11 +105,11 @@
                                                     @foreach($group->members as $groupMember)
                                                         @if($groupMember->id != Auth::id())
                                                         <tr>
-                                                            <td><?= $groupMember->name?></td>
-                                                            <td><?= $groupMember->type?></td>
-                                                            <td><?= $groupMember->campusid?></td>
+                                                            <td><h4><?= $groupMember->name?></h4></td>
+                                                            <td><h4><?= $groupMember->type?></h4></td>
+                                                            <td><h4><?= $groupMember->campusid?></h4></td>
                                                             <?php if ($group->id_creator == Auth::id()): ?>
-                                                                <td><button id="removeMember_<?= $groupMember->id?>" data-groupid="<?=$group->id?>" class="btn btn-danger remove">Remove <i class="fa fa-window-close fa-lg" aria-hidden="true"></i></button></td>
+                                                                <td><button id="removeMember_<?= $groupMember->id?>" data-groupid="<?=$group->id?>" class="button1 remove">Remove <i class="fa fa-window-close fa-lg" aria-hidden="true"></i></button></td>
                                                             <?php endif?>
                                                         </tr>
                                                         @endif
@@ -129,7 +129,7 @@
                     @endforeach
                 </ul>
             @else
-                <p style="margin-left: 20px;">You have no groups at the moment</p>
+                <h4 style="text-align: center;">You have no groups at the moment</h4>
             @endif
         </div>
     </div>

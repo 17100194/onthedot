@@ -26,6 +26,8 @@ Route::get('/meetings', 'MeetingsController@index');
 Route::get('/search', 'MeetingsController@q');
 Route::post('/schedule', 'MeetingsController@schedule');
 Route::post('/scheduleGroup', 'MeetingsController@scheduleGroupMeeting');
+Route::get('/admin', 'UserController@adminForm');
+Route::post('/adminlogin', 'UserController@adminLogin');
 Route::post('/accept', 'MeetingsController@accept');
 Route::post('/reject', 'MeetingsController@reject');
 Route::post('/meetings/accept', 'MeetingsController@accept');

@@ -3,7 +3,7 @@
 @section('main')
 <div class="row scheduled">
     <div class="col-md-12">
-        <h4><a>My Scheduled Meetings</a></h4>
+        <h4 style="text-align: center;"><a>My Scheduled Meetings</a></h4>
         <hr>
         @if(session('message'))
             <div class="alert alert-success">
@@ -14,7 +14,7 @@
             <ul style="list-style: none; padding-left: 0px;">
                 @foreach($meetings as $meeting)
                     @if ($meeting->status != 'pending')
-                        <li style="display: inline-block; width: 49.5%;">
+                        <li style="display: inline-block; width: 45%;">
                             <div id="meeting_<?= $meeting->id ?>" class="notification-box" style="position: relative;">
                                 <button data-toggle="modal" data-target="#dropModal_<?= $meeting->id?>" class="hover-action btn btn-danger drop">Cancel <i class="fa fa-window-close fa-lg" aria-hidden="true"></i></button>
                                 Meeting with: <?= $meeting->name ?>
@@ -34,10 +34,10 @@
                                         <div class="modal-body">
                                             <div class="row" style="text-align: center;">
                                                 <div class="col-md-6">
-                                                    <button id="yes_<?= $meeting->id?>" class="btn btn-success btn-lg yes">Yes</button>
+                                                    <button id="yes_<?= $meeting->id?>" class="button_sliding_bg_2 yes">Yes</button>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <button id="no_<?= $meeting->id?>" class="btn btn-warning btn-lg no">No</button>
+                                                    <button id="no_<?= $meeting->id?>" class="button_sliding_bg_2 no">No</button>
                                                 </div>
                                             </div>
                                         </div>

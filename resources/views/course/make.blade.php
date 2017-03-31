@@ -17,6 +17,14 @@
         {{ csrf_field() }}
 
         <div class="form-group">
+            <label for="course_code" class="col-md-4 control-label">Course Code</label>
+
+            <div class="col-md-6">
+                <input id="course_code" type="text" class="form-control" name="course_code" required autofocus>
+            </div>
+        </div>
+
+        <div class="form-group">
             <label for="course_name" class="col-md-4 control-label">Course Name</label>
 
             <div class="col-md-6">

@@ -47,11 +47,16 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        $messages = [
+            'required' => 'This field is required.',
+            'campusid.regex'=>'Invalid Campus ID',
+            'campusid.unique'=>'Campus ID already exists'
+        ];
         return Validator::make($data, [
             'name' => 'required|max:255',
-            'campusid' => 'required|string|max:255|unique:users',
+            'campusid' => 'required|string|max:255|unique:users|regex:/\d{4}-\d{2}-\d{4}/',
             'password' => 'required|min:6|confirmed',
-        ]);
+        ], $messages);
     }
 
     /**
@@ -62,13 +67,9 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $campusId = str_replace('-', '', trim($data['campusid']));
-        if (strlen($campusId) == 10) {
-            $campusId = substr($campusId, 2);
-        }
         return User::create([
             'name' => $data['name'],
-            'campusid' => $campusId,
+            'campusid' => $data['campusid'],
             'password' => bcrypt($data['password']),
         ]);
     }

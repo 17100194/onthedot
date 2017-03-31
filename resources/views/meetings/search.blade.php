@@ -6,7 +6,7 @@
             padding: 0px;
         }
     </style>
-    <div class="container">
+    <div class="container" style="width: 90%;">
         <div class="row">
             <ul class="nav search-tabs nav-tabs" role="tablist">
                 <li class="nav-item">
@@ -613,9 +613,6 @@
             });
         });
         $('.timetable td:not(:first)').hover(function () {
-
-
-
             var t = $(this);
             $(this).css('background-color', 'green')
             $(this).click(function () {
@@ -627,11 +624,9 @@
                 console.log();
                 var cellIndex = cell[0].cellIndex
                 $('.day').html(t.parents('.modal-body').find('.timetable')[0].rows[0].cells[cellIndex].innerText);
-//                $('body').animate({
-//                    scrollTop: 0
-//                }, 1000, function() {
-//                    console.log('llz');
-//                });
+                $(this).parents('.modal').animate({
+                    scrollTop: $(this).parents('.modal-body').find('.slot_details').offset().top
+                }, 1000);
             });
         }, function () {
             $(this).css('background-color', '')

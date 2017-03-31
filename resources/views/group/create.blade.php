@@ -1,7 +1,7 @@
 @extends('layouts.sidemenu')
 
 @section('main')
-    <h4><a>Create a Group</a></h4>
+    <h4 style="text-align: center;"><a>Create a Group</a></h4>
     <hr>
     <div class="alert alert-success" style="display:none;">
         <strong>Group Successfully Made!</strong> Requests have been sent to all members of the group.
@@ -14,15 +14,25 @@
 
             <div class="col-md-6">
                 <input id="group_name" type="text" class="form-control" name="group_name" required autofocus>
+                <div class="error_name" style="display:none; color: darkred;">
+                    This field is required*
+                </div>
             </div>
         </div>
 
         <div class="form-group">
             <label for="group_name" class="col-md-4 control-label">Add Users</label>
             <div class="col-md-6">
-                <select class="searchuser" multiple="multiple">
+                <select class="searchuser" multiple="multiple" style="width: 100%;">
                 </select>
-                <input type="button" class="makeGroup btn btn-primary" value="Make Group">
+                <div class="error_users" style="display: none; color: darkred;">
+                    This field is required*
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-5">
+                <input type="button" class="makeGroup button_sliding_bg_2" value="Make Group">
             </div>
         </div>
     </form>
@@ -45,6 +55,8 @@
                             groupname: $('#group_name').val()
                         },
                         success: function(data) {
+                            $('.searchuser').empty();
+                            $('#group_name').val("");
                             $('.alert').show();
                             window.setTimeout(function () {
                                 $(".alert").fadeTo(500, 0).slideUp(500, function () {
@@ -56,6 +68,15 @@
 //                    console.log(xhr.responseText);
                         }
                     });
+                }
+                else{
+                    $('.alert-danger').show();
+                    if($('.searchuser').val() == ''){
+                        $('.error_users').show();
+                    }
+                    if($('#group_name').val() == ''){
+                        $('.error_name').show();
+                    }
                 }
             });
 

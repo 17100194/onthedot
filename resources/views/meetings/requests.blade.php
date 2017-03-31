@@ -3,12 +3,12 @@
 @section('main')
     <div class="requests row justify-content-center">
         <div class=" col-md-12 ">
-            <h4><a>Meeting Requests (<?=count($requests)?>)</a></h4>
+            <h4 style="text-align: center;"><a>Meeting Requests (<?=count($requests)?>)</a></h4>
             <hr>
             @if (count($requests) > 0)
                 <ul style="list-style: none;">
                     @foreach($requests as $request)
-                        <li style="display: inline-block; width: 49.5%;">
+                        <li style="display: inline-block; width: 45%;">
                             <div class="alert alert-success" style="display:none;">
                                 <strong>Meeting Request Accepted!</strong>
                             </div>
@@ -22,6 +22,7 @@
                                         Date: <?= $request->date ?>
                                     </div>
                                 </div>
+                                <br>
                                 <div class="col-md-3 center-block actionbtn">
                                     <button type="button" class="btn btn-success accept-request" data-placement="request_<?= $request->meetingid ?>" style=" display: block;">Accept</button>
                                 </div>
@@ -51,7 +52,7 @@
                     @endforeach
                 </ul>
             @else
-                <h4>No requests at the moment</h4>
+                <h4 style="text-align: center;">No requests at the moment</h4>
             @endif
         </div>
     </div>

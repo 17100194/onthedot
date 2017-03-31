@@ -1,7 +1,7 @@
 @extends('layouts.sidemenu')
 
 @section('main')
-    <h4>My Timetable</h4>
+    <h4 style="text-align: center;"><a>My Timetable</a></h4>
     <hr>
     <div class="courses">
         <?php foreach($allCourses as $course): ?>
@@ -13,7 +13,7 @@
         <?php endif; ?>
             <?php foreach($course->days as $day): ?>
             <?php
-            $left = 92;
+            $left = 144;
             switch ($day) {
                 case "Monday":
 //
@@ -41,18 +41,7 @@
 
         <?php endforeach; ?>
     </div>
-        <div id="mySmallModalLabel" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-            <div class="modal-dialog modal-sm" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        Add an event
-                    </div>
-                    <div class="modal-body">
-
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="myTimetable">
         <table id="timetable" class="table table-bordered timetable">
             <thead>
             <tr>
@@ -68,7 +57,7 @@
                 <tr>
                     <th scope="row">8:00AM</th>
                     <td></td>
-                    <td data-toggle="modal" data-target="#mySmallModalLabel"></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -148,4 +137,97 @@
             </tbody>
         </table>
     </div>
+    <div id="addModal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p>Add an Event</p>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="eventType">Type of Event</label>
+                        <select class="form-control" id="eventType">
+                            <option>Meeting</option>
+                            <option>Course</option>
+                        </select>
+                        <div class="meetingForm">
+                            <h4>Enter Meeting Details</h4>
+                            <form role="form" class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-md-10">
+                                        <div class="col-md-12">
+                                            <label for="start_time">Start Time</label>
+                                            <div class="input-group">
+                                                <span id="hr" class="input-group-addon hr"></span>
+                                                <input type="number" min="0" max="59" id="minute" class="form-control minute" aria-describedby="hr"><span class="input-group-addon ampm" id="ampm"></span>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="col-md-12">
+                                            <label for="end_time">Duration</label>
+                                            <input id="duration" type="number" min="0" class="form-control" placeholder="Minutes">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="day" class="col-md-3 control-label">Date</label>
+                                    <label id="day" class="day col-md-4 control-label"></label>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <select class="searchuser" multiple="multiple" style="width: 100%;">
+                                        </select>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="form-group" style="text-align: center;">
+                                    <a class="btn btn-primary addMeeting">Send Meeting Request</a>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="courseForm" style="display:none;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('.searchuser').select2({
+                placeholder: 'Select a User',
+                ajax: {
+                    url: './group/adduser',
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                allowClear: true,
+                minimumInputLength: 2,
+                maximumSelectionLength: 1
+            });
+            $('.timetable td:not(:first)').hover(function () {
+                var t = $(this);
+                $(this).attr('data-toggle', 'modal');
+                $(this).attr('data-target', '#addModal');
+                $(this).css('background-color', '#a0af00');
+                $(this).click(function () {
+                    var time = $(this).closest('tr').children('th').text();
+                    $('.hr').html(time.split(':')[0]+" : ");
+                    $('.ampm').html(time.slice(-2));
+                    var cell = $(this).closest('td');
+                    var cellIndex = cell[0].cellIndex
+                    $('.day').html(t.parents('.myTimetable').find('.timetable')[0].rows[0].cells[cellIndex].innerText);
+                });
+            }, function () {
+                $(this).css('background-color', '')
+            });
+        });
+    </script>
 @endsection

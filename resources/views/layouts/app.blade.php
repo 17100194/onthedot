@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'SchedulerApp') }}</title>
+    <title>{{ config('app.name', 'On the DOT') }}</title>
 
     <!-- Styles -->
 
@@ -32,6 +32,7 @@
 {{--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>--}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{URL::asset('js/scripts.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.min.js"></script>
 
 <script>
     window.Laravel = <?php echo json_encode([
@@ -41,12 +42,12 @@
 
 <!-- Scripts End -->
 <div id="app">
-    <nav class="navbar navbar-default navbar-static-top">
+    <nav class="navbar navbar-default navbar-fixed-top" style="background-color:#fff; width: 90%; margin: 0px auto;">
         <div class="container">
             <div class="navbar-header">
 
                 <!-- Collapsed Hamburger -->
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse" style="background-color: #3b3a36; color:#e9ece5;">
                     <span class="sr-only">Toggle Navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -54,38 +55,35 @@
                 </button>
 
                 <!-- Branding Image -->
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'SchedulerApp') }}
+                <a class="navbar-brand" href="{{ url('/') }}" style="width: 177px; padding-top: 0px;">
+                    <img src="<?= asset('images/onthedot.png') ?>" class="img-responsive">
                 </a>
+                <div class="navbar-form pull-left col-xs-6" role="search" style="border: none; padding: 0px 20px 0px 20px; box-shadow: none;">
+                    <form method="get" action="{{ action('MeetingsController@q') }}">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="q" placeholder="Search">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" style="height: 36px; width: 40px;" type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                <!-- Left Side Of Navbar -->
-                <ul class="nav navbar-nav">
-                    &nbsp;<li>
-                        <form method="get" action="{{ action('MeetingsController@q') }}" class='form navbar-form navbar-right'>
-                            <div class="input-group" style="width: 300px;">
-                                <input type="text" class="form-control" name="q" placeholder="Search for a user or group...">
-                                <span class="input-group-btn">
-                                            <button class="btn btn-primary" type="submit">Search</button>
-                                        </span>
-                            </div>
-                        </form>
-                    </li>
-                </ul>
 
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
                     @if (Auth::guest())
-                        <li><a href="{{ url('/login') }}">Login</a></li>
-                        <li><a href="{{ url('/register') }}">Register</a></li>
+                        <li><a href="{{ url('/login') }}" >Login</a></li>
+                        <li><a href="{{ url('/register') }}" >Sign Up</a></li>
                     @else
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
                             </a>
-                            <ul id="notifications" class="dropdown-menu" role="menu" style="width: 350px; overflow-y: auto;">
+                            <ul id="notifications" class="dropdown-menu" role="menu" style="width: 350px; overflow-y: auto; color: #666;">
                             @if (count($requests) > 0)
                                 <ul style="list-style: none;">
                                     @foreach($requests as $request)
@@ -94,20 +92,19 @@
                                 </ul>
                             @else
                                 <ul>
-                                    <h4>No requests at the moment</h4>
+                                    <h4 style="color: #666;">No requests at the moment</h4>
                                 </ul>
                             @endif
                             </ul>
                         </li>
                         <li class="dropdown">
-                            <a href="{{ url('/home') }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->name }} <span class="caret"></span>
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    <a href="{{ url('/home') }}"
-                                    >
+                                    <a href="{{ url('/home') }}">
                                         Profile
                                     </a>
                                     <a href="{{ url('/logout') }}"
@@ -129,6 +126,5 @@
     </nav>
     @yield('content')
 </div>
-
 </body>
 </html>
