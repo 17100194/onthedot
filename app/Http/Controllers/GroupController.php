@@ -15,6 +15,11 @@ use phpDocumentor\Reflection\Types\Null_;
 
 class GroupController extends Controller
 {
+    public $timeTableStart = '08:00';
+    public $timeTableEnd = '18:00';
+    public $tableHeight = 550;
+    public $timeTableWidth = 155;
+
     public function createForm(){
         $active = 'group';
         return view('group.create', compact('active'));
@@ -187,4 +192,98 @@ class GroupController extends Controller
         }
         echo 'success';
     }
+
+
+    public function getGroupTimetable(Request $request, $id) {
+        $idGroup = $id;
+        $group = $this->getGroupById($idGroup);
+        $aggregate = [];
+
+        foreach($group->members as $user) {
+            $userCourses = DB::table('users')
+                ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
+                ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+                ->where('users.id', '=', $user)
+//                ->where('users.id', '!=', Auth::id())
+                ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
+                ->orderby('courses.timing', 'DESC')
+                ->get();
+            if (Auth::id() != $user) {
+                $userMeetings = $this->getUserMeetings($user)->all();
+
+                $meetingArr = array();
+
+                foreach($userMeetings as $meeting) {
+                    if ($meeting->status == "accepted") {
+                        $app = app();
+                        $meetingData = $app->make('stdClass');
+                        $meetingData->name = $meeting->date;
+                        $meetingData->timing = $meeting->time;
+                        $meetingData->section = "";
+                        $meetingData->height = $this->timeToMins($meeting->time);
+                        $meetingData->width = $this->timeTableWidth;
+                        $meetingData->days = array($meeting->day);
+                        $meetingData->max = $this->tableHeight;
+                        $meetingData->min = 0;
+                        $meetingData->startingHeight = $this->startingHeight($meeting->time);
+                        $meetingData->color = "#2ca02c";
+                        $meetingData->loggedIn = true;
+
+                        $meetingArr[] = $meetingData;
+                    }
+                }
+            } else {
+                $meetingArr = array();
+            }
+
+            $userData = array();
+
+            foreach($userCourses as $course) {
+                $app = app();
+                $courseData = $app->make('stdClass');
+                $courseData->name = $course->courseName;
+                $courseData->timing = $course->timing;
+                $courseData->section = $course->section;
+                $courseData->height = $this->timeToMins($course->timing);
+                $courseData->width = $this->timeTableWidth;
+                $courseData->days = explode(',', $course->days);
+                $courseData->max = $this->tableHeight;
+                $courseData->min = 0;
+                $courseData->startingHeight = $this->startingHeight($course->timing);
+                $courseData->color = "##3c948b";
+                $courseData->loggedIn = false;
+
+                $userData[] = $courseData;
+            }
+            $transition = array_merge($meetingArr, $userData);
+            $aggregate = array_merge($aggregate, $transition);
+        }
+        $courses = $aggregate;
+        $url = url('/scheduleGroup');
+        return view('group.schedule', compact('courses', 'idGroup', 'url'));
+    }
+
+    public function timeToMins($time) {
+        $startTime = strtotime(explode('-', $time)[0]);
+        $endTime = strtotime(explode('-', $time)[1]);
+        $minutes = abs($endTime - $startTime) / 60;
+
+        $totalMinutes = abs(strtotime($this->timeTableEnd) - strtotime($this->timeTableStart)) / 60;
+
+        return $minutes/$totalMinutes * $this->tableHeight;
+    }
+
+    public function startingHeight($time) {
+        $startTime = strtotime($this->timeTableStart);
+        $endTime = strtotime(explode('-', $time)[0]);
+        if ($endTime == $startTime) {
+            return 0;
+        }
+        $minutes = abs($endTime - $startTime) / 60;
+
+        $totalHeight = ($this->tableHeight/(abs(strtotime($this->timeTableEnd) - strtotime($this->timeTableStart)) / 60)) * $minutes;
+
+        return $totalHeight;
+    }
+
 }

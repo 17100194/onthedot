@@ -279,18 +279,25 @@
                                                                     <div class="modal-header">
                                                                         <p>Select a Time slot</p>
                                                                     </div>
+                                                                    <div class="timetable-legend">
+                                                                        <ul>
+                                                                            <li>Your courses: <div class="yourCourses"></div></li>
+                                                                            <li>Their courses: <div class="theirCourses"></div></li>
+                                                                            <li>Meetings: <div class="meetingBox"></div></li>
+                                                                        </ul>
+                                                                    </div>
                                                                     <div class="modal-body">
                                                                         <div class="courses">
                                                                             <?php foreach($groupMap[$group->id] as $course): ?>
                                                                             <?php
-                                                                            $left = 0;
+                                                                            $left = 2;
                                                                             ?>
                                                                             <?php if(!$course): ?>
                                                                                 <?php continue; ?>
                                                                                 <?php else: ?>
                                                                             <?php foreach($course->days as $day): ?>
                                                                             <?php
-                                                                            $left = 90;
+                                                                            $left = 92;
                                                                             switch ($day) {
                                                                                 case "Monday":
 //
@@ -614,7 +621,7 @@
         });
         $('.timetable td:not(:first)').hover(function () {
             var t = $(this);
-            $(this).css('background-color', 'green')
+//            $(this).css('background-color', 'green')
             $(this).click(function () {
                 $(this).parents('.modal-body').find('.slot_details').show();
                 var time = $(this).closest('tr').children('th').text();

@@ -82,10 +82,10 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-3 center-block actionbtn">
-                                    <button type="button" class="btn btn-success accept-group-request" data-placement="request_<?= $groupRequest->requestid ?>" style="display: block;">Accept</button>
+                                    <button type="button" class="button_sliding_bg accept-group-request" data-placement="request_<?= $groupRequest->requestid ?>" style="display: block;">Accept</button>
                                 </div>
                                 <div class="col-sm-3 center-block actionbtn">
-                                    <button type="button" class="btn btn-warning decline-group-request" data-placement="requestg_<?= $groupRequest->requestid ?>" style="display: block;">Reject</button>
+                                    <button type="button" class="button_sliding_bg decline-group-request" data-placement="requestg_<?= $groupRequest->requestid ?>" style="display: block;">Reject</button>
                                 </div>
                             </div>
                         </li>

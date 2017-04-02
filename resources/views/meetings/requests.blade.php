@@ -24,13 +24,13 @@
                                 </div>
                                 <br>
                                 <div class="col-md-3 center-block actionbtn">
-                                    <button type="button" class="btn btn-success accept-request" data-placement="request_<?= $request->meetingid ?>" style=" display: block;">Accept</button>
+                                    <button type="button" class="button_sliding_bg accept-request" data-placement="request_<?= $request->meetingid ?>" style=" display: block;">Accept</button>
                                 </div>
                                 <div class="col-md-3 center-block actionbtn">
                                     <div class="alert alert-warning" style="display:none;">
                                         <strong>Meeting Request Rejected!</strong> The rejection reason will be shown on their profile.
                                     </div>
-                                    <button type="button" class="btn btn-warning decline-request" data-placement="request_<?= $request->meetingid ?>" data-toggle="modal" data-target="#reject_<?= $request->meetingid ?>" style=" display: block;">Reject/Reschedule</button>
+                                    <button type="button" class="button_sliding_bg decline-request" data-placement="request_<?= $request->meetingid ?>" data-toggle="modal" data-target="#reject_<?= $request->meetingid ?>" style=" display: block;">Reject/Reschedule</button>
                                     <div id="reject_<?= $request->meetingid ?>" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                                         <div class="modal-dialog modal-sm" role="document">
                                             <div class="modal-content">
@@ -40,7 +40,7 @@
                                                     <button data-meetingid="<?= $request->meetingid ?>" type="button" class="reject-btn btn btn-danger" data-placement="" style=" display: block;">Reject</button>
                                                     <hr/>
                                                     <h4 class="text-center">You may also ask for the meeting to be rescheduled</h4>
-                                                    <button type="button" class="btn btn-primary" data-placement="" style="margin: 20px auto; display: block;">Reschedule</button>
+                                                    <button type="button" class="button_sliding_bg" data-placement="" style="margin: 20px auto; display: block;">Reschedule</button>
                                                 </div>
                                             </div>
                                         </div>

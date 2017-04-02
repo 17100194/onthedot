@@ -21,9 +21,24 @@ class MeetingsController extends Controller
             ->join('users', 'u2.userid', '=', 'users.id')
             ->join('meetings', 'u2.meetingid', '=', 'meetings.id')
             ->where('u1.userid', '=', Auth::id())
-            ->where('u2.userid', '!=', Auth::id())->get();
+            ->where('u2.userid', '!=', Auth::id())
+            ->get();
         $active = 'view-meeting';
         return view('meetings.scheduled', compact('meetings', 'active'));
+    }
+
+    public function requested()
+    {
+        $meetings = DB::table('user_has_meeting AS u1')
+            ->join('user_has_meeting as u2', 'u1.meetingid', '=', 'u2.meetingid')
+            ->join('users', 'u2.userid', '=', 'users.id')
+            ->join('meetings', 'u2.meetingid', '=', 'meetings.id')
+            ->where('meetings.status', '=', 'pending')
+            ->where('meetings.host', '=', Auth::id())
+            ->where('u1.userid', '=', Auth::id())
+            ->where('u2.userid', '!=', Auth::id())->get();
+        $active = 'requested';
+        return view('meetings.requested', compact('meetings', 'active'));
     }
 
     public function cancelMeeting(Request $request) {
@@ -71,6 +86,7 @@ class MeetingsController extends Controller
         $users = [];
         $groups = [];
         $usercourses = [];
+        $meetingList = [];
 
         if (!$query) {
             $active = 'meeting';
@@ -139,7 +155,7 @@ class MeetingsController extends Controller
                 }
             }
         }
-        else{
+        else {
             $meetingList = [];
         }
 
@@ -204,7 +220,7 @@ class MeetingsController extends Controller
                         $courseData->max = $this->tableHeight;
                         $courseData->min = 0;
                         $courseData->startingHeight = $this->startingHeight($course->timing);
-                        $courseData->color = "#2a88bd";
+                        $courseData->color = "##3c948b";
                         $courseData->loggedIn = false;
 
                         $userData[] = $courseData;
@@ -215,6 +231,8 @@ class MeetingsController extends Controller
                 $temp = array_merge($meetingList, $loggedInCourses);
                 $groupMap[$group->id] = array_merge($aggregate, $temp);
             }
+        } else {
+            $meetingList = array();
         }
 
         $hashMap = array();
@@ -242,7 +260,7 @@ class MeetingsController extends Controller
                 $courseData->max = $this->tableHeight;
                 $courseData->min = 0;
                 $courseData->startingHeight = $this->startingHeight($course->timing);
-                $courseData->color = "#2a88bd";
+                $courseData->color = "##3c948b";
                 $courseData->loggedIn = false;
 
                 $userData[] = $courseData;

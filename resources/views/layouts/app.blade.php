@@ -11,7 +11,7 @@
     <title>{{ config('app.name', 'On the DOT') }}</title>
 
     <!-- Styles -->
-
+    <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css" >
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css" >
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />

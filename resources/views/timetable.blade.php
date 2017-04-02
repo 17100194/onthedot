@@ -216,7 +216,7 @@
                 var t = $(this);
                 $(this).attr('data-toggle', 'modal');
                 $(this).attr('data-target', '#addModal');
-                $(this).css('background-color', '#a0af00');
+//                $(this).css('background-color', '#a0af00');
                 $(this).click(function () {
                     var time = $(this).closest('tr').children('th').text();
                     $('.hr').html(time.split(':')[0]+" : ");

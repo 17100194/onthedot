@@ -3,6 +3,7 @@
 namespace App\Providers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use DateTime;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
@@ -167,7 +168,8 @@ class AppServiceProvider extends ServiceProvider
             ->get();
 
         foreach($generalNotifications as $row) {
-            $requests[] = $row->notification_content;
+            $timeHTML = '<span class="notification-time">'.$this->timeElapsed($row->created_on).'</span>';
+            $requests[] = $row->notification_content.$timeHTML;
         }
 
 //        foreach($groupRequestPending as $row) {
@@ -177,6 +179,46 @@ class AppServiceProvider extends ServiceProvider
 
         return $requests;
     }
+
+
+    /**
+     * http://stackoverflow.com/questions/1416697/converting-timestamp-to-time-ago-in-php-e-g-1-day-ago-2-days-ago
+     *
+     * X time ago
+     *
+     * @param $datetime
+     * @param bool $full
+     * @return string
+     */
+    public function timeElapsed($datetime, $full = false) {
+        $now = new DateTime;
+        $ago = new DateTime($datetime);
+        $diff = $now->diff($ago);
+
+        $diff->w = floor($diff->d / 7);
+        $diff->d -= $diff->w * 7;
+
+        $string = array(
+            'y' => 'year',
+            'm' => 'month',
+            'w' => 'week',
+            'd' => 'day',
+            'h' => 'hour',
+            'i' => 'minute',
+            's' => 'second',
+        );
+        foreach ($string as $k => &$v) {
+            if ($diff->$k) {
+                $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
+            } else {
+                unset($string[$k]);
+            }
+        }
+
+        if (!$full) $string = array_slice($string, 0, 1);
+        return $string ? implode(', ', $string) . ' ago' : 'just now';
+    }
+
     /**
      * Register any application services.
      *

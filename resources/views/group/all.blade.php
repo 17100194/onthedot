@@ -13,7 +13,7 @@
             @if (count($groups) > 0)
                 <ul style="list-style: none; padding-left: 0px;">
                     @foreach($groups as $group)
-                        <li style="display: inline-block; width: 49.5%;">
+                        <li style="display: inline-block; width: 49.5%; position: relative;">
                             <div id="group_<?= $group->id ?>" class="notification-box" style="position: relative;">
                                 <button data-toggle="modal" data-target="#dropModal_<?= $group->id?>" class="btn btn-danger drop hover-action">Leave <i class="fa fa-window-close fa-lg" aria-hidden="true"></i></button>
                                 <button style="left:0pt;" data-toggle="modal" data-target="#infoModal_<?= $group->id?>" class="btn btn-danger drop hover-action">Group Info <i class="fa fa-info fa-lg" aria-hidden="true"></i></button>
@@ -124,6 +124,9 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="meetBtn">
+                                <a href="<?= url('/group/schedule/'.$group->id) ?>">Meet</a>
                             </div>
                         </li>
                     @endforeach

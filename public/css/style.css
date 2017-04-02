@@ -26,7 +26,7 @@ body {
 .button_sliding_bg_2 {
     color: #3c948b;
     background: transparent;
-    padding: 12px 17px;
+    padding: 3px 10px;
     margin: 25px;
     font-family: 'OpenSansBold', sans-serif;
     border: 3px solid #3c948b;
@@ -51,7 +51,7 @@ body {
 .button_sliding_bg {
     color: #3b3a36;
     background: transparent;
-    padding: 12px 17px;
+    padding: 3px 10px;
     margin: 25px;
     font-family: 'OpenSansBold', sans-serif;
     border: 3px solid #3b3a36;
@@ -85,6 +85,7 @@ body {
     -webkit-box-shadow: 0 8px 6px -6px #999;
     -moz-box-shadow: 0 8px 6px -6px #999;
     box-shadow: 0 8px 6px -6px #999;
+    z-index: 4000;
 }
 
 .underline{
@@ -170,7 +171,7 @@ h4 a {
 }
 .notification-box {
  width: 70%;
-    margin-left: 15%;
+    margin-left: 5%;
  margin-bottom: 8px;
  padding: 15px;
  background: #3c948b;
@@ -402,8 +403,12 @@ svg text {
 }
 
 .panel-heading, .panel-heading:hover, .active, .active:hover {
- background: #00A357;
- color: white;
+ background: #3c948b;
+ color: #3c948b;
+}
+
+.nav-link.active {
+    color: white;
 }
 
 .modal {
@@ -465,16 +470,66 @@ svg text {
 }
 
 .ttElement {
- position: absolute;
- background-color: #2a88bd;
- width: 167px;
- display: inline-block;
- border: 1px solid #308A0E;
- overflow: hidden;
- -webkit-transition: height ease 1s;
- -moz-transition: height ease 1s;
- -o-transition: height ease 1s;
- transition: height ease 1s;
+    position: absolute;
+    background-color: #3c948b;
+    width: 167px;
+    display: inline-block;
+    border: 1px solid #797979   ;
+    border-right: none;
+    overflow: hidden;
+    -webkit-transition: height ease 1s;
+    -moz-transition: height ease 1s;
+    -o-transition: height ease 1s;
+    transition: height ease 1s;
+    font-size: 9px;
+
+}
+
+.timetable-legend {
+    width: 100%;
+    display: block;
+    height: 30px;
+}
+
+.timetable-legend ul {
+    list-style: none;
+}
+
+.timetable-legend ul li {
+    float: left;
+    margin: 5px;
+}
+
+.yourCourses {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: #2ca02c;
+}
+
+.theirCourses {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: #3c948b;
+}
+
+.meetingBox {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: #2ca02c;
+    opacity: 0.5;
+}
+
+
+
+#timetable td:hover {
+    background: #B6DDE0;
+}
+
+.timetable td:hover {
+    background: #B6DDE0;
 }
 /*.ttElement:hover{*/
  /*height:90px !important;*/
@@ -494,4 +549,29 @@ svg text {
 
 .hover-action i {
     margin-left: 5px;
+}
+
+.meetBtn {
+    position: absolute;
+    left: 24px;
+    top: 69px;
+    background: #367994;
+    color: white;
+    padding: 3px 6px;
+    border-radius: 3px;
+}
+
+.meetBtn a {
+    color: white;
+    text-decoration: none;
+}
+
+.meetBtn:hover {
+    background: #1B3D4A;
+}
+
+.notification-time {
+    display: block;
+    font-size: 10px;
+    color: #878687;
 }
