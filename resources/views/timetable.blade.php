@@ -195,39 +195,7 @@
     </div>
     <script>
         $(document).ready(function () {
-            $('.searchuser').select2({
-                placeholder: 'Select a User',
-                ajax: {
-                    url: './group/adduser',
-                    dataType: 'json',
-                    delay: 250,
-                    processResults: function (data) {
-                        return {
-                            results: data
-                        };
-                    },
-                    cache: true
-                },
-                allowClear: true,
-                minimumInputLength: 2,
-                maximumSelectionLength: 1
-            });
-            $('.timetable td:not(:first)').hover(function () {
-                var t = $(this);
-                $(this).attr('data-toggle', 'modal');
-                $(this).attr('data-target', '#addModal');
-//                $(this).css('background-color', '#a0af00');
-                $(this).click(function () {
-                    var time = $(this).closest('tr').children('th').text();
-                    $('.hr').html(time.split(':')[0]+" : ");
-                    $('.ampm').html(time.slice(-2));
-                    var cell = $(this).closest('td');
-                    var cellIndex = cell[0].cellIndex
-                    $('.day').html(t.parents('.myTimetable').find('.timetable')[0].rows[0].cells[cellIndex].innerText);
-                });
-            }, function () {
-                $(this).css('background-color', '')
-            });
+
         });
     </script>
 @endsection

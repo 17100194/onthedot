@@ -140,7 +140,18 @@ body {
 /*
 Header
 */
-
+.notification{
+    position:absolute;
+    text-align: center;
+    color: white;
+    left:-7px;
+    top:7px;
+    background-color:#3c948b;
+    line-height:20px;
+    width:20px;
+    height:20px;
+    border-radius:10px;
+}
 h4 a:hover, a {
  text-decoration: none;
  color: #b3c2bf;
@@ -158,6 +169,9 @@ h4 a {
     border-bottom: 2px solid #3c948b;
     padding-bottom: 5px;
 }
+.modal{
+    margin-top: 50px;
+}
 
 .row p {
     text-align: center;
@@ -171,7 +185,7 @@ h4 a {
 }
 .notification-box {
  width: 70%;
-    margin-left: 5%;
+    margin-left: 13%;
  margin-bottom: 8px;
  padding: 15px;
  background: #3c948b;
@@ -402,15 +416,6 @@ svg text {
  text-decoration: none;
 }
 
-.panel-heading, .panel-heading:hover, .active, .active:hover {
- background: #3c948b;
- color: #3c948b;
-}
-
-.nav-link.active {
-    color: white;
-}
-
 .modal {
  color: #005C31;
 }
@@ -553,12 +558,15 @@ svg text {
 
 .meetBtn {
     position: absolute;
-    left: 24px;
-    top: 69px;
+    width: 100%;
+    left: 0pt;
+    top:90%;
+    font-weight: 400;
     background: #367994;
     color: white;
-    padding: 3px 6px;
+    padding: 7px;
     border-radius: 3px;
+    box-shadow: 5px 5px 5px grey;
 }
 
 .meetBtn a {

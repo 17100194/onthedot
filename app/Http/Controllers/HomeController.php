@@ -104,6 +104,19 @@ class HomeController extends Controller
         return view('home', compact('allCourses', 'courses', 'meetings', 'requests', 'user', 'groupRequestPending', 'groupRequestRejected', 'groupRequestAccepted', 'groups', 'active'));
     }
 
+    public function seeNotifications(){
+        $seenNotifications = DB::table('user_notifications')
+            ->where('userlist', 'LIKE', '%,'.Auth::id().',%')->where('seen', '=', 'no')->get();
+        if(count($seenNotifications) > 0){
+            DB::table('user_notifications')
+                ->where('userlist', 'LIKE', '%,'.Auth::id().',%')
+                ->update(['seen' => 'yes']);
+            return;
+        } else{
+            return;
+        }
+    }
+
     public  function Timetable(){
         $allCourses[] = array();
         $courses = DB::table('user_has_course')

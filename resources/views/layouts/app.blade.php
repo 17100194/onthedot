@@ -80,8 +80,19 @@
                         <li><a href="{{ url('/register') }}" >Sign Up</a></li>
                     @else
                         <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <a class="dropdown-toggle notification-button" data-toggle="dropdown" style="position: relative;" role="button" aria-expanded="false">
                             <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                                @if (count($notifications) > 0)
+                                    <?php $num = 0;?>
+                                    @foreach($notifications as $notification)
+                                        @if($notification->seen == 'no')
+                                            <?php $num = $num + 1?>
+                                            @endif
+                                        @endforeach
+                                    @if($num != 0)
+                                    <div class="notification"><?= $num?></div>
+                                        @endif
+                                @endif
                             </a>
                             <ul id="notifications" class="dropdown-menu" role="menu" style="width: 350px; overflow-y: auto; color: #666;">
                             @if (count($requests) > 0)
@@ -126,5 +137,23 @@
     </nav>
     @yield('content')
 </div>
+<script>
+    $('.notification-button').click(function () {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            method: "POST",
+            url: "http://localhost/schedulerapp/trunk/public/seeNotifications",
+            success: function(data) {
+                $('.notification').hide();
+            },
+            error: function (xhr, status) {
+            }
+        });
+    });
+</script>
 </body>
 </html>

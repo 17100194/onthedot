@@ -6,7 +6,7 @@
             padding: 0px;
         }
     </style>
-    <div class="container" style="width: 90%;">
+    <div class="container" style="width: 90%; margin-top: 20px;">
         <div class="row">
             <ul class="nav search-tabs nav-tabs" role="tablist">
                 <li class="nav-item">
@@ -28,7 +28,6 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="panel panel-default">
                                     @if (count($users) === 0)
                                         No users found with the query
                                     @elseif (count($users) >= 1)
@@ -237,7 +236,6 @@
                                         </ul>
                                     @endif
                                 </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -251,7 +249,6 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="panel panel-default">
                                     @if (count($groups) === 0)
                                         No groups with the query
                                     @elseif (count($groups) >= 1)
@@ -465,7 +462,6 @@
                                     @endif
                                 </div>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -475,11 +471,16 @@
     <script type="text/javascript">
         $('.search-tabs a').click(function (e) {
             e.preventDefault();
-//            $(this).tab('show');
+            $(this).tab('show');
         })
     </script>
 
     <script type="text/javascript">
+        $('#minute').change(function () {
+            if($(this).val().length === 1){
+                $(this).val('0'+$(this).val());
+            }
+        });
         $('#select_user').on('click', function(){
             var start_time = $(this).parents('.modal-body').find('#hr').text()+$(this).parents('.modal-body').find('#minute').val()+$(this).parents('.modal-body').find('#ampm').text();
             var hrs = start_time.split(":")[0];
@@ -512,6 +513,7 @@
             }
             var end_time = newhrs +":"+mins+amPM;
             var time = start_time + '-' + end_time;
+            console.log(time);
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

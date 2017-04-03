@@ -81,7 +81,16 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer('layouts.app', function ($view) {
             $view->requests = $this->getAllNotifications();
+            $view->notifications = $this->notifications();
         });
+    }
+
+    public function notifications(){
+        $Notifications = DB::table('user_notifications')
+            ->where('userlist', 'LIKE', '%,'.Auth::id().',%')
+            ->orderBy('created_on', 'desc')
+            ->get();
+        return $Notifications;
     }
 
     public function getAllNotifications() {

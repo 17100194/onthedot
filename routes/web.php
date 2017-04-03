@@ -22,6 +22,7 @@ Route::get('login', function() {
 Auth::routes();
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::get('/home', 'HomeController@index');
+Route::post('/seeNotifications', 'HomeController@seeNotifications');
 Route::get('/meetings', 'MeetingsController@index');
 Route::get('/requested', 'MeetingsController@requested');
 Route::get('/group/schedule/{id}', 'GroupController@getGroupTimetable');

@@ -186,7 +186,7 @@ class GroupController extends Controller
             $notificationList = ','.strval($user).',';
             $loggedIn = $this->getUserById(Auth::id());
             $url = url("/notification?type=group-pending&id=". strval($insert));
-            $html = '<a href="'.$url.'"><strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has requested you to join their group <strong>'.$groupname.'</strong></a>';
+            $html = '<strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has requested you to join their group <strong>'.$groupname.'</strong></a>';
             DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group', 'userlist' => $notificationList));
 
         }
