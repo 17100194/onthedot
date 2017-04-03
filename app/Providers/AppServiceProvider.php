@@ -4,7 +4,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use DateTime;
-
+use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 
@@ -191,10 +191,10 @@ class AppServiceProvider extends ServiceProvider
      * @return string
      */
     public function timeElapsed($datetime, $full = false) {
-        $now = new DateTime;
-        $ago = new DateTime($datetime);
+        $tz = new DateTimeZone('Asia/Karachi');
+        $now = new DateTime('now', $tz);
+        $ago = new DateTime($datetime, $tz);
         $diff = $now->diff($ago);
-
         $diff->w = floor($diff->d / 7);
         $diff->d -= $diff->w * 7;
 
