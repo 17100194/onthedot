@@ -189,7 +189,6 @@ class AppServiceProvider extends ServiceProvider
         return $requests;
     }
 
-
     /**
      * http://stackoverflow.com/questions/1416697/converting-timestamp-to-time-ago-in-php-e-g-1-day-ago-2-days-ago
      *

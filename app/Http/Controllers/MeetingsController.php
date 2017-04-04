@@ -97,10 +97,13 @@ class MeetingsController extends Controller
             $groupInfo = $this->getGroupById($group->id);
             $group->creator_name = $this->getUserById($group->id_creator);
             $group->members = $groupInfo->members;
+            $group->userlist = $groupInfo->userlist;
         }
 
 
-        $users = DB::table('users')->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%')->paginate(10);
+        $users = DB::table('users')->where('type', '=', 'student')->where(function ($q) use ($query) {
+            $q->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%');
+        })->paginate(10);
 
         $loggedInCoursesQ = DB::table('users')
             ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
@@ -480,7 +483,7 @@ class MeetingsController extends Controller
 
         $notificationList = ','.$userid.',';
         $loggedIn = $this->getUserById(Auth::id());
-        $html = '<a href="'.url('/notification?type=meeting-request&id='. strval($insert)).'"><strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has requested to meet you at '.strval($time) .' - ' . strval($date) .'</a>';
+        $html = '<strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has requested to meet you at '.strval($time) .' - ' . strval($date);
         DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
 
 
@@ -520,7 +523,7 @@ class MeetingsController extends Controller
 
         $notificationList = ','.$meeting->host.',';
         $loggedIn = $this->getUserById(Auth::id());
-        $html = '<a href="'.url('/notification?type=meeting-accepted&id='. strval($meetingid)).'"><strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has accepted your request for meeting at '.$meeting->time .' - ' . $meeting->date .'</a>';
+        $html = '<strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has accepted your request for meeting at '.$meeting->time .' - ' . $meeting->date;
         DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
 
     }
@@ -537,7 +540,7 @@ class MeetingsController extends Controller
         $meeting = $this->getMeetingById($meetingid);
         $loggedIn = $this->getUserById(Auth::id());
         $notificationList = ','.$meeting->host.',';
-        $html = '<a href="'.url('/notification?type=meeting-rejected&id='. strval($meetingid)).'"><strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong>'. ' has rejected your request to meet. Reason: <strong> '.$message .'</strong></a>';
+        $html = '<strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong>'. ' has rejected your request to meet. Reason: <strong> '.$message .'</strong>';
         DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
 
     }

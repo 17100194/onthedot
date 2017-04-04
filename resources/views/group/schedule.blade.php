@@ -8,8 +8,8 @@
         </div>
         <div class="timetable-legend">
             <ul>
-                <li>Your courses: <div class="yourCourses"></div></li>
-                <li>Their courses: <div class="theirCourses"></div></li>
+                <li>Their courses: <div class="yourCourses"></div></li>
+                <li>Your courses: <div class="theirCourses"></div></li>
                 <li>Meetings: <div class="meetingBox"></div></li>
             </ul>
         </div>
@@ -186,6 +186,11 @@
 </div>
 
 <script type="text/javascript">
+    $('#minute').change(function () {
+        if($(this).val().length === 1){
+            $(this).val('0'+$(this).val());
+        }
+    });
     $('#select_group').on('click', function(){
         var start_time = $(this).parents('.modal-body').find('#hr').text()+$(this).parents('.modal-body').find('#minute').val()+$(this).parents('.modal-body').find('#ampm').text();
         var hrs = start_time.split(":")[0];
@@ -267,7 +272,7 @@
             console.log();
             var cellIndex = cell[0].cellIndex
             $('.day').html(t.parents('.modal-body').find('.timetable')[0].rows[0].cells[cellIndex].innerText);
-            $(this).parents('.modal').animate({
+            $('body').animate({
                 scrollTop: $(this).parents('.modal-body').find('.slot_details').offset().top
             }, 1000);
         });

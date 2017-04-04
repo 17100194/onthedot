@@ -22,7 +22,6 @@
 <!-- Scripts -->
 <script
         src="{{URL::asset('js/app.js')}}"></script>
-
 <script
         src="https://code.jquery.com/jquery-3.1.1.min.js"
         integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
@@ -96,7 +95,7 @@
                             </a>
                             <ul id="notifications" class="dropdown-menu" role="menu" style="width: 350px; overflow-y: auto; color: #666;">
                             @if (count($requests) > 0)
-                                <ul style="list-style: none;">
+                                <ul class="notificationbox" style="list-style: none;">
                                     @foreach($requests as $request)
                                         <li><?= $request?></li>
                                     @endforeach
@@ -138,6 +137,9 @@
     @yield('content')
 </div>
 <script>
+    $(document).ready(function () {
+
+    });
     $('.notification-button').click(function () {
         $.ajaxSetup({
             headers: {

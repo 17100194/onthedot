@@ -9,7 +9,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-
+use DataTime;
+use DataTimeZone;
 
 class Controller extends BaseController
 {
@@ -43,6 +44,7 @@ class Controller extends BaseController
         $groupInfo = $app->make('stdClass');
         $groupUsers = array();
         $first = true;
+        $groupMembers = [];
         $groupInfo->members = array();
         foreach ($sql as $group) {
             if ($first) {
@@ -50,14 +52,16 @@ class Controller extends BaseController
                 $groupInfo->name = $group->name;
                 $groupInfo->idcreator = $group->id_creator;
                 $groupInfo->created_on = $group->created_on;
-                $groupInfo->id = $this->getUserById($group->id_creator);
+                $groupInfo->creator = $this->getUserById($group->id_creator);
             }
             $groupUsers[] = $group->id_user;
+            $groupMembers[] = $this->getUserById($group->id_user);
             $first = false;
         }
 //        var_dump($groupInfo);
         if (count($groupUsers) > 0) {
             $groupInfo->members = $groupUsers;
+            $groupInfo->userlist = $groupMembers;
         }
 
         return $groupInfo;
@@ -104,44 +108,5 @@ class Controller extends BaseController
         return DB::table('user_has_course')
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
             ->where('user_has_course.userid', '=', $idUser)->get();
-    }
-
-
-    /**
-     * http://stackoverflow.com/questions/1416697/converting-timestamp-to-time-ago-in-php-e-g-1-day-ago-2-days-ago
-     *
-     * X time ago
-     *
-     * @param $datetime
-     * @param bool $full
-     * @return string
-     */
-    public function timeElapsed($datetime, $full = false) {
-        $now = new DateTime;
-        $ago = new DateTime($datetime);
-        $diff = $now->diff($ago);
-
-        $diff->w = floor($diff->d / 7);
-        $diff->d -= $diff->w * 7;
-
-        $string = array(
-            'y' => 'year',
-            'm' => 'month',
-            'w' => 'week',
-            'd' => 'day',
-            'h' => 'hour',
-            'i' => 'minute',
-            's' => 'second',
-        );
-        foreach ($string as $k => &$v) {
-            if ($diff->$k) {
-                $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
-            } else {
-                unset($string[$k]);
-            }
-        }
-
-        if (!$full) $string = array_slice($string, 0, 1);
-        return $string ? implode(', ', $string) . ' ago' : 'just now';
     }
 }
