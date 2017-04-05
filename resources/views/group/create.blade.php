@@ -44,9 +44,13 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-                console.log($('.searchuser').val());
+                if($('.searchuser').val() != ''){
+                    $('.error_users').hide();
+                }
+                if($('#group_name').val() != ''){
+                    $('.error_name').hide();
+                }
                 if ($('.searchuser').val() != '' && $('#group_name').val() != '') {
-
                     $.ajax({
                         method: "POST",
                         url: "./makegroup",
@@ -70,7 +74,6 @@
                     });
                 }
                 else{
-                    $('.alert-danger').show();
                     if($('.searchuser').val() == ''){
                         $('.error_users').show();
                     }
