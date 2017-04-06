@@ -1,5 +1,10 @@
 <?php
+$url = parse_url(getenv("mysql://b17292ca19997b:76aa4224@us-cdbr-iron-east-03.cleardb.net/heroku_8027a62ce86e665?reconnect=true"));
 
+$host = $url["host"];
+$username = $url["user"];
+$password = $url["pass"];
+$database = substr($url["path"], 1);
 return [
 
     /*
@@ -54,11 +59,10 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', 'localhost'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => 'schedulerapp',
-            'username' => 'root',
-            'password' => 'root',
+            'host' => $host,
+            'database' => $database,
+            'username' => $username,
+            'password' => $password,
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',

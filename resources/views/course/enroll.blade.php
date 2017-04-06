@@ -14,6 +14,7 @@
         <div class='form navbar-form navbar-right searchform'>
             <input type="text" class="form-control search_term" placeholder="Search for a course...">
             <input type="submit" class="btn btn-primary searchQuery" value="Search"/>
+            <hr style="border-width:3px;">
         </div>
     </div>
     <div id="searchcourse">
