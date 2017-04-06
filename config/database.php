@@ -1,12 +1,5 @@
 <?php
-$url = parse_url(getenv("mysql://b17292ca19997b:76aa4224@us-cdbr-iron-east-03.cleardb.net/heroku_8027a62ce86e665?reconnect=true"));
 
-$host = $url["host"];
-$username = $url["user"];
-$password = $url["pass"];
-$database = substr($url["path"], 1);
-
-var_dump($host, $username, $password, $database)
 return [
 
     /*
