@@ -61,11 +61,11 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => $host,
+            'host' => 'us-cdbr-iron-east-03.cleardb.net',
             'port' => '3306',
-            'database' => $database,
-            'username' => $username,
-            'password' => $password,
+            'database' => 'heroku_8027a62ce86e665',
+            'username' => 'b17292ca19997b',
+            'password' => '76aa4224',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
