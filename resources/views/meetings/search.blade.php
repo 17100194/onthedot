@@ -32,7 +32,7 @@
                                 @elseif (count($users) >= 1)
                                     <ul style="list-style: none;">
                                         @foreach($users as $user)
-                                            @if($user->id != Auth::id() && $user->type == 'student')
+                                            @if($user->id != Auth::id())
                                                 <li>
                                                     <div style="padding: 15px;">
                                                         <div class="row">
@@ -255,38 +255,38 @@
                                     <div class="col-xs-3">
                                     </div>
                                 </div>
-                                @if (count($users) === 0)
+                                @if (count($instructors) === 0)
                                     No users found with the query
                                 @elseif (count($users) >= 1)
                                     <ul style="list-style: none;">
-                                        @foreach($users as $user)
-                                            @if($user->id != Auth::id() && $user->type == 'teacher')
+                                        @foreach($instructors as $instructor)
+                                            @if($instructor->id != Auth::id())
                                                 <li>
                                                     <div style="padding: 15px;">
                                                         <div class="row">
                                                             <div class="col-xs-3">
-                                                                <h4><?= $user->name ?></h4>
+                                                                <h4><?= $instructor->name ?></h4>
                                                             </div>
                                                             <div class="col-xs-3">
-                                                                <h4><?= $user->type ?></h4>
+                                                                <h4><?= $instructor->type ?></h4>
                                                             </div>
                                                             <div class="col-xs-3">
-                                                                <h4><?= $user->campusid ?></h4>
+                                                                <h4><?= $instructor->campusid ?></h4>
                                                             </div>
                                                             <div class="col-xs-3">
                                                                 <button type="button" class="btn btn-primary schedule" data-toggle="modal" data-target="#UserTimetable_user<?= $user->id ?>">Schedule Meeting</button>
                                                             </div>
                                                         </div>
-                                                        <div class="modal fade bs-example-modal-lg" id="UserTimetable_user<?= $user->id ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                                                        <div class="modal fade bs-example-modal-lg" id="UserTimetable_user<?= $instructor->id ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
                                                             <div class="modal-dialog modal-lg" role="document">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
                                                                         <p>Select a Time slot</p>
                                                                     </div>
                                                                     <div class="modal-body">
-                                                                        <input id="userid" type="hidden" value="<?= $user->id ?>">
+                                                                        <input id="userid" type="hidden" value="<?= $instructor->id ?>">
                                                                         <div class="courses">
-                                                                            <?php foreach($hashMap[$user->id] as $course): ?>
+                                                                            <?php foreach($hashMap[$instructor->id] as $course): ?>
                                                                             <?php
                                                                             $left = 0;
                                                                             ?>

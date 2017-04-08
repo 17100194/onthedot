@@ -99,7 +99,9 @@ class MeetingsController extends Controller
             $group->members = $groupInfo->members;
             $group->userlist = $groupInfo->userlist;
         }
-
+        $instructors = DB::table('users')->where('type', '=', 'teacher')->where(function ($q) use ($query){
+            $q->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%');
+        })->paginate(10);
 
         $users = DB::table('users')->where('type', '=', 'student')->where(function ($q) use ($query){
             $q->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%');
@@ -274,7 +276,42 @@ class MeetingsController extends Controller
 
         }
 
-        return view('meetings.search', compact('allCourses', 'users', 'hashMap', 'query', 'groups', 'active', 'groupMap'));
+        foreach ($instructors as $instructor) {
+            $userCourses = DB::table('users')
+                ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
+                ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+                ->where('users.id', '=', $instructor->id)
+                ->where('users.id', '!=', Auth::id())
+                ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
+                ->orderby('courses.timing', 'DESC')
+                ->get();
+
+            $userData = array();
+
+            foreach($userCourses as $course) {
+                $app = app();
+                $courseData = $app->make('stdClass');
+                $courseData->name = $course->courseName;
+                $courseData->timing = $course->timing;
+                $courseData->section = $course->section;
+                $courseData->height = $this->timeToMins($course->timing);
+                $courseData->width = $this->timeTableWidth;
+                $courseData->days = explode(',', $course->days);
+                $courseData->max = $this->tableHeight;
+                $courseData->min = 0;
+                $courseData->startingHeight = $this->startingHeight($course->timing);
+                $courseData->color = "##3c948b";
+                $courseData->loggedIn = false;
+
+                $userData[] = $courseData;
+            }
+            $array1 = array_merge($loggedInCourses, $userData);
+
+            $hashMap[$instructor->id] = array_merge($array1, $meetingList);
+
+        }
+
+        return view('meetings.search', compact('allCourses', 'instructors', 'users', 'hashMap', 'query', 'groups', 'active', 'groupMap'));
     }
 
     public function timeToMins($time) {
