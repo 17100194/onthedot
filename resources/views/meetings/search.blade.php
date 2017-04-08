@@ -5,7 +5,7 @@
         <div class="row">
             <ul class="nav nav-tabs" role="tablist">
                 <li role="presentation" class="active"><a href="#students" aria-controls="profile" role="tab" data-toggle="tab">Students <span class="badge"><?= count($users)?></span></a></li>
-                <li role="presentation"><a href="#instructors" aria-controls="messages" role="tab" data-toggle="tab">Instructors</a></li>
+                <li role="presentation"><a href="#instructors" aria-controls="messages" role="tab" data-toggle="tab">Instructors <span class="badge"><?= count($instructors)?></span></a></li>
                 <li role="presentation"><a href="#groups" aria-controls="settings" role="tab" data-toggle="tab">Groups <span class="badge"><?= count($groups)?></span></a></li>
             </ul>
 
@@ -274,10 +274,10 @@
                                                                 <h4><?= $instructor->campusid ?></h4>
                                                             </div>
                                                             <div class="col-xs-3">
-                                                                <button type="button" class="btn btn-primary schedule" data-toggle="modal" data-target="#UserTimetable_user<?= $user->id ?>">Schedule Meeting</button>
+                                                                <button type="button" class="btn btn-primary schedule" data-toggle="modal" data-target="#instructorTimetable_user<?= $instructor->id ?>">Schedule Meeting</button>
                                                             </div>
                                                         </div>
-                                                        <div class="modal fade bs-example-modal-lg" id="UserTimetable_user<?= $instructor->id ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                                                        <div class="modal fade bs-example-modal-lg" id="instructorTimetable_user<?= $instructor->id ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
                                                             <div class="modal-dialog modal-lg" role="document">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
