@@ -148,7 +148,7 @@
         });
         $.ajax({
             method: "POST",
-            url: "http://localhost/schedulerapp/trunk/public/seeNotifications",
+            url: "http://onthedot.herokuapp.com/public/seeNotifications",
             success: function(data) {
                 $('.notification').hide();
             },
