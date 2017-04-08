@@ -204,7 +204,7 @@
                                                                                         </div>
                                                                                         <div class="col-md-4">
                                                                                             <label for="end_time">Duration</label>
-                                                                                            <input id="duration" type="number" min="0" class="form-control" placeholder="Minutes">
+                                                                                            <input id="duration" type="number" min="0" class="form-control duration" placeholder="Minutes">
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -214,7 +214,7 @@
                                                                                 </div>
                                                                                 <hr>
                                                                                 <div class="form-group" style="text-align: center;">
-                                                                                    <a id="select_user" class="btn btn-primary">Send Meeting Request</a>
+                                                                                    <a class="btn btn-primary select_user">Send Meeting Request</a>
                                                                                 </div>
                                                                             </form>
                                                                         </div>
@@ -432,7 +432,7 @@
                                                                                         </div>
                                                                                         <div class="col-md-4">
                                                                                             <label for="end_time">Duration</label>
-                                                                                            <input id="duration" type="number" min="0" class="form-control" placeholder="Minutes">
+                                                                                            <input id="duration" type="number" min="0" class="form-control duration" placeholder="Minutes">
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
@@ -442,7 +442,7 @@
                                                                                 </div>
                                                                                 <hr>
                                                                                 <div class="form-group" style="text-align: center;">
-                                                                                    <a id="select_user" class="btn btn-primary">Send Meeting Request</a>
+                                                                                    <a class="btn btn-primary select_user">Send Meeting Request</a>
                                                                                 </div>
                                                                             </form>
                                                                         </div>
@@ -667,7 +667,7 @@
                                                                                     </div>
                                                                                     <div class="col-md-4">
                                                                                         <label for="end_time">Duration</label>
-                                                                                        <input id="duration" type="number" min="0" class="form-control" placeholder="Minutes">
+                                                                                        <input id="duration" type="number" min="0" class="form-control duration" placeholder="Minutes">
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
@@ -708,23 +708,23 @@
         $('.search-tabs a').click(function (e) {
             e.preventDefault();
             $(this).tab('show');
-        })
+        });
     </script>
 
     <script type="text/javascript">
-        $('#minute').change(function () {
+        $('.minute').change(function () {
             if($(this).val().length === 1){
                 $(this).val('0'+$(this).val());
             }
         });
-        $('#select_user').on('click', function(){
-            var start_time = $(this).parents('.modal-body').find('#hr').text()+$(this).parents('.modal-body').find('#minute').val()+$(this).parents('.modal-body').find('#ampm').text();
+        $('.select_user').on('click', function(){
+            var start_time = $(this).parents('.modal-body').find('.hr').text()+$(this).parents('.modal-body').find('.minute').val()+$(this).parents('.modal-body').find('.ampm').text();
             var hrs = start_time.split(":")[0];
             var mins = start_time.split(":")[1].substr(1,2);
             var amPM = start_time.split(":")[1].substr(3,4);
-            var duration = $(this).parents('.modal-body').find('#duration').val();
-            var day = $(this).parents('.modal-body').find('#day').text().split(' ')[0];
-            var date = $(this).parents('.modal-body').find('#day').text().split(' ')[1];
+            var duration = $(this).parents('.modal-body').find('.duration').val();
+            var day = $(this).parents('.modal-body').find('.day').text().split(' ')[0];
+            var date = $(this).parents('.modal-body').find('.day').text().split(' ')[1];
             var t = $(this);
             if(parseInt(mins) >= 60){
                 alert('Invalid Start Time');
@@ -789,13 +789,13 @@
             });
         });
         $('#select_group').on('click', function(){
-            var start_time = $(this).parents('.modal-body').find('#hr').text()+$(this).parents('.modal-body').find('#minute').val()+$(this).parents('.modal-body').find('#ampm').text();
+            var start_time = $(this).parents('.modal-body').find('.hr').text()+$(this).parents('.modal-body').find('.minute').val()+$(this).parents('.modal-body').find('.ampm').text();
             var hrs = start_time.split(":")[0];
             var mins = start_time.split(":")[1].substr(1,2);
             var amPM = start_time.split(":")[1].substr(3,4);
-            var duration = $(this).parents('.modal-body').find('#duration').val();
-            var day = $(this).parents('.modal-body').find('#day').text().split(' ')[0];
-            var date = $(this).parents('.modal-body').find('#day').text().split(' ')[1];
+            var duration = $(this).parents('.modal-body').find('.duration').val();
+            var day = $(this).parents('.modal-body').find('.day').text().split(' ')[0];
+            var date = $(this).parents('.modal-body').find('.day').text().split(' ')[1];
             var t = $(this);
             if(parseInt(mins) >= 60){
                 alert('Invalid Start Time');
