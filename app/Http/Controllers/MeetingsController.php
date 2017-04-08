@@ -84,6 +84,7 @@ class MeetingsController extends Controller
         $allCourses[] = array();
         $active = 'meeting';
         $users = [];
+        $instructors = [];
         $groups = [];
         $usercourses = [];
         $meetingList = [];
