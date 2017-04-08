@@ -238,7 +238,7 @@
                         </div>
                     </div>
                 </div>
-                <div role="tabpanel" class="tab-pane fade in" id="instructors"></div>
+                <div role="tabpanel" class="tab-pane fade in" id="instructors">
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
@@ -298,7 +298,7 @@
                                                                             $left = 90;
                                                                             switch ($day) {
                                                                                 case "Monday":
-    //
+                                                                                    //
                                                                                     break;
                                                                                 case "Tuesday":
                                                                                     $left += 155;
@@ -465,6 +465,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
                 <div role="tabpanel" class="tab-pane fade in" id="groups">
                     <div class="container">
                         <div class="row">
