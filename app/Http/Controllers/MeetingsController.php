@@ -101,7 +101,9 @@ class MeetingsController extends Controller
         }
 
 
-        $users = DB::table('users')->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%')->paginate(10);
+        $users = DB::table('users')->where('type', '=', 'student')->where(function ($q) use ($query){
+            $q->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%');
+        })->paginate(10);
 
         $loggedInCoursesQ = DB::table('users')
             ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
