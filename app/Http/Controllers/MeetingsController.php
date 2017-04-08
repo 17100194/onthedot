@@ -84,14 +84,14 @@ class MeetingsController extends Controller
         $allCourses[] = array();
         $active = 'meeting';
         $users = [];
-        $instructors = [];
         $groups = [];
         $usercourses = [];
         $meetingList = [];
+        $instructors = [];
 
         if (!$query) {
             $active = 'meeting';
-            return view('meetings.search', compact('allCourses', 'users', 'usercourses', 'query', 'groups', 'active'));
+            return view('meetings.search', compact('allCourses', 'instructors', 'users', 'usercourses', 'query', 'groups', 'active'));
         }
         $groups = DB::table('groups')->where('name', 'LIKE', '%' . $query . '%')->paginate(10);
         foreach ($groups as $group){
