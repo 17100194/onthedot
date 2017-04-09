@@ -737,6 +737,8 @@
                     var newhrs = (parseInt(hrs) + hrs_to_add).toString();
                     if(parseInt(newhrs) >= 12 && parseInt(hrs) < 12){
                             newhrs = parseInt(newhrs) % 12;
+                            console.log(newhrs, mins, hrs_to_add);
+                            return;
                             if(amPM == 'AM'){
                                 amPM = 'PM';
                             } else {

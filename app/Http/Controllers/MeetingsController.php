@@ -20,7 +20,7 @@ class MeetingsController extends Controller
             ->join('user_has_meeting as u2', 'u1.meetingid', '=', 'u2.meetingid')
             ->join('users', 'u2.userid', '=', 'users.id')
             ->join('meetings', 'u2.meetingid', '=', 'meetings.id')
-            ->where('meetings.status', '=', 'pending')
+            ->where('meetings.status', '=', 'accepted')
             ->where('u1.userid', '=', Auth::id())
             ->where('u2.userid', '!=', Auth::id())
             ->get();
@@ -58,7 +58,7 @@ class MeetingsController extends Controller
         $notificationList = implode(',', $users);
         $notificationList = ','.$notificationList.',';
         $loggedIn = $this->getUserById(Auth::id());
-        $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> will not be attending the meeting hosted on <strong>'.$meeting->time .' - ' . $meeting->date .'</strong> .';
+        $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> will not be attending the meeting hosted on <strong>'.$meeting->time .' - '. $meeting->date.'</strong>';
         DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'meeting', 'userlist' => $notificationList));
         if(count($userlist) < 2) {
             DB::table('meetings')->where('id', '=', intval($meetingid))->delete();
