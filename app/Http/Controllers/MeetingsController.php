@@ -89,6 +89,7 @@ class MeetingsController extends Controller
         $usercourses = [];
         $meetingList = [];
         $instructors = [];
+        $meetingArr = array();
 
         if (!$query) {
             $active = 'meeting';
@@ -121,7 +122,7 @@ class MeetingsController extends Controller
 //        $loggedInMeetings = array();
         //logged in data
         $loggedInCourses = array();
-        $loggedInMeetingsQ = $this->getUserMeetings(Auth::id())->all();
+        $loggedInMeetingsQ = $this->getUserMeetings(Auth::id());
 
         foreach($loggedInCoursesQ as $course) {
             $app = app();
@@ -140,8 +141,8 @@ class MeetingsController extends Controller
 
             $loggedInCourses[] = $courseData;
         }
-
-        if (count($loggedInMeetingsQ) > 0) {
+        $meetingList = [];
+//        if (count($loggedInMeetingsQ) > 0) {
             foreach($loggedInMeetingsQ as $meeting) {
                 if ($meeting->status == "accepted") {
                     $app = app();
@@ -161,10 +162,10 @@ class MeetingsController extends Controller
                     $meetingList[] = $meetingData;
                 }
             }
-        }
-        else {
-            $meetingList = [];
-        }
+//        }
+//        else {
+
+//        }
 
         // loggedin users
         // foreach groups
@@ -186,7 +187,7 @@ class MeetingsController extends Controller
                         ->orderby('courses.timing', 'DESC')
                         ->get();
                     if (Auth::id() != $user) {
-                        $userMeetings = $this->getUserMeetings($user)->all();
+                        $userMeetings = $this->getUserMeetings($user);
 
                         $meetingArr = array();
 
@@ -210,7 +211,7 @@ class MeetingsController extends Controller
                             }
                         }
                     } else {
-                        $meetingArr = array();
+//                        $meetingArr = array();
                     }
 
                     $userData = array();
@@ -239,7 +240,7 @@ class MeetingsController extends Controller
                 $groupMap[$group->id] = array_merge($aggregate, $temp);
             }
         } else {
-            $meetingList = array();
+//            $meetingList = array();
         }
 
         $hashMap = array();
@@ -267,7 +268,7 @@ class MeetingsController extends Controller
                 $courseData->max = $this->tableHeight;
                 $courseData->min = 0;
                 $courseData->startingHeight = $this->startingHeight($course->timing);
-                $courseData->color = "##3c948b";
+                $courseData->color = "#3c948b";
                 $courseData->loggedIn = false;
 
                 $userData[] = $courseData;
@@ -302,7 +303,7 @@ class MeetingsController extends Controller
                 $courseData->max = $this->tableHeight;
                 $courseData->min = 0;
                 $courseData->startingHeight = $this->startingHeight($course->timing);
-                $courseData->color = "##3c948b";
+                $courseData->color = "#3c948b";
                 $courseData->loggedIn = false;
 
                 $userData[] = $courseData;
