@@ -736,8 +736,8 @@
                     mins = (parseInt(mins) % 60).toString();
                     var newhrs = (parseInt(hrs) + hrs_to_add).toString();
                     if(parseInt(newhrs) >= 12 && parseInt(hrs) < 12){
-                            newhrs = parseInt(newhrs) % 12;
-                            console.log(newhrs, mins, hrs_to_add);
+                            newhrs = (parseInt(newhrs) % 12).toString();
+                            console.log(mins, hrs, newhrs, hrs_to_add);
                             return;
                             if(amPM == 'AM'){
                                 amPM = 'PM';
@@ -751,7 +751,6 @@
             }
             var end_time = newhrs +":"+mins+amPM;
             var time = start_time + '-' + end_time;
-            console.log(time);
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
