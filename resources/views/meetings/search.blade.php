@@ -733,22 +733,20 @@
             else{
                 mins = (parseInt(mins) + parseInt(duration)).toString();
                 var hrs_to_add = Math.floor(parseInt(mins) / 60);
-                    mins = (parseInt(mins) % 60).toString();
-                    var newhrs = (parseInt(hrs) + hrs_to_add).toString();
-                    if(parseInt(newhrs) >= 12 && parseInt(hrs) < 12){
-                            newhrs = (parseInt(newhrs) % 12).toString();
-                            if(amPM == 'AM'){
-                                amPM = 'PM';
-                            } else {
-                                amPM = 'AM';
-                            }
+                mins = (parseInt(mins) % 60).toString();
+                var newhrs = (parseInt(hrs) + hrs_to_add).toString();
+                if(parseInt(newhrs) >= 12 && parseInt(hrs) < 12){
+                    if(amPM == 'AM'){
+                        amPM = 'PM';
+                    } else {
+                        amPM = 'AM';
                     }
-                    if (mins.length === 1) {
-                        mins = '0'+mins;
-                    }
+                }
+                newhrs = (parseInt(newhrs) % 12).toString();
+                if (mins.length === 1) {
+                    mins = '0'+mins;
+                }
             }
-            console.log(mins, hrs, newhrs, hrs_to_add);
-            return;
             var end_time = newhrs +":"+mins+amPM;
             var time = start_time + '-' + end_time;
             $.ajaxSetup({
