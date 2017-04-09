@@ -807,12 +807,15 @@
                 mins = (parseInt(mins) % 60).toString();
                 var newhrs = (parseInt(hrs) + hrs_to_add).toString();
                 if(parseInt(newhrs) >= 12 && parseInt(hrs) < 12){
-                    newhrs = parseInt(newhrs) % 12;
                     if(amPM == 'AM'){
                         amPM = 'PM';
                     } else {
                         amPM = 'AM';
                     }
+                }
+                newhrs = (parseInt(newhrs) % 12).toString();
+                if(newhrs == '0'){
+                    newhrs = '12';
                 }
                 if (mins.length === 1) {
                     mins = '0'+mins;
@@ -867,7 +870,6 @@
                 $('.hr').html(time.split(':')[0]+" : ");
                 $('.ampm').html(time.slice(-2));
                 var cell = $(this).closest('td');
-                console.log();
                 var cellIndex = cell[0].cellIndex
                 $('.day').html(t.parents('.modal-body').find('.timetable')[0].rows[0].cells[cellIndex].innerText);
                 $(this).parents('.modal').animate({
