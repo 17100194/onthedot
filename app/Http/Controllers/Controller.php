@@ -89,6 +89,7 @@ class Controller extends BaseController
             ->join('user_has_meeting as u2', 'u1.meetingid', '=', 'u2.meetingid')
             ->join('users', 'u2.userid', '=', 'users.id')
             ->join('meetings', 'u2.meetingid', '=', 'meetings.id')
+            ->where('meetings.status', '=', 'accepted')
             ->where('u1.userid', '=', $idUser)
             ->where('u2.userid', '!=', $idUser)
             ->select('u2.meetingid', 'host', 'time', 'date', 'day', 'status', 'message', 'meetings.created_on')->get();

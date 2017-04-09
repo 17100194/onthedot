@@ -139,7 +139,7 @@
                         @if($count_meeting == 3)
                             @break;
                         @endif
-                        @if ($meeting->status != 'pending')
+                        @if ($meeting->status == 'accepted')
                             <li>
                                 <div class="notification-box">
                                     Meeting with: <?= $meeting->name ?>
