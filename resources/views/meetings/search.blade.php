@@ -737,8 +737,6 @@
                     var newhrs = (parseInt(hrs) + hrs_to_add).toString();
                     if(parseInt(newhrs) >= 12 && parseInt(hrs) < 12){
                             newhrs = (parseInt(newhrs) % 12).toString();
-                            console.log(mins, hrs, newhrs, hrs_to_add);
-                            return;
                             if(amPM == 'AM'){
                                 amPM = 'PM';
                             } else {
@@ -749,6 +747,8 @@
                         mins = '0'+mins;
                     }
             }
+            console.log(mins, hrs, newhrs, hrs_to_add);
+            return;
             var end_time = newhrs +":"+mins+amPM;
             var time = start_time + '-' + end_time;
             $.ajaxSetup({
@@ -766,7 +766,6 @@
                     User: $(this).parents('.modal-body').find('#userid').val()
                 },
                 success: function(data) {
-                    console.log(data);
                     if(data == 'error'){
                         t.parents('.modal-body').find('.alert-warning').show();
                         window.setTimeout(function () {
