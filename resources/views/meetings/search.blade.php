@@ -743,6 +743,9 @@
                     }
                 }
                 newhrs = (parseInt(newhrs) % 12).toString();
+                if(newhrs == '0'){
+                    newhrs = '12';
+                }
                 if (mins.length === 1) {
                     mins = '0'+mins;
                 }
