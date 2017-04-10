@@ -214,7 +214,11 @@
                                                                                 </div>
                                                                                 <hr>
                                                                                 <div class="form-group" style="text-align: center;">
-                                                                                    <a class="btn btn-primary select_user">Send Meeting Request</a>
+                                                                                    @if(Auth::id())
+                                                                                        <a class="btn btn-primary select_user">Send Meeting Request</a>
+                                                                                    @else
+                                                                                        <a href="{{ url('/login') }}" class="btn btn-primary">Send Meeting Request</a>
+                                                                                    @endif
                                                                                 </div>
                                                                             </form>
                                                                         </div>
@@ -442,7 +446,11 @@
                                                                                 </div>
                                                                                 <hr>
                                                                                 <div class="form-group" style="text-align: center;">
-                                                                                    <a class="btn btn-primary select_user">Send Meeting Request</a>
+                                                                                    @if(Auth::id())
+                                                                                        <a class="btn btn-primary select_user">Send Meeting Request</a>
+                                                                                    @else
+                                                                                        <a href="{{ url('/login') }}" class="btn btn-primary">Send Meeting Request</a>
+                                                                                    @endif
                                                                                 </div>
                                                                             </form>
                                                                         </div>
@@ -677,7 +685,11 @@
                                                                             </div>
                                                                             <hr>
                                                                             <div class="form-group" style="text-align: center;">
-                                                                                <a id="select_group" class="btn btn-primary">Send Meeting Request</a>
+                                                                                @if(Auth::id())
+                                                                                    <a id="select_group" class="btn btn-primary">Send Meeting Request</a>
+                                                                                @else
+                                                                                    <a href="{{ url('/login') }}" class="btn btn-primary">Send Meeting Request</a>
+                                                                                @endif
                                                                             </div>
                                                                         </form>
                                                                     </div>
