@@ -11,9 +11,9 @@
     <title>{{ config('app.name', 'On the DOT') }}</title>
 
     <!-- Styles -->
-    <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css" >
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css" >
+    <link rel="shortcut icon" href="{{ asset('public/images/favicon.png') }}">
+    <link href="{{ asset('public/css/app.css') }}" rel="stylesheet" type="text/css" >
+    <link href="{{ asset('public/css/style.css') }}" rel="stylesheet" type="text/css" >
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
@@ -21,7 +21,7 @@
 <body>
 <!-- Scripts -->
 <script
-        src="{{URL::asset('js/app.js')}}"></script>
+        src="{{URL::asset('public/js/app.js')}}"></script>
 <script
         src="https://code.jquery.com/jquery-3.1.1.min.js"
         integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
