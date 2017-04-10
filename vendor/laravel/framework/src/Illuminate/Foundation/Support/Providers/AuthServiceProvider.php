@@ -30,27 +30,4 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * {@inheritdoc}
      */
-    public function register(Request $request)
-    {
-        $validator = $this->validator($request->all());
-        if ($validator->fails())
-        {
-            $this->throwValidationException($request, $validator);
-        }
-
-        DB::beginTransaction();
-        try
-        {
-            $user = $this->create($request->all());
-            $email = new EmailVerification(new User(['email_token' => $user->email_token, 'name' => $user->name]));
-            Mail::to('fahadcreed@gmail.com')->send($email);
-            DB::commit();
-            return back();
-        }
-        catch(Exception $e)
-        {
-            DB::rollback();
-            return back();
-        }
-    }
 }
