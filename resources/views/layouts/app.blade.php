@@ -148,7 +148,7 @@
         });
         $.ajax({
             method: "POST",
-            url: "http://onthedot.herokuapp.com/public/seeNotifications",
+            url: "http://onthedot.herokuapp.com/seeNotifications",
             success: function(data) {
                 $('.notification').hide();
             },
