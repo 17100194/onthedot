@@ -143,6 +143,11 @@ class CourseController extends Controller
             'coursecode'=>$coursecode,
             'timing'=>date('H:i', strtotime($starttime)).'-'.date('H:i', strtotime($endtime)),
             'instructorid'=>Auth::id()));
+        $courseId = DB::table('courses')->where('coursecode', '=', $coursecode)->get()[0]->courseid;
+
+        DB::table('user_has_course')->insert(array(
+            'userid'=> Auth::id(),
+            'courseid' => $courseId));
 
         return Redirect::back()->with('message', 'Course Added Successfully!');;
     }
