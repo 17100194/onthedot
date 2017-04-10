@@ -3,7 +3,7 @@
 @section('content')
     <div class="container" style="width:90%; margin: 0px auto; background-color:#e9ece5;">
         <div class="row">
-            <div style="overflow-x: hidden; background: url(<?= asset('images/cover.png') ?>); height: 90vh; background-size: cover;">
+            <div style="overflow-x: hidden; background: url(<?= asset('public/images/cover.png') ?>); height: 90vh; background-size: cover;">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="text-center" style="color: white; margin-top: 150px">
