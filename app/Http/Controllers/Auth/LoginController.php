@@ -42,7 +42,7 @@ class LoginController extends Controller
     public function credentials(Request $request)
     {
         return [
-            'email' => 'fahadcreed@gmail.com',
+            'campusid' => $request->campusid,
             'password' => $request->password,
             'verified' => 1,
         ];
