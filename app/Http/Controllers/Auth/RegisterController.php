@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use DB;
+use Mail;
 use App\User;
 use Validator;
+use Illuminate\Http\Request;
+use App\Mail\EmailVerification;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
@@ -59,6 +63,15 @@ class RegisterController extends Controller
         ], $messages);
     }
 
+    // Get the user who has the same token and change his/her status to verified i.e. 1
+    public function verify($token)
+    {
+        // The verified method has been added to the user model and chained here
+        // for better readability
+        User::where('email_token',$token)->firstOrFail()->verified();
+        return redirect('login');
+    }
+
     /**
      * Create a new user instance after a valid registration.
      *
@@ -71,6 +84,7 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'campusid' => $data['campusid'],
             'password' => bcrypt($data['password']),
+            'email_token' => str_random(10),
         ]);
     }
 }

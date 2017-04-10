@@ -9,13 +9,19 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    public function verified()
+    {
+        $this->verified = 1;
+        $this->email_token = null;
+        $this->save();
+    }
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'campusid', 'password',
+        'name', 'campusid', 'password', 'email_token', 'verified'
     ];
 
     /**

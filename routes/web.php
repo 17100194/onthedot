@@ -20,6 +20,7 @@ Route::get('login', function() {
 
 })->name('login');
 Auth::routes();
+Route::get('register/verify/{token}', 'Auth\RegisterController@verify');
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::get('/home', 'HomeController@index');
 Route::post('/seeNotifications', 'HomeController@seeNotifications');
