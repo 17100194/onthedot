@@ -5,7 +5,7 @@ return array(
     "host" => "smtp.mailtrap.io",
     "port" => 2525,
     "from" => array(
-        "address" => "fahadcreed@gmail.com",
+        "address" => "833dc2bd47-135297@inbox.mailtrap.io",
         "name" => "Example"
     ),
     "username" => "fcd3632add1901",
