@@ -80,6 +80,8 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $successmessage = 'You have successfully registered! An activation email has been sent to you on your Campus Mail';
+        flash()->overlay('Yes', $successmessage, 'success');
         return User::create([
             'name' => $data['name'],
             'campusid' => $data['campusid'],
