@@ -5,6 +5,7 @@
         <thead>
         <tr>
             <td>Course Name</td>
+            <td>Course Code</td>
             <td>Instructor</td>
             <td>Section</td>
             <td>Time</td>
@@ -16,6 +17,7 @@
             <?php foreach($courses as $course): ?>
                 <tr>
                     <td><?= $course->name ?></td>
+                    <td><?= $course->coursecode ?></td>
                     <td><?= $course->username ?></td>
                     <td><?= $course->section ?></td>
                     <?php

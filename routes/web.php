@@ -26,6 +26,8 @@ Route::get('/home', 'HomeController@index');
 Route::post('/seeNotifications', 'HomeController@seeNotifications');
 Route::get('/meetings', 'MeetingsController@index');
 Route::get('/requested', 'MeetingsController@requested');
+Route::get('/course/edit/{id}', 'CourseController@editCourse');
+Route::post('/course/update', 'CourseController@updateCourse');
 Route::get('/group/schedule/{id}', 'GroupController@getGroupTimetable');
 Route::get('/search', 'MeetingsController@q');
 Route::post('/schedule', 'MeetingsController@schedule');

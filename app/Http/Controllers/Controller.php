@@ -80,6 +80,17 @@ class Controller extends BaseController
     }
 
     /**
+     * Returns a course with the ID
+     *
+     * @param $idCourse
+     * @return mixed
+     */
+    public function getCourseById($idCourse) {
+        return DB::table('courses')
+            ->where('courseid', '=', $idCourse)->get()[0];
+    }
+
+    /**
      * Returns meetings for the provided user ID
      * @param $idUser
      * @return Array of Objects

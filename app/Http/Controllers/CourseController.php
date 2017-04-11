@@ -39,8 +39,19 @@ class CourseController extends Controller
 
     public function dropCourse(Request $request){
         $courseId = $request->courseid;
-        DB::table('user_has_course')->where('userid', '=', Auth::id())->where('courseid', '=', intval($courseId))->delete();
-        session(['message' => 'Course Dropped Successfully']);
+
+        $user = $this->getUserById(Auth::id());
+        if ($user->type == "teacher") {
+            // delete course
+            DB::table('user_has_course')->where('courseid', '=', intval($courseId))->delete();
+            DB::table('courses')->where('courseid', '=', intval($courseId))->delete();
+            session(['message' => 'Course Deleted Successfully']);
+        } else {
+            DB::table('user_has_course')->where('userid', '=', Auth::id())->where('courseid', '=', intval($courseId))->delete();
+            session(['message' => 'Course Dropped Successfully']);
+        }
+
+
         return 'success';
     }
 
@@ -77,6 +88,7 @@ class CourseController extends Controller
         $courses = DB::table('courses AS c')
             ->join('users as u', 'u.id', '=', 'c.instructorid')
             ->where('c.name', 'LIKE', '%'.$name.'%')
+            ->orwhere('c.coursecode', 'LIKE', '%'.$name.'%')
             ->select('u.name AS username', 'u.campusid', 'u.type', 'c.*')->get();
 
         foreach ($courses as $course) {
@@ -151,4 +163,55 @@ class CourseController extends Controller
 
         return Redirect::back()->with('message', 'Course Added Successfully!');;
     }
+
+    public function editCourse(Request $request, $id) {
+        $course = $this->getCourseById($id);
+//        $active = 'addcourse';
+        return view('course.edit', compact('course'));
+    }
+
+    public function updateCourse(Request $request)
+    {
+        $coursename = $request->course_name;
+        $section = $request->section;
+        $coursecode = $request->course_code;
+        $starttime = $request->start_time;
+        $endtime = $request->end_time;
+        $monday = $request->Monday;
+        $tuesday = $request->Tuesday;
+        $wednesday = $request->Wednesday;
+        $thursday = $request->Thursday;
+        $friday = $request->Friday;
+        $courseId = $request->courseId;
+
+        $days = [];
+        if ($monday) {
+            $days[] = "Monday";
+        }
+        if ($tuesday) {
+            $days[] = "Tuesday";
+        }
+        if ($wednesday) {
+            $days[] = "Wednesday";
+        }
+        if ($thursday) {
+            $days[] = "Thursday";
+        }
+        if ($friday) {
+            $days[] = "Friday";
+        }
+        $dayStr = implode(',', $days);
+
+
+        DB::table('courses')->where('courseid', '=', $courseId)->update(array(
+            'name'=>$coursename,
+            'days' => $dayStr,
+            'section'=>$section,
+            'coursecode'=>$coursecode,
+            'timing'=>date('H:i', strtotime($starttime)).'-'.date('H:i', strtotime($endtime))));
+
+
+        return Redirect::back()->with('message', 'Course Modified Successfully!');;
+    }
+
 }

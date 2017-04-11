@@ -16,6 +16,9 @@
                         <li style="display: inline-block; width: 45%;">
                             <div id="course_<?= $course->courseid ?>" class="notification-box" style="position: relative;">
                                 <button data-toggle="modal" data-target="#dropModal_<?= $course->courseid ?>" class="hover-action btn btn-danger drop">Drop <i class="fa fa-window-close fa-lg" aria-hidden="true"></i></button>
+                                <div class="meetBtn">
+                                    <a href="<?= url('/course/edit/'.$course->courseid) ?>">Edit Course</a>
+                                </div>
                                 <?= $course->coursecode ?> - <?= $course->section ?>
                                 <br>
                                 (<?= $course->name ?>)
