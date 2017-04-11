@@ -4,7 +4,15 @@
 <div class="container" style="width:90%; background-color: white;">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-                <div class="panel-heading" style=" background-color: transparent; color:#3b3a36; font-weight:bold; text-align: center;"><h3>Sign Up</h3><hr style="width:25%; border-width: 3px;"></div>
+                <div class="panel-heading" style=" background-color: transparent; color:#3b3a36; font-weight:bold; text-align: center;">
+                    <h3>Sign Up</h3>
+                    <hr style="width:25%; border-width: 3px;">
+                    @if(session()->has('message'))
+                        <div class="alert alert-success">
+                            {{ session()->pull('message') }}
+                        </div>
+                    @endif
+                </div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
                         {{ csrf_field() }}
