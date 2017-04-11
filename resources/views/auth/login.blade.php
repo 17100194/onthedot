@@ -7,6 +7,11 @@
                 <div class="panel-heading" style=" background-color: transparent; color:#3b3a36; font-weight:bold; text-align: center;">
                     <h3>Sign In</h3>
                     <hr style="width:25%; border-width: 3px;">
+                    @if(session()->has('message'))
+                        <div class="alert alert-danger">
+                            {{ session()->pull('message') }}
+                        </div>
+                    @endif
                 </div>
             <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">

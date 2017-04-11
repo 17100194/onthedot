@@ -106,7 +106,7 @@ class RegisterController extends Controller
             $email = new EmailVerification(new User(['email_token' => $user->email_token, 'name' => $user->name]));
             Mail::to(substr(str_replace("-", "", $user->campusid),2).'@lums.edu.pk')->send($email);
             DB::commit();
-            return back()->with('message', '<strong>You have successfully registered!</strong> An activation email has been sent to your Campus Mail');
+            return back()->with('message', 'You have successfully registered! An activation email has been sent to your Campus Mail');
         }
         catch(Exception $e)
         {
