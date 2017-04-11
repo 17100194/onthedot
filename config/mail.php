@@ -10,6 +10,6 @@ return array(
     ),
     "username" => "fcd3632add1901",
     "password" => "13feae878ead79",
-    "sendmail" => "/usr/sbin/sendmail -bs",
+    "sendmail" => "fahadcreed@gmail.com",
     "pretend" => false
 );
