@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'failed' => 'These credentials do not match our records.',
+    'failed' => "Either the account is not activated OR you've entered Invalid Credentials",
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
 ];
