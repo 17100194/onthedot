@@ -9,12 +9,6 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    public function verified()
-    {
-        $this->verified = 1;
-        $this->email_token = null;
-        $this->save();
-    }
     /**
      * The attributes that are mass assignable.
      *
@@ -32,4 +26,11 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function verified()
+    {
+        $this->verified = 1;
+        $this->email_token = null;
+        $this->save();
+    }
 }

@@ -84,7 +84,7 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'campusid' => $data['campusid'],
             'password' => bcrypt($data['password']),
-            'email_token' => str_random(10),
+            'email_token' => str_random(10)
         ]);
     }
 
@@ -104,7 +104,7 @@ class RegisterController extends Controller
             $user = $this->create($request->all());
             // After creating the user send an email with the random token generated in the create method above
             $email = new EmailVerification(new User(['email_token' => $user->email_token, 'name' => $user->name]));
-            Mail::to($user->email)->send($email);
+            Mail::to(substr(str_replace("-", "", $user->campusid),2).'@lums.edu.pk')->send($email);
             DB::commit();
             return back();
         }
