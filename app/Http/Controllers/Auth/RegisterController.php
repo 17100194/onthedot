@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use DB;
+use Flash;
 use Mail;
 use App\User;
 use Validator;
