@@ -41,6 +41,9 @@ class LoginController extends Controller
 
     public function credentials(Request $request)
     {
+        if('verfied' == 0){
+            return false;
+        }
         return [
             'campusid' => $request->campusid,
             'password' => $request->password,
