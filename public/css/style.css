@@ -610,3 +610,7 @@ svg text {
     font-size: 10px;
     color: #878687;
 }
+
+.meetingElement{
+    cursor: pointer;
+}

@@ -32,10 +32,8 @@
             }
             ?>
             @if($course->type == 'meeting')
-                <div class="ttElement" data-toggle="modal" data-target="#<?=$course->meetingid?>" style="<?php if($course->color != ""): ?>background: <?= $course->color ?>;<?php endif; ?>padding: 5px; text-align: center; height: <?=$course->height?>px; top: <?= 78+$course->startingHeight?>px; left:<?=$left?>px;">
+                <div class="ttElement @if($course->type == 'meeting')meetingElement@endif" data-toggle="modal" data-target="#<?=$course->meetingid?>" style="<?php if($course->color != ""): ?>background: <?= $course->color ?>;<?php endif; ?>padding: 5px; text-align: center; height: <?=$course->height?>px; top: <?= 78+$course->startingHeight?>px; left:<?=$left?>px;">
                     <label style="color: white;">Meeting</label>
-                    <br>
-                    <label style="color: white;"><?=$course->timing?></label>
                 </div>
                 <div id="<?=$course->meetingid?>" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
                     <div class="modal-dialog modal-sm" role="document">
