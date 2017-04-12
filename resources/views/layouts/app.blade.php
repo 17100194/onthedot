@@ -55,7 +55,7 @@
 
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{{ url('/') }}" style="width: 177px; padding-top: 0px;">
-                    <img src="<?= asset('public/images/onthedot.png') ?>" class="img-responsive">
+                    <img src="<?= secure_asset('public/images/onthedot.png') ?>" class="img-responsive">
                 </a>
                 <div class="navbar-form pull-left col-xs-6" role="search" style="border: none; padding: 0px 20px 0px 20px; box-shadow: none;">
                     <form method="get" action="{{ action('MeetingsController@q') }}">
