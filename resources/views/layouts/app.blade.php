@@ -60,7 +60,7 @@
                 <div class="navbar-form pull-left col-xs-6" role="search" style="border: none; padding: 0px 20px 0px 20px; box-shadow: none;">
                     <form method="get" action="{{ action('MeetingsController@q') }}">
                         <div class="input-group">
-                            <input type="text" class="form-control" name="q" placeholder="Search">
+                            <input type="text" class="form-control" name="q" placeholder="Search for a user or group...">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" style="height: 36px; width: 40px;" type="submit"><i class="fa fa-search"></i></button>
                             </span>

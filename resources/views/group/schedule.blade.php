@@ -17,14 +17,14 @@
             <div class="courses">
                 <?php foreach($courses as $course): ?>
                 <?php
-                $left = 2;
+                $left = 3;
                 ?>
                 <?php if(!$course): ?>
                     <?php continue; ?>
                 <?php else: ?>
                 <?php foreach($course->days as $day): ?>
                 <?php
-                $left = 168;
+                $left = 169;
                 switch ($day) {
                     case "Monday":
         //
@@ -52,7 +52,7 @@
                 <?php endforeach; ?>
             </div>
             <input id="groupid" style="display: block;" type="hidden" value="<?= $idGroup ?>">
-            <table class="table table-bordered timetable">
+            <table class="table timetable-medium table-bordered timetable">
                 <thead>
                 <tr>
                     <th></th>

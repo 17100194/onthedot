@@ -42,7 +42,7 @@
         <?php endforeach; ?>
     </div>
     <div class="myTimetable">
-        <table id="timetable" class="table table-bordered timetable">
+        <table id="timetable" class="table timetable-full table-bordered timetable">
             <thead>
             <tr>
                 <th></th>

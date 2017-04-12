@@ -28,7 +28,8 @@
                                     </div>
                                 </div>
                                 @if (count($users) === 0)
-                                    No users found with the query
+                                    <h3>No users found. Please search for a user or group above.</h3>
+
                                 @elseif (count($users) >= 1)
                                     <ul style="list-style: none;">
                                         @foreach($users as $user)
@@ -67,7 +68,7 @@
                                                                                 <?php else: ?>
                                                                             <?php foreach($course->days as $day): ?>
                                                                             <?php
-                                                                            $left = 90;
+                                                                            $left = 92;
                                                                             switch ($day) {
                                                                                 case "Monday":
 //
@@ -94,7 +95,7 @@
                                                                             <?php endif; ?>
                                                                             <?php endforeach; ?>
                                                                         </div>
-                                                                        <table id="timetable" class="table table-bordered timetable">
+                                                                        <table id="timetable" class="table timetable-modal table-bordered timetable">
                                                                             <thead>
                                                                             <tr>
                                                                                 <th></th>
@@ -260,10 +261,11 @@
                                     </div>
                                 </div>
                                 @if (count($instructors) === 0)
-                                    No users found with the query
-                                @elseif (count($users) >= 1)
+                                    <h3>No users found. Please search for a user or group above.</h3>
+                                @elseif (count($instructors) >= 1)
                                     <ul style="list-style: none;">
                                         @foreach($instructors as $instructor)
+
                                             @if($instructor->id != Auth::id())
                                                 <li>
                                                     <div style="padding: 15px;">
@@ -299,7 +301,7 @@
                                                                                     <?php else: ?>
                                                                             <?php foreach($course->days as $day): ?>
                                                                             <?php
-                                                                            $left = 90;
+                                                                            $left = 92;
                                                                             switch ($day) {
                                                                                 case "Monday":
                                                                                     //
@@ -326,7 +328,7 @@
                                                                             <?php endif; ?>
                                                                             <?php endforeach; ?>
                                                                         </div>
-                                                                        <table id="timetable" class="table table-bordered timetable">
+                                                                        <table id="timetable" class="table timetable-modal table-bordered timetable">
                                                                             <thead>
                                                                             <tr>
                                                                                 <th></th>
@@ -566,7 +568,7 @@
                                                                         <?php endforeach; ?>
                                                                     </div>
                                                                     <input id="groupid" style="display: block;" type="hidden" value="<?= $group->id ?>">
-                                                                    <table class="table table-bordered timetable">
+                                                                    <table class="table timetable-modal table-bordered timetable">
                                                                         <thead>
                                                                         <tr>
                                                                             <th></th>

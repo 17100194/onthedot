@@ -475,6 +475,24 @@ svg text {
  padding: 16px;
 }
 
+.timetable-full {
+    min-width: 979px;
+    min-height: 629px;
+    background: white;
+}
+
+.timetable-medium {
+    min-width: 949px;
+    min-height: 629px;
+    background: white;
+}
+
+.timetable-modal {
+    min-width: 868px;
+    min-height: 629px;
+    background: white;
+}
+
 .courses {
  position: relative;
 }
