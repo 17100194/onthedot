@@ -148,6 +148,12 @@ class HomeController extends Controller
         }
 
         foreach ($meetings as $meeting) {
+            if(in_array('meeting_'.$meeting->meetingid,$allCourses)){
+                $key = array_search('meeting_'.$meeting->meetingid,$allCourses);
+                $user = $this->getUserById($meeting->with);
+                $allCourses[$key]->with = $allCourses[$key]->with.','.$user->name;
+                continue;
+            }
             $userDetails = $this->getUserById($meeting->with);
             if ($meeting->status == "accepted") {
                 $meetingData = $app->make('stdClass');
@@ -171,7 +177,7 @@ class HomeController extends Controller
         }
 
         $active = 'timetable';
-        return view('timetable', var_dump($allCourses));
+        return view('timetable', compact('allCourses', 'active'));
     }
 
     public function timeToMins($time){
