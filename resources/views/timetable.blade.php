@@ -44,9 +44,9 @@
                                 <h3 style="text-align: center;">Meeting Details</h3>
                             </div>
                             <div class="modal-body">
-                                <h4>Meeting with: <strong><?=$course->with?></strong></h4>
+                                <h5>Meeting with: <strong><?=$course->with?></strong></h5>
                                 <br>
-                                <h4>Date: <strong><?=$course->name?> - <?=$course->timing?></strong><h4>
+                                <h5>Date: <strong><?=$course->name?> - <?=$course->timing?></strong></h5>
                             </div>
                         </div>
                     </div>

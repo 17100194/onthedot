@@ -103,7 +103,7 @@ class Controller extends BaseController
             ->where('meetings.status', '=', 'accepted')
             ->where('u1.userid', '=', $idUser)
             ->where('u2.userid', '!=', $idUser)
-            ->select('u2.meetingid', 'host', 'time', 'date', 'day', 'status', 'message', 'meetings.created_on')->get();
+            ->select('u2.meetingid', 'u2.userid as with', 'host', 'time', 'date', 'day', 'status', 'message', 'meetings.created_on')->get();
     }
 
     public function getGroupByRequestId($idRequest) {
