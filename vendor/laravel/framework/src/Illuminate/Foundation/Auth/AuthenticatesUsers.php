@@ -72,9 +72,9 @@ trait AuthenticatesUsers
      */
     protected function attemptLogin(Request $request)
     {
-        return $this->guard()->attempt(
+        return var_dump($this->guard()->attempt(
             $this->credentials($request), $request->has('remember')
-        );
+        ));
     }
 
     /**
@@ -124,12 +124,6 @@ trait AuthenticatesUsers
      */
     protected function sendFailedLoginResponse(Request $request)
     {
-        if($this->credentials($request)->verified == 0){
-            return redirect()->back()
-                ->withErrors([
-                    'message' => 'Your account has not been activated.',
-                ]);
-        }
         return redirect()->back()
             ->withInput($request->only($this->username(), 'remember'))
             ->withErrors([
