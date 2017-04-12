@@ -165,18 +165,6 @@ class HomeController extends Controller
         }
         $counter = 0;
         foreach ($meetings as $meeting) {
-            foreach ($allCourses as $allCourse){
-                if($allCourse->meetingid == 'meeting_'.$meeting->meetingid){
-                    $user = $this->getUserById($meeting->with);
-                    $allCourse->with = $allCourse->with.','.$user->name;
-                    $counter = 1;
-                    break;
-                }
-            }
-            if($counter == 1){
-                $counter = 0;
-                continue;
-            }
             $userDetails = $this->getUserById($meeting->with);
             if ($meeting->status == "accepted") {
                 $meetingData = $app->make('stdClass');
