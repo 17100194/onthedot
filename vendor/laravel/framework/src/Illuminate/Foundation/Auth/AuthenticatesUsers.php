@@ -124,6 +124,12 @@ trait AuthenticatesUsers
      */
     protected function sendFailedLoginResponse(Request $request)
     {
+        if($this->credentials($request) == false){
+            return redirect()->back()
+                ->withErrors([
+                    'message' => 'Your account has not been activated.',
+                ]);
+        }
         return redirect()->back()
             ->withInput($request->only($this->username(), 'remember'))
             ->withErrors([
