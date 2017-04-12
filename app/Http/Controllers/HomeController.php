@@ -171,7 +171,7 @@ class HomeController extends Controller
         }
 
         $active = 'timetable';
-        return view('timetable', compact('allCourses', 'active'));
+        return view('timetable', var_dump($allCourses));
     }
 
     public function timeToMins($time){
