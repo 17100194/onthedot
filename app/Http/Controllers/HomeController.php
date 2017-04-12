@@ -120,6 +120,23 @@ class HomeController extends Controller
         }
     }
 
+    function search($array, $key, $value)
+    {
+        $results = array();
+
+        if (is_array($array)) {
+            if (isset($array[$key]) && $array[$key] == $value) {
+                $results[] = $array;
+            }
+
+            foreach ($array as $subarray) {
+                $results = array_merge($results, search($subarray, $key, $value));
+            }
+        }
+
+        return $results;
+    }
+
     public  function Timetable(){
         $allCourses[] = array();
         $courses = DB::table('user_has_course')
@@ -146,12 +163,18 @@ class HomeController extends Controller
             $courseData->color = "";
             $allCourses[] = $courseData;
         }
-
+        $counter = 0;
         foreach ($meetings as $meeting) {
-            if(in_array('meeting_'.$meeting->meetingid,$allCourses)){
-                $key = array_search('meeting_'.$meeting->meetingid,$allCourses);
-                $user = $this->getUserById($meeting->with);
-                $allCourses[$key]->with = $allCourses[$key]->with.','.$user->name;
+            foreach ($allCourses as $allCourse){
+                if($allCourse->meetingid == 'meeting_'.$meeting->meetingid){
+                    $user = $this->getUserById($meeting->with);
+                    $allCourse->with = $allCourse->with.','.$user->name;
+                    $counter = 1;
+                    break;
+                }
+            }
+            if($counter == 1){
+                $counter = 0;
                 continue;
             }
             $userDetails = $this->getUserById($meeting->with);
