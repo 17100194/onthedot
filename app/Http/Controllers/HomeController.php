@@ -163,7 +163,7 @@ class HomeController extends Controller
             $courseData->color = "";
             $allCourses[] = $courseData;
         }
-        $counter = 0;
+
         foreach ($meetings as $meeting) {
             $userDetails = $this->getUserById($meeting->with);
             if ($meeting->status == "accepted") {
