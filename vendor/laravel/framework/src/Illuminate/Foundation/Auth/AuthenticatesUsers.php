@@ -39,11 +39,8 @@ trait AuthenticatesUsers
             return $this->sendLockoutResponse($request);
         }
 
-        if($this->guard()->attempt(['verfied' => 0], $request->has('remember'))){
-            return redirect()->back()
-                ->withErrors([
-                    'message' => 'Your account has not been activated',
-                ]);
+        if($this->guard()->attempt(['verfied' => 1], $request->has('remember')) == false){
+            return redirect()->back()->with('message', 'Your account has not been activated');
         }
 
         if ($this->attemptLogin($request)) {
