@@ -39,12 +39,12 @@ class LoginController extends Controller
         $this->middleware('guest', ['except' => 'logout']);
     }
 
-    public function credentials(Request $request)
-    {
-        return [
-            'campusid' => $request->campusid,
-            'password' => $request->password,
-            'verified' => 1,
-        ];
-    }
+//    public function credentials(Request $request)
+//    {
+//        return [
+//            'campusid' => $request->campusid,
+//            'password' => $request->password,
+//            'verified' => 1,
+//        ];
+//    }
 }
