@@ -13,7 +13,7 @@ trait CanResetPassword
      */
     public function getEmailForPasswordReset()
     {
-        return $this->email;
+        return substr(str_replace("-", "", $this->campusid),2).'@lums.edu.pk';
     }
 
     /**

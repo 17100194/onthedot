@@ -77,7 +77,7 @@ $style = [
                                     <!-- Intro -->
 
                                     <p style="{{ $style['paragraph'] }}">
-                                        Click on the below button to verify your email address
+                                        Please click on the below button to verify your email address
                                     </p>
 
 
