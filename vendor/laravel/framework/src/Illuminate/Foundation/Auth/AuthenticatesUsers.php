@@ -130,7 +130,9 @@ trait AuthenticatesUsers
     {
         return redirect()->back()
             ->withInput($request->only($this->username(), 'remember'))
-            ->with('message', "Either your account has not been activated OR you have entered invalid credentials");
+            ->withErrors([
+                $this->username() => Lang::get('auth.failed'),
+            ]);
     }
 
     /**
