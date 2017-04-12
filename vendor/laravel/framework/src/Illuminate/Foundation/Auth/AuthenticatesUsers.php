@@ -39,14 +39,6 @@ trait AuthenticatesUsers
             return $this->sendLockoutResponse($request);
         }
 
-        if($this->guard()->attempt(['campusid' => $request->campusid, 'password' => $request->password, 'verified' => 0], $request->has('remember'))){
-            return redirect()->back()
-                ->withInput($request->only($this->username(), 'remember'))
-                ->withErrors([
-                    $this->username() => 'Your account needs to be activated',
-                ]);
-        }
-
         if ($this->attemptLogin($request)) {
             return $this->sendLoginResponse($request);
         }
@@ -138,9 +130,7 @@ trait AuthenticatesUsers
     {
         return redirect()->back()
             ->withInput($request->only($this->username(), 'remember'))
-            ->withErrors([
-                $this->username() => Lang::get('auth.failed'),
-            ]);
+            ->with('message', "Either your account has not been activated OR you have entered invalid credentials");
     }
 
     /**
