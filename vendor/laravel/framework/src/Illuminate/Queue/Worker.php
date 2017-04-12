@@ -4,6 +4,7 @@ namespace Illuminate\Queue;
 
 use Exception;
 use Throwable;
+use Illuminate\Contracts\Queue\Job;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
@@ -71,7 +72,7 @@ class Worker
         while (true) {
             $this->registerTimeoutHandler($options);
 
-            if ($this->daemonShouldRun($options)) {
+            if ($this->daemonShouldRun()) {
                 $this->runNextJob($connectionName, $queue, $options);
             } else {
                 $this->sleep($options->sleep);
@@ -92,16 +93,14 @@ class Worker
      */
     protected function registerTimeoutHandler(WorkerOptions $options)
     {
-        if ($options->timeout == 0 || version_compare(PHP_VERSION, '7.1.0') < 0 || ! extension_loaded('pcntl')) {
+        if (version_compare(PHP_VERSION, '7.1.0') < 0 || ! extension_loaded('pcntl')) {
             return;
         }
 
         pcntl_async_signals(true);
 
         pcntl_signal(SIGALRM, function () {
-            if (extension_loaded('posix')) {
-                posix_kill(getmypid(), SIGKILL);
-            }
+            $this->exceptions->report(new TimeoutException('A queue worker timed out while processing a job.'));
 
             exit(1);
         });
@@ -112,12 +111,11 @@ class Worker
     /**
      * Determine if the daemon should process on this iteration.
      *
-     * @param  WorkerOptions  $options
      * @return bool
      */
-    protected function daemonShouldRun(WorkerOptions $options)
+    protected function daemonShouldRun()
     {
-        if (($this->manager->isDownForMaintenance() && ! $options->force) ||
+        if ($this->manager->isDownForMaintenance() ||
             $this->events->until('illuminate.queue.looping') === false) {
             // If the application is down for maintenance or doesn't want the queues to run
             // we will sleep for one second just in case the developer has it set to not

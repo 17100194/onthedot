@@ -28,7 +28,7 @@ if (! function_exists('abort')) {
      */
     function abort($code, $message = '', array $headers = [])
     {
-        app()->abort($code, $message, $headers);
+        return app()->abort($code, $message, $headers);
     }
 }
 
@@ -157,12 +157,11 @@ if (! function_exists('back')) {
      *
      * @param  int    $status
      * @param  array  $headers
-     * @param  string  $fallback
      * @return \Illuminate\Http\RedirectResponse
      */
-    function back($status = 302, $headers = [], $fallback = false)
+    function back($status = 302, $headers = [])
     {
-        return app('redirect')->back($status, $headers, $fallback);
+        return app('redirect')->back($status, $headers);
     }
 }
 
@@ -397,8 +396,6 @@ if (! function_exists('elixir')) {
                 $manifestPath = $buildDirectory;
             }
         }
-
-        $file = ltrim($file, '/');
 
         if (isset($manifest[$file])) {
             return '/'.trim($buildDirectory.'/'.$manifest[$file], '/');

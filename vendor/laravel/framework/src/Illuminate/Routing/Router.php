@@ -14,8 +14,8 @@ use Illuminate\Support\Traits\Macroable;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
-use Illuminate\Contracts\Routing\Registrar as RegistrarContract;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Illuminate\Contracts\Routing\Registrar as RegistrarContract;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Router implements RegistrarContract
@@ -248,17 +248,6 @@ class Router implements RegistrarContract
     }
 
     /**
-     * Get or set the verbs used in the resource URIs.
-     *
-     * @param  array  $verbs
-     * @return array|null
-     */
-    public function resourceVerbs(array $verbs = [])
-    {
-        return ResourceRegistrar::verbs($verbs);
-    }
-
-    /**
      * Register an array of resource controllers.
      *
      * @param  array  $resources
@@ -303,7 +292,7 @@ class Router implements RegistrarContract
         $this->post('logout', 'Auth\LoginController@logout')->name('logout');
 
         // Registration Routes...
-        $this->get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+        $this->get('register', 'Auth\RegisterController@showRegistrationForm');
         $this->post('register', 'Auth\RegisterController@register');
 
         // Password Reset Routes...
@@ -804,7 +793,7 @@ class Router implements RegistrarContract
                 ! $route->getParameter($parameter->name) instanceof Model) {
                 $method = $parameter->isDefaultValueAvailable() ? 'first' : 'firstOrFail';
 
-                $model = $this->container->make($class->name);
+                $model = $class->newInstance();
 
                 $route->setParameter(
                     $parameter->name, $model->where(

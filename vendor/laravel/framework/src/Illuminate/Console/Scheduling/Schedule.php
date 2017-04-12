@@ -18,7 +18,7 @@ class Schedule
     /**
      * Add a new callback event to the schedule.
      *
-     * @param  string|callable  $callback
+     * @param  string  $callback
      * @param  array   $parameters
      * @return \Illuminate\Console\Scheduling\Event
      */

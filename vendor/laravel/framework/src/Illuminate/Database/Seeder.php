@@ -36,11 +36,11 @@ abstract class Seeder
      */
     public function call($class)
     {
-        if (isset($this->command)) {
-            $this->command->getOutput()->writeln("<info>Seeding:</info> $class");
-        }
-
         $this->resolve($class)->run();
+
+        if (isset($this->command)) {
+            $this->command->getOutput()->writeln("<info>Seeded:</info> $class");
+        }
     }
 
     /**
