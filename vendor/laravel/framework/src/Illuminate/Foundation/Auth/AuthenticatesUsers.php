@@ -39,10 +39,6 @@ trait AuthenticatesUsers
             return $this->sendLockoutResponse($request);
         }
 
-        if($this->guard()->attempt(['campusid' => $request->campusid, 'password' => $request->password, 'verified' => 0])){
-            return redirect()->back()->with('message', 'Your account has not been activated');
-        }
-
         if ($this->attemptLogin($request)) {
             return $this->sendLoginResponse($request);
         }
