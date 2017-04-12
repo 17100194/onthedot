@@ -148,12 +148,12 @@ class HomeController extends Controller
         }
 
         foreach ($meetings as $meeting) {
-
+            $userDetails = $this->getUserById($meeting->host);
             if ($meeting->status == "accepted") {
                 $meetingData = $app->make('stdClass');
                 $meetingData->type = 'meeting';
                 $meetingData->meetingid = 'meeting_'.$meeting->meetingid;
-                $meetingData->with = $meeting->host;
+                $meetingData->with = $userDetails->name;
                 $meetingData->name = $meeting->date;
                 $meetingData->timing = $meeting->time;
                 $meetingData->section = "";

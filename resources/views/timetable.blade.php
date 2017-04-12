@@ -33,7 +33,7 @@
             ?>
             @if($course->type == 'meeting')
                 <div class="ttElement" data-toggle="modal" data-target="#<?=$course->meetingid?>" style="<?php if($course->color != ""): ?>background: <?= $course->color ?>;<?php endif; ?>padding: 5px; text-align: center; height: <?=$course->height?>px; top: <?= 78+$course->startingHeight?>px; left:<?=$left?>px;">
-                    <label style="color: white;">Meeting <?=$course->with?></label>
+                    <label style="color: white;">Meeting</label>
                     <br>
                     <label style="color: white;"><?=$course->timing?></label>
                 </div>
@@ -41,12 +41,12 @@
                     <div class="modal-dialog modal-sm" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                Meeting Details
+                                <h3 style="text-align: center;">Meeting Details</h3>
                             </div>
                             <div class="modal-body">
-                                Meeting with: <?=$course->with?>
+                                <h4>Meeting with: <strong><?=$course->with?></strong></h4>
                                 <br>
-                                Date: <?=$course->name?> - <?=$course->timing?>
+                                <h4>Date: <strong><?=$course->name?> - <?=$course->timing?></strong><h4>
                             </div>
                         </div>
                     </div>
