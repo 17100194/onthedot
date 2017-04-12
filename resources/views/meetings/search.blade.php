@@ -494,7 +494,7 @@
                                     </div>
                                 </div>
                                 @if (count($groups) === 0)
-                                    No groups with the query
+                                    <h3>No users found. Please search for a user or group above.</h3>
                                 @elseif (count($groups) >= 1)
                                     <ul style="list-style: none;">
                                         @foreach($groups as $index=>$group)
