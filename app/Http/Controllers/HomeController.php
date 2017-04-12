@@ -133,6 +133,7 @@ class HomeController extends Controller
 
 
             $courseData = $app->make('stdClass');
+            $courseData->type = 'course';
             $courseData->name = $course->name;
             $courseData->timing = $course->timing;
             $courseData->section = $course->section;
@@ -150,6 +151,9 @@ class HomeController extends Controller
 
             if ($meeting->status == "accepted") {
                 $meetingData = $app->make('stdClass');
+                $meetingData->type = 'meeting';
+                $meetingData->meetingid = 'meeting_'.$meeting->meetingid;
+                $meetingData->with = $meeting->host;
                 $meetingData->name = $meeting->date;
                 $meetingData->timing = $meeting->time;
                 $meetingData->section = "";
