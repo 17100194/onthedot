@@ -93,7 +93,7 @@ class MeetingsController extends Controller
 
         if (!$query) {
             $active = 'meeting';
-            return view('meetings.search', compact('allCourses', 'instructors', 'users', 'usercourses', 'query', 'groups', 'active'));
+            return view('meetings.search', compact('allCourses', 'instructors', 'users', 'usercourses', 'meetingList', 'query', 'groups', 'active'));
         }
         $groups = DB::table('groups')->where('name', 'LIKE', '%' . $query . '%')->paginate(10);
         foreach ($groups as $group){
@@ -228,7 +228,7 @@ class MeetingsController extends Controller
                         $courseData->max = $this->tableHeight;
                         $courseData->min = 0;
                         $courseData->startingHeight = $this->startingHeight($course->timing);
-                        $courseData->color = "##3c948b";
+                        $courseData->color = "#3c948b";
                         $courseData->loggedIn = false;
 
                         $userData[] = $courseData;
