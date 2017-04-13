@@ -151,6 +151,7 @@ class HomeController extends Controller
 
             $courseData = $app->make('stdClass');
             $courseData->type = 'course';
+            $courseData->meetingid = "";
             $courseData->name = $course->name;
             $courseData->timing = $course->timing;
             $courseData->section = $course->section;
