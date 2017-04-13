@@ -188,7 +188,7 @@ class HomeController extends Controller
             }
 
         }
-        var_dump($meetings);
+
         $active = 'timetable';
         return view('timetable', compact('allCourses', 'active'));
     }
