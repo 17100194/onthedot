@@ -106,6 +106,36 @@ class Controller extends BaseController
             ->select('u2.meetingid', 'u2.userid as with', 'host', 'time', 'date', 'day', 'status', 'message', 'meetings.created_on')->get();
     }
 
+    public function getUserMeetingsObject($idUser) {
+        $query = DB::table('user_has_meeting AS u1')
+            ->join('user_has_meeting as u2', 'u1.meetingid', '=', 'u2.meetingid')
+            ->join('users', 'u2.userid', '=', 'users.id')
+            ->join('meetings', 'u2.meetingid', '=', 'meetings.id')
+            ->where('meetings.status', '=', 'accepted')
+            ->where('u1.userid', '=', $idUser)
+            ->where('u2.userid', '!=', $idUser)
+            ->select('u2.meetingid', 'host', 'time', 'date', 'day', 'status', 'message', 'meetings.created_on')->get();
+
+        $meetings = array();
+
+        foreach ($query as $row) {
+            if (!isset($meetings[$row->meetingid])) {
+                $row->members = $this->getMeetingMembers($row->meetingid);
+                $meetings[$row->meetingid] = $row;
+            }
+
+        }
+
+        return ($meetings);
+    }
+
+    public function getMeetingMembers($idmeeting) {
+        $query = DB::table('user_has_meeting AS u1')
+            ->where('u1.meetingid', '=', $idmeeting)
+            ->select('u1.userid')->get()->all();
+        return $query;
+    }
+
     public function getGroupByRequestId($idRequest) {
         $idgroup = DB::table('user_has_group_request')->where('id', '=', $idRequest)->get()[0]->id_group;
         return $this->getGroupById($idgroup);

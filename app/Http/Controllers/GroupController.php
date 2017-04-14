@@ -198,7 +198,6 @@ class GroupController extends Controller
         $idGroup = $id;
         $group = $this->getGroupById($idGroup);
         $aggregate = [];
-
         foreach($group->members as $user) {
             $userCourses = DB::table('users')
                 ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')

@@ -145,6 +145,7 @@ class HomeController extends Controller
         $app = app();
 
         $meetings = $this->getUserMeetings(Auth::id());
+        $meetingsObject = $this->getUserMeetingsObject(Auth::id());
 
         foreach ($courses as $course) {
 
@@ -167,12 +168,17 @@ class HomeController extends Controller
         }
 
         foreach ($meetings as $meeting) {
+            $with = array();
+            foreach($meetingsObject[$meeting->meetingid]->members as $member) {
+                $with[]= $this->getUserById($member->userid)->name;
+            }
+            $with = implode(', ', $with);
             if ($meeting->status == "accepted") {
                 $userDetails = $this->getUserById($meeting->with);
                 $meetingData = $app->make('stdClass');
                 $meetingData->type = 'meeting';
                 $meetingData->meetingid = 'meeting_'.$meeting->meetingid;
-                $meetingData->with = $userDetails->name;
+                $meetingData->with = $with;
                 $meetingData->name = $meeting->date;
                 $meetingData->timing = $meeting->time;
                 $meetingData->section = "";

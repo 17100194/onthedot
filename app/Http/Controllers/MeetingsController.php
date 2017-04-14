@@ -542,6 +542,7 @@ class MeetingsController extends Controller
 
         $first = true;
         foreach ($group->members as $user) {
+
             if($this->singleConflict($user, $time, $day, $date) == false) {
                 return 'error';
             }
