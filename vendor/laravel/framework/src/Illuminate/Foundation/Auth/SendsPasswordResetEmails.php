@@ -3,7 +3,10 @@
 namespace Illuminate\Foundation\Auth;
 
 use Illuminate\Http\Request;
+use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Password;
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\ResetsPasswords;
 
 trait SendsPasswordResetEmails
 {
@@ -27,12 +30,10 @@ trait SendsPasswordResetEmails
     {
         $this->validate($request, ['campusid' => 'required|string|max:255|regex:/\d{4}-\d{2}-\d{4}/']);
 
-        $broker = $this->getBroker();
-
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
-        $response = Password::broker($broker)->sendResetLink($request->only('campusid'), function (Message $message) {
+        $response = Password::broker()->sendResetLink($request->only('campusid'), function (Message $message) {
             $message->subject($this->getEmailSubject());
             $message->from(env('MAIL_FROM'), env('APP_NAME'));
         });
