@@ -31,7 +31,7 @@ trait SendsPasswordResetEmails
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
         $response = $this->broker()->sendResetLink(
-            substr(str_replace("-", "", $request->only('campusid')),2).'@lums.edu.pk'
+            substr(str_replace("-", "", $request->campusid),2).'@lums.edu.pk'
         );
 
         if ($response === Password::RESET_LINK_SENT) {
