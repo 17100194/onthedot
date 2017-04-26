@@ -2,8 +2,10 @@
 
 namespace Illuminate\Foundation\Auth;
 
+use App\Mail\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 
 trait SendsPasswordResetEmails
@@ -27,14 +29,13 @@ trait SendsPasswordResetEmails
     public function sendResetLinkEmail(Request $request)
     {
         $this->validate($request, ['campusid' => 'required|string|max:255|regex:/\d{4}-\d{2}-\d{4}/']);
-
+        $campusid = $request->campusid;
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
         $response = $this->broker()->sendResetLink(
-            $request->only('campusid'), function (Message $message){
-                $message->subject($this->getEmailSubject());
-                $message->from('onthedotpk@gmail.com', 'OntheDot');
+            $request->only('campusid'), function ($campusid){
+                Mail::to(substr(str_replace("-", "", $campusid),2).'@lums.edu.pk')->send(new PasswordReset());
             }
         );
 
