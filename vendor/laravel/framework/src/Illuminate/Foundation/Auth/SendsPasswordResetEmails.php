@@ -3,6 +3,7 @@
 namespace Illuminate\Foundation\Auth;
 
 use Illuminate\Http\Request;
+use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Password;
 
 trait SendsPasswordResetEmails
@@ -31,7 +32,10 @@ trait SendsPasswordResetEmails
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
         $response = $this->broker()->sendResetLink(
-            $request->only('campusid')
+            $request->only('campusid'), function (Message $message){
+                $message->subject($this->getEmailSubject());
+                $message->from('onthedotpk@gmail.com', 'OntheDot');
+            }
         );
 
         if ($response === Password::RESET_LINK_SENT) {
