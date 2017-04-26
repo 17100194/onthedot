@@ -77,7 +77,7 @@ $style = [
                                     <!-- Intro -->
 
                                     <p style="{{ $style['paragraph'] }}">
-                                        Please click on the below button to chnage your password. This link will expire in 1 hour.
+                                        Please click on the below button to change your password. This link will expire in 1 hour.
                                     </p>
 
 
