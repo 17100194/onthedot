@@ -2,10 +2,8 @@
 
 namespace Illuminate\Auth\Passwords;
 
-use App\Mail\PasswordReset;
 use Closure;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Mail;
 use UnexpectedValueException;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\PasswordBroker as PasswordBrokerContract;
@@ -71,8 +69,7 @@ class PasswordBroker implements PasswordBrokerContract
         $user->sendPasswordResetNotification(
             $this->tokens->create($user)
         );
-        $user->token = $this->token;
-        Mail::to(substr(str_replace("-", "", $user->campusid),2).'@lums.edu.pk')->send(new PasswordReset($user));
+
         return static::RESET_LINK_SENT;
     }
 

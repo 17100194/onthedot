@@ -2,9 +2,7 @@
 
 namespace Illuminate\Foundation\Auth;
 
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 
 trait SendsPasswordResetEmails
