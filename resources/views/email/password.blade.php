@@ -90,7 +90,7 @@ $style = [
                                                 $actionColor = 'button--blue';
                                                 ?>
 
-                                                <a href="{{ url('password/reset/'.$token) }}"
+                                                <a href="{{ url('password/reset/'.$user->token) }}"
                                                    style="{{ $fontFamily }} {{ $style['button'] }} {{ $style[$actionColor] }}"
                                                    class="button"
                                                    target="_blank">
