@@ -192,6 +192,14 @@
         }
     });
     $('#select_group').on('click', function(){
+        if($(this).parents('.modal-body').find('#minute').val() == ''){
+            alert('Minutes cannot be empty');
+            return;
+        }
+        if($(this).parents('.modal-body').find('#duration').val() == ''){
+            alert('Duration cannot be empty');
+            return;
+        }
         var start_time = $(this).parents('.modal-body').find('#hr').text()+$(this).parents('.modal-body').find('#minute').val()+$(this).parents('.modal-body').find('#ampm').text();
         var hrs = start_time.split(":")[0];
         var mins = start_time.split(":")[1].substr(1,2);
