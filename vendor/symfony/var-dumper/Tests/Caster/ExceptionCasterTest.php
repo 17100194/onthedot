@@ -28,14 +28,15 @@ class ExceptionCasterTest extends \PHPUnit_Framework_TestCase
         $f = array(
             new FrameStub(array(
                 'file' => dirname(__DIR__).'/Fixtures/Twig.php',
-                'line' => 21,
+                'line' => 19,
                 'class' => '__TwigTemplate_VarDumperFixture_u75a09',
+                'object' => new \__TwigTemplate_VarDumperFixture_u75a09(new \Twig_Environment(new \Twig_Loader_Filesystem())),
             )),
             new FrameStub(array(
                 'file' => dirname(__DIR__).'/Fixtures/Twig.php',
-                'line' => 21,
+                'line' => 19,
                 'class' => '__TwigTemplate_VarDumperFixture_u75a09',
-                'object' => new \__TwigTemplate_VarDumperFixture_u75a09(null, false),
+                'object' => new \__TwigTemplate_VarDumperFixture_u75a09(new \Twig_Environment(new \Twig_Loader_Filesystem()), null),
             )),
         );
 
@@ -43,8 +44,11 @@ class ExceptionCasterTest extends \PHPUnit_Framework_TestCase
 array:2 [
   0 => {
     class: "__TwigTemplate_VarDumperFixture_u75a09"
+    object: __TwigTemplate_VarDumperFixture_u75a09 {
+    %A
+    }
     src: {
-      %sTwig.php:21: """
+      %sTwig.php:19: """
             // line 2\n
             throw new \Exception('Foobar');\n
         }\n
@@ -62,7 +66,7 @@ array:2 [
     %A
     }
     src: {
-      %sTwig.php:21: """
+      %sTwig.php:19: """
             // line 2\n
             throw new \Exception('Foobar');\n
         }\n

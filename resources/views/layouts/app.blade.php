@@ -11,17 +11,22 @@
     <title>{{ config('app.name', 'On the DOT') }}</title>
 
     <!-- Styles -->
-    <link rel="shortcut icon" href="{{ secure_asset('public/images/favicon.png') }}">
-    <link href="{{ secure_asset('public/css/app.css') }}" rel="stylesheet" type="text/css" >
-    <link href="{{ secure_asset('public/css/style.css') }}" rel="stylesheet" type="text/css" >
+    <link rel="shortcut icon" href="{{ asset('public/images/favicon.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link href="{{ asset('public/css/app.css') }}" rel="stylesheet" type="text/css" >
+    <link href="{{ asset('public/css/style.css') }}" rel="stylesheet" type="text/css" >
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" type="text/css" href="{{asset('public/css/normalize.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{asset('public/css/demo.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{asset('public/css/icons.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{asset('public/css/component.css')}}" />
 </head>
 <body>
 <!-- Scripts -->
+<script src="{{asset('public/js/modernizr.custom.js')}}"></script>
 <script
-        src="{{ secure_asset('public/js/app.js')}}"></script>
+        src="{{ asset('public/js/app.js')}}"></script>
 <script
         src="https://code.jquery.com/jquery-3.1.1.min.js"
         integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
@@ -30,7 +35,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 {{--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>--}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-<script src="{{ secure_asset('public/js/scripts.js')}}"></script>
+<script src="{{ asset('public/js/scripts.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.min.js"></script>
 
 <script>
@@ -41,7 +46,7 @@
 
 <!-- Scripts End -->
 <div id="app">
-    <nav class="navbar navbar-default navbar-fixed-top" style="background-color:#fff; width: 90%; margin: 0px auto;">
+    <nav class="navbar navbar-default" style="background-color:#fff; width: 90%; margin: 0px auto;">
         <div class="container">
             <div class="navbar-header">
 
@@ -55,18 +60,8 @@
 
                 <!-- Branding Image -->
                 <a class="navbar-brand" href="{{ url('/') }}" style="width: 177px; padding-top: 0px;">
-                    <img src="<?= secure_asset('public/images/onthedot.png') ?>" class="img-responsive">
+                    <img src="<?= asset('public/images/onthedot.png') ?>" class="img-responsive">
                 </a>
-                <div class="navbar-form pull-left col-xs-6" role="search" style="border: none; padding: 0px 20px 0px 20px; box-shadow: none;">
-                    <form method="get" action="{{ action('MeetingsController@q') }}">
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="q" placeholder="Search for a user or group...">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" style="height: 36px; width: 40px;" type="submit"><i class="fa fa-search"></i></button>
-                            </span>
-                        </div>
-                    </form>
-                </div>
             </div>
 
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
@@ -130,15 +125,33 @@
                             </ul>
                         </li>
                     @endif
+                    <li><a href="#search"><i class="fa fa-search fa-lg"></i> Search</a></li>
                 </ul>
             </div>
         </div>
     </nav>
     @yield('content')
 </div>
+<div id="search">
+    <button type="button" class="close">×</button>
+    <form method="get" action="{{ action('MeetingsController@q') }}">
+        <input type="search" name="q" value="" placeholder="type keyword(s) here" autocomplete="off" />
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
 <script>
-    $(document).ready(function () {
+    $(function () {
+        $('a[href="#search"]').on('click', function(event) {
+            event.preventDefault();
+            $('#search').addClass('open');
+            $('#search > form > input[type="search"]').focus();
+        });
 
+        $('#search, #search button.close').on('click keyup', function(event) {
+            if (event.target == this || event.target.className == 'close' || event.keyCode == 27) {
+                $(this).removeClass('open');
+            }
+        });
     });
     $('.notification-button').click(function () {
         $.ajaxSetup({

@@ -2,15 +2,14 @@
 
 return array(
     "driver" => "smtp",
-    "host" => "smtp.gmail.com",
-    "port" => 587,
+    "host" => "smtp.mailtrap.io",
+    "port" => 2525,
     "from" => array(
-        "address" => "onthedotpk@gmail.com",
-        "name" => "OntheDot"
+        "address" => "833dc2bd47-135297@inbox.mailtrap.io",
+        "name" => "Example"
     ),
-    'encryption' => 'tls',
-    "username" => "onthedotpk@gmail.com",
-    "password" => "Google453",
+    "username" => "fcd3632add1901",
+    "password" => "13feae878ead79",
     "sendmail" => "/usr/sbin/sendmail -bs",
     "pretend" => false
 );

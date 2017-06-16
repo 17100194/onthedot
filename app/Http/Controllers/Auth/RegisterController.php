@@ -53,12 +53,11 @@ class RegisterController extends Controller
     {
         $messages = [
             'required' => 'This field is required.',
-            'campusid.regex'=>'Invalid Campus ID',
-            'campusid.unique'=>'Campus ID already exists'
+            'email.unique'=>'Email already exists'
         ];
         return Validator::make($data, [
             'name' => 'required|max:255',
-            'campusid' => 'required|string|max:255|unique:users|regex:/\d{4}-\d{2}-\d{4}/',
+            'email' => 'required|string|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
         ], $messages);
     }
@@ -80,9 +79,18 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        if(strpos($data['email'], 'lums.edu.pk') !== false){
+            return User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'campusid' => '20'.substr($data['email'], 0, 2).'-'.substr($data['email'], 2, 2).'-'.substr($data['email'], 4, 4),
+                'password' => bcrypt($data['password']),
+                'email_token' => str_random(10)
+            ]);
+        }
         return User::create([
             'name' => $data['name'],
-            'campusid' => $data['campusid'],
+            'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'email_token' => str_random(10)
         ]);
@@ -104,9 +112,9 @@ class RegisterController extends Controller
             $user = $this->create($request->all());
             // After creating the user send an email with the random token generated in the create method above
             $email = new EmailVerification(new User(['email_token' => $user->email_token, 'name' => $user->name]));
-            Mail::to(substr(str_replace("-", "", $user->campusid),2).'@lums.edu.pk')->send($email);
+            Mail::to($user->email)->send($email);
             DB::commit();
-            return back()->with('message', 'You have successfully registered! An activation email has been sent to your Campus Mail');
+            return back()->with('message', 'You have successfully registered! An activation email has been sent to your email');
         }
         catch(Exception $e)
         {

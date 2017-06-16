@@ -86,7 +86,7 @@ trait AuthenticatesUsers
     protected function credentials(Request $request)
     {
         return [
-            'campusid' => $request->campusid,
+            'email' => $request->email,
             'password' => $request->password,
             'verified' => 1,
         ];
@@ -140,7 +140,7 @@ trait AuthenticatesUsers
      */
     public function username()
     {
-        return 'campusid';
+        return 'email';
     }
 
     /**

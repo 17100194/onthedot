@@ -2,31 +2,30 @@
 
 <!-- Main Content -->
 @section('content')
-<div class="container" style="width:90%; background-color: white;">
+<div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-                <div class="panel-heading" style=" background-color: transparent; color:#3b3a36; font-weight:bold; text-align: center;">
-                    <h3>Reset Password</h3>
-                    <hr style="width:25%; border-width: 3px;">
+            <div class="panel panel-default">
+                <div class="panel-heading">Reset Password</div>
+                <div class="panel-body">
                     @if (session('status'))
                         <div class="alert alert-success">
                             {{ session('status') }}
                         </div>
                     @endif
-                </div>
-                <div class="panel-body">
+
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/password/email') }}">
                         {{ csrf_field() }}
 
-                        <div class="form-group{{ $errors->has('campusid') ? ' has-error' : '' }}">
-                            <label for="campusid" class="col-md-4 control-label">Campus ID</label>
+                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
 
                             <div class="col-md-6">
-                                <input id="campusid" type="text" class="form-control" name="campusid" placeholder="e.g 2017-10-0194" value="{{ old('campusid') }}" required>
+                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
 
-                                @if ($errors->has('campusid'))
+                                @if ($errors->has('email'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('campusid') }}</strong>
+                                        <strong>{{ $errors->first('email') }}</strong>
                                     </span>
                                 @endif
                             </div>
@@ -34,13 +33,14 @@
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="button1">
+                                <button type="submit" class="btn btn-primary">
                                     Send Password Reset Link
                                 </button>
                             </div>
                         </div>
                     </form>
                 </div>
+            </div>
         </div>
     </div>
 </div>
