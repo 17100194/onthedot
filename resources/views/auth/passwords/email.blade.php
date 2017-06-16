@@ -16,7 +16,7 @@
                         {{ session('status') }}
                     </div>
                 @endif
-                <p style="color: #636b6f">Enter your username or email to recover your password.
+                <p style="color: #636b6f">Enter your email to recover your password.
                     You will receive an email with instructions. If you are experimenting problems recovering your password contact us or <a href="mailto:onthedotpk@gmail.com" class="btn-link">send us an email.</a></p>
             </div>
             <div class="panel-body" style="background: white">
