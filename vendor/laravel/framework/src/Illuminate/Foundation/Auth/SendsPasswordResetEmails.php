@@ -25,13 +25,13 @@ trait SendsPasswordResetEmails
      */
     public function sendResetLinkEmail(Request $request)
     {
-        $this->validate($request, ['campusid' => 'required|string|max:255|regex:/\d{4}-\d{2}-\d{4}/']);
+        $this->validate($request, ['email' => 'required|string|max:255']);
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
         $response = $this->broker()->sendResetLink(
-            $request->only('campusid')
+            $request->only('email')
         );
 
         if ($response === Password::RESET_LINK_SENT) {
@@ -42,7 +42,7 @@ trait SendsPasswordResetEmails
         // translated so we can notify a user of the problem. We'll redirect back
         // to where the users came from so they can attempt this process again.
         return back()->withErrors(
-            ['campusid' => trans($response)]
+            ['email' => trans($response)]
         );
     }
 
