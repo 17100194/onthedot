@@ -601,7 +601,7 @@ svg text {
 
 #notifications {
  height: 390px;
- overflow: visible;
+ overflow-x: hidden;
  padding: 0px;
 }
 

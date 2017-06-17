@@ -88,11 +88,11 @@
                                         @endif
                                 @endif
                             </a>
-                            <ul id="notifications" class="dropdown-menu" role="menu" style="min-width: 350px; text-align: center; color: #666;">
+                            <ul id="notifications" class="dropdown-menu" role="menu" style="min-width: 340px; text-align: center; color: #666;">
                                 <div style="text-align: center; border-bottom: 1px solid #dddddd; padding: 8px;">Notifications</div>
                                 <div id="notificationsBody">
                                     @if (count($requests) > 0)
-                                        <ul class="notificationbox" style="list-style: none;">
+                                        <ul class="notification-box" style="list-style: none;">
                                             @foreach($requests as $request)
                                                 <li><?= $request?></li>
                                             @endforeach
