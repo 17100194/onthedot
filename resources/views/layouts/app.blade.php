@@ -130,8 +130,7 @@
                         </li>
                     @endif
                 </ul>
-                <?php echo parse_url($_SERVER['REQUEST_URI'])['path']?>
-                <form role="form" id="form-buscar" class="navbar-form <?php if (parse_url($_SERVER['REQUEST_URI'])['path'] == "/schedulerapp/trunk/"):?>hidden<?php endif; ?>" style="outline: none; border: none" method="get" action="{{ action('MeetingsController@q') }}">
+                <form role="form" id="form-buscar" class="navbar-form <?php if (parse_url($_SERVER['REQUEST_URI'])['path'] == "/"):?>hidden<?php endif; ?>" style="outline: none; border: none" method="get" action="{{ action('MeetingsController@q') }}">
                     <div class="form-group">
                         <div class="input-group">
                             <input id="1" class="form-control" type="text" name="query" placeholder="Search for a User or Group.." required/>
