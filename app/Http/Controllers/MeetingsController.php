@@ -81,7 +81,7 @@ class MeetingsController extends Controller
 
     public function q(Request $request)
     {
-        $query = $request->input('q');
+        $query = $request->input('query');
         $allCourses[] = array();
         $active = 'meeting';
         $users = [];

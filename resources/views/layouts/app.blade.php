@@ -21,16 +21,19 @@
     <link rel="stylesheet" type="text/css" href="{{asset('public/css/demo.css')}}" />
     <link rel="stylesheet" type="text/css" href="{{asset('public/css/icons.css')}}" />
     <link rel="stylesheet" type="text/css" href="{{asset('public/css/component.css')}}" />
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" rel="stylesheet">
 </head>
 <body>
 <!-- Scripts -->
-<script src="{{asset('public/js/modernizr.custom.js')}}"></script>
-<script
-        src="{{ asset('public/js/app.js')}}"></script>
 <script
         src="https://code.jquery.com/jquery-3.1.1.min.js"
         integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
         crossorigin="anonymous"></script>
+<script src="{{asset('public/js/modernizr.custom.js')}}"></script>
+<script src="{{asset('public/js/modernizr.js')}}"></script>
+<script src="{{asset('public/js/main.js')}}"></script>
+<script
+        src="{{ asset('public/js/app.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 {{--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>--}}
@@ -90,9 +93,9 @@
                             </a>
                             <ul id="notifications" class="dropdown-menu" role="menu" style="min-width: 340px; text-align: center; color: #666;">
                                 <div style="text-align: center; border-bottom: 1px solid #dddddd; padding: 8px;">Notifications</div>
-                                <div id="notificationsBody">
+                                <div id="notificationsBody" class="style-1">
                                     @if (count($requests) > 0)
-                                        <ul class="notification-box" style="list-style: none;">
+                                        <ul class="notificationbox" style="list-style: none;">
                                             @foreach($requests as $request)
                                                 <li><?= $request?></li>
                                             @endforeach
@@ -103,7 +106,7 @@
                                         </ul>
                                     @endif
                                 </div>
-                                <div id="notificationFooter"><a href="#" class="btn-link">See All</a></div>
+                                <a href="#" class="btn-link"><div id="notificationFooter">See All</div></a>
                             </ul>
                         </li>
                         <li class="dropdown">
