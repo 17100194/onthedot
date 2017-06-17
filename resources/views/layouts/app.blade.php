@@ -46,16 +46,16 @@
 
 <!-- Scripts End -->
 <div id="app">
-    <nav class="navbar navbar-default" style="background-color:#fff; width: 90%; margin: 0px auto;">
+    <nav class="navbar navbar-default" role="navigation" style="background-color:#fff; border: 1px solid #b3c2bf;  width: 90%; margin: 0px auto;">
         <div class="container">
             <div class="navbar-header">
 
                 <!-- Collapsed Hamburger -->
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse" style="background-color: #3b3a36; color:#e9ece5;">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse" style="background-color: #3b3a36; color:#b3c2bf;">
                     <span class="sr-only">Toggle Navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+                    <span class="icon-bar top-bar"></span>
+                    <span class="icon-bar middle-bar"></span>
+                    <span class="icon-bar bottom-bar"></span>
                 </button>
 
                 <!-- Branding Image -->
@@ -88,18 +88,22 @@
                                         @endif
                                 @endif
                             </a>
-                            <ul id="notifications" class="dropdown-menu" role="menu" style="width: 350px; overflow-y: auto; color: #666;">
-                            @if (count($requests) > 0)
-                                <ul class="notificationbox" style="list-style: none;">
-                                    @foreach($requests as $request)
-                                        <li><?= $request?></li>
-                                    @endforeach
-                                </ul>
-                            @else
-                                <ul>
-                                    <h4 style="color: #666;">No requests at the moment</h4>
-                                </ul>
-                            @endif
+                            <ul id="notifications" class="dropdown-menu" role="menu" style="min-width: 350px; text-align: center; color: #666;">
+                                <div style="text-align: center; border-bottom: 1px solid #dddddd; padding: 8px;">Notifications</div>
+                                <div id="notificationsBody">
+                                    @if (count($requests) > 0)
+                                        <ul class="notificationbox" style="list-style: none;">
+                                            @foreach($requests as $request)
+                                                <li><?= $request?></li>
+                                            @endforeach
+                                        </ul>
+                                    @else
+                                        <ul>
+                                            <h4 style="color: #666;">No notifications at the moment</h4>
+                                        </ul>
+                                    @endif
+                                </div>
+                                <div id="notificationFooter"><a href="#" class="btn-link">See All</a></div>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -125,34 +129,26 @@
                             </ul>
                         </li>
                     @endif
-                    <li><a href="#search"><i class="fa fa-search fa-lg"></i> Search</a></li>
                 </ul>
+                <?php echo parse_url($_SERVER['REQUEST_URI'])['path']?>
+                <form role="form" id="form-buscar" class="navbar-form <?php if (parse_url($_SERVER['REQUEST_URI'])['path'] == "/schedulerapp/trunk/"):?>hidden<?php endif; ?>" style="outline: none; border: none" method="get" action="{{ action('MeetingsController@q') }}">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input id="1" class="form-control" type="text" name="query" placeholder="Search for a User or Group.." required/>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit">
+                                    <i class="fa fa-search fa-lg" aria-hidden="true"></i> Search
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </nav>
     @yield('content')
 </div>
-<div id="search">
-    <button type="button" class="close">×</button>
-    <form method="get" action="{{ action('MeetingsController@q') }}">
-        <input type="search" name="q" value="" placeholder="type keyword(s) here" autocomplete="off" />
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
-</div>
 <script>
-    $(function () {
-        $('a[href="#search"]').on('click', function(event) {
-            event.preventDefault();
-            $('#search').addClass('open');
-            $('#search > form > input[type="search"]').focus();
-        });
-
-        $('#search, #search button.close').on('click keyup', function(event) {
-            if (event.target == this || event.target.className == 'close' || event.keyCode == 27) {
-                $(this).removeClass('open');
-            }
-        });
-    });
     $('.notification-button').click(function () {
         $.ajaxSetup({
             headers: {

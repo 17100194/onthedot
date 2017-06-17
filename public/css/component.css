@@ -122,7 +122,7 @@ section::after {
 .ss-style-doublediagonal {
 	z-index: 1;
 	padding-top: 6em;
-	background: #d3d3d3;
+	background: #b3c2bf;
 }
 
 .ss-style-doublediagonal::before,
