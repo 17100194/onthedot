@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-md-2" style="padding-right: 0px; padding-left: 0px;">
             <div class="panel panel-default dashboard-options" style="text-align: center;">
-                <a href="<?php echo url('/home') ?>" style="display:block;" class="panel-heading <?php if ($active == "dashboard"): ?>active<?php endif; ?>">Dashboard</a>
+                <a href="<?php echo url('/dashboard') ?>" style="display:block;" class="panel-heading <?php if ($active == "dashboard"): ?>active<?php endif; ?>">Dashboard</a>
                 <a href="<?php echo url('/search') ?>" style="display:block;" class="panel-heading <?php if ($active == "search"): ?>active<?php endif; ?>">Schedule Meeting</a>
                 <a href='<?php echo url('/requested') ?>' style="display:block;" class="panel-heading <?php if ($active == "requested"): ?>active<?php endif; ?>">Requested Meetings</a>
                 <a href="<?php echo url('/meetings/requests') ?>" style="display:block;" class="panel-heading <?php if ($active == "requests"): ?>active<?php endif; ?>">Meeting Requests (<?=count($requests)?>)</a>

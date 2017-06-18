@@ -116,13 +116,16 @@
 
                             <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    <a href="{{ url('/home') }}">
-                                        Profile
+                                    <a href="{{ url('/dashboard') }}">
+                                        <i class="fa fa-user" aria-hidden="true"></i> Dashboard
+                                    </a>
+                                    <a href="#">
+                                        <i class="fa fa-cog" aria-hidden="true"></i> My Account
                                     </a>
                                     <a href="{{ url('/logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        Logout
+                                        <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
                                     </a>
 
                                     <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">

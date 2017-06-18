@@ -29,7 +29,7 @@
                                     </div>
                                 </div>
                             @else
-                                <a href="{{ url('/home') }}" class="button_sliding_bg_2" style="font-size: larger;">Get Started</a>
+                                <a href="{{ url('/dashboard') }}" class="button_sliding_bg_2" style="font-size: larger;">Get Started</a>
                             @endif
                         </div>
                     </div>
