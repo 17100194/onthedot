@@ -148,10 +148,11 @@ class HomeController extends Controller
         $meetingsObject = $this->getUserMeetingsObject(Auth::id());
 
         foreach ($courses as $course) {
-
-
+            $instructor = $this->getUserById($course->instructorid);
             $courseData = $app->make('stdClass');
             $courseData->type = 'course';
+            $time = date("g:i a", strtotime(explode('-',$course->timing)[0])).'-'.date("g:i a", strtotime(explode('-',$course->timing)[1]));
+            $courseData->content = "<div style='text-align: center'><h3>$course->name ($course->coursecode)</h3><hr><div class='row'><div class='col-xs-6'><h4>Instructor:</h4></div><div class='col-xs-6'><h4>$instructor->name</h4></div></div><div class='row'><div class='col-xs-6'><h4>Section:</h4></div><div class='col-xs-6'><h4>$course->section</h4></div></div><div class='row'><div class='col-xs-6'><h4>Timing:</h4></div><div class='col-xs-6'><h4>$time</h4></div></div><div class='row'><div class='col-xs-6'><h4>Days:</h4></div><div class='col-xs-6'><h4>$course->days</h4></div></div><input type='hidden' class='courseid' value='$course->courseid'><button class='button_sliding_bg dropcourse' style='font-size: 2rem;'>Drop Course</button></div>";
             $courseData->meetingid = "";
             $courseData->with = "";
             $courseData->name = $course->name;
@@ -170,13 +171,17 @@ class HomeController extends Controller
         foreach ($meetings as $meeting) {
             $with = array();
             foreach($meetingsObject[$meeting->meetingid]->members as $member) {
-                $with[]= $this->getUserById($member->userid)->name;
+                if ($member->userid != Auth::id()){
+                    $with[]= $this->getUserById($member->userid)->name;
+                }
             }
             $with = implode(', ', $with);
             if ($meeting->status == "accepted") {
                 $userDetails = $this->getUserById($meeting->with);
                 $meetingData = $app->make('stdClass');
+                $time = date("g:i a", strtotime(explode('-',$meeting->time)[0])).'-'.date("g:i a", strtotime(explode('-',$meeting->time)[1]));
                 $meetingData->type = 'meeting';
+                $meetingData->content = "<div style='text-align: center'><h3>Meeting Details</h3><hr><div class='row'><div class='col-xs-6'><h4>With:</h4></div><div class='col-xs-6'><h4>$with</h4></div></div><div class='row'><div class='col-xs-6'><h4>Time:</h4></div><div class='col-xs-6'><h4>$time</h4></div></div><div class='row'><div class='col-xs-6'><h4>Date:</h4></div><div class='col-xs-6'><h4>$meeting->date</h4></div></div><input type='hidden' class='meetingid' value='$meeting->meetingid'><button class='button_sliding_bg cancelmeeting' style='font-size: 2rem;'>Cancel</button></div>";
                 $meetingData->meetingid = 'meeting_'.$meeting->meetingid;
                 $meetingData->with = $with;
                 $meetingData->name = $meeting->date;
@@ -192,7 +197,6 @@ class HomeController extends Controller
 
                 $allCourses[] = $meetingData;
             }
-
         }
 
         $active = 'timetable';

@@ -3,6 +3,11 @@
 @section('main')
     <h4 style="text-align: center;"><a>My Timetable</a></h4>
     <hr>
+    @if(session('message'))
+        <div class="alert alert-success">
+            {{ session()->pull('message') }}
+        </div>
+    @endif
     <div class="cd-schedule loading">
         <div class="timeline">
             <ul>
@@ -41,9 +46,13 @@
                         <?php
                         switch ($day) {
                             case "Monday":?>
-                            <li class="single-event" data-start="<?= date("H:i",strtotime(explode('-',$course->timing)[0]))?>" data-end="<?= date("H:i",strtotime(explode('-',$course->timing)[1]))?>" data-event="event-1">
+                            <li class="single-event" data-info="<?= $course->content?>" data-start="<?= date("H:i",strtotime(explode('-',$course->timing)[0]))?>" data-end="<?= date("H:i",strtotime(explode('-',$course->timing)[1]))?>" data-event="event-1">
                                 <a href="#0">
-                                    <em class="event-name"><?= $course->name?></em>
+                                    @if($course->type != 'meeting')
+                                        <em class="event-name"><?= $course->name?></em>
+                                    @else
+                                        <em class="event-name">Meeting</em>
+                                    @endif
                                 </a>
                             </li>
                                 <?php break;
@@ -74,9 +83,13 @@
                         case "Monday":
                             break;
                         case "Tuesday":?>
-                            <li class="single-event" data-start="<?= date("H:i",strtotime(explode('-',$course->timing)[0]))?>" data-end="<?= date("H:i",strtotime(explode('-',$course->timing)[1]))?>" data-event="event-2">
+                            <li class="single-event" data-info="<?= $course->content?>" data-start="<?= date("H:i",strtotime(explode('-',$course->timing)[0]))?>" data-end="<?= date("H:i",strtotime(explode('-',$course->timing)[1]))?>" data-event="event-2">
                                 <a href="#0">
-                                    <em class="event-name"><?= $course->name?></em>
+                                    @if($course->type != 'meeting')
+                                        <em class="event-name"><?= $course->name?></em>
+                                    @else
+                                        <em class="event-name">Meeting</em>
+                                    @endif
                                 </a>
                             </li>
                             <?php break;
@@ -108,9 +121,13 @@
                         case "Tuesday":
                             break;
                         case "Wednesday":?>
-                            <li class="single-event" data-start="<?= date("H:i",strtotime(explode('-',$course->timing)[0]))?>" data-end="<?= date("H:i",strtotime(explode('-',$course->timing)[1]))?>" data-event="event-3">
+                            <li class="single-event" data-info="<?= $course->content?>" data-start="<?= date("H:i",strtotime(explode('-',$course->timing)[0]))?>" data-end="<?= date("H:i",strtotime(explode('-',$course->timing)[1]))?>" data-event="event-3">
                                 <a href="#0">
-                                    <em class="event-name"><?= $course->name?></em>
+                                    @if($course->type != 'meeting')
+                                        <em class="event-name"><?= $course->name?></em>
+                                    @else
+                                        <em class="event-name">Meeting</em>
+                                    @endif
                                 </a>
                             </li>
                             <?php break;
@@ -142,9 +159,13 @@
                         case "Wednesday":
                             break;
                         case "Thursday":?>
-                            <li class="single-event" data-start="<?= date("H:i",strtotime(explode('-',$course->timing)[0]))?>" data-end="<?= date("H:i",strtotime(explode('-',$course->timing)[1]))?>" data-event="event-4">
+                            <li class="single-event" data-info="<?= $course->content?>" data-start="<?= date("H:i",strtotime(explode('-',$course->timing)[0]))?>" data-end="<?= date("H:i",strtotime(explode('-',$course->timing)[1]))?>" data-event="event-4">
                                 <a href="#0">
-                                    <em class="event-name"><?= $course->name?></em>
+                                    @if($course->type != 'meeting')
+                                        <em class="event-name"><?= $course->name?></em>
+                                    @else
+                                        <em class="event-name">Meeting</em>
+                                    @endif
                                 </a>
                             </li>
                             <?php break;
@@ -175,9 +196,13 @@
                         case "Thursday":
                             break;
                         case "Friday":?>
-                            <li class="single-event" data-start="<?= date("H:i",strtotime(explode('-',$course->timing)[0]))?>" data-end="<?= date("H:i",strtotime(explode('-',$course->timing)[1]))?>" data-event="event-5">
+                            <li class="single-event" data-info="<?= $course->content?>" data-start="<?= date("H:i",strtotime(explode('-',$course->timing)[0]))?>" data-end="<?= date("H:i",strtotime(explode('-',$course->timing)[1]))?>" data-event="event-5">
                                 <a href="#0">
-                                    <em class="event-name"><?= $course->name?></em>
+                                    @if($course->type != 'meeting')
+                                        <em class="event-name"><?= $course->name?></em>
+                                    @else
+                                        <em class="event-name">Meeting</em>
+                                    @endif
                                 </a>
                             </li>
                             <?php break;
@@ -211,8 +236,13 @@
         <div class="cover-layer"></div>
     </div>
     <script>
-        $(document).ready(function () {
-
-        });
+        if($('.alert')) {
+            $('.alert').show();
+            window.setTimeout(function () {
+                $(".alert").fadeTo(500, 0).slideUp(500, function () {
+                    $(this).remove();
+                });
+            }, 3000);
+        }
     </script>
 @endsection

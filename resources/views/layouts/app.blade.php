@@ -26,8 +26,8 @@
 <body>
 <!-- Scripts -->
 <script
-        src="https://code.jquery.com/jquery-3.1.1.min.js"
-        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
         crossorigin="anonymous"></script>
 <script src="{{asset('public/js/modernizr.custom.js')}}"></script>
 <script src="{{asset('public/js/modernizr.js')}}"></script>
@@ -139,7 +139,7 @@
                             <input id="1" class="form-control" type="text" name="query" placeholder="Search for a User or Group.." required/>
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="submit">
-                                    <i class="fa fa-search fa-lg" aria-hidden="true"></i> Search
+                                    <i class="fa fa-search fa-lg" aria-hidden="true"></i>
                                 </button>
                             </span>
                         </div>

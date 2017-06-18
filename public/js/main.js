@@ -112,14 +112,61 @@ jQuery(document).ready(function($){
 
 		//update event name and time
 		this.modalHeader.find('.event-name').text(event.find('.event-name').text());
+        this.modalHeader.find('.event-name').css('visibility', 'visible');
 		this.modalHeader.find('.event-date').text(event.find('.event-date').text());
 		this.modal.attr('data-event', event.parent().attr('data-event'));
 
 		//update event content
-		this.modalBody.find('.event-info').load(event.parent().attr('data-content')+'.html .event-info > *', function(data){
+		this.modalBody.find('.event-info').html(event.parent().attr('data-info')).promise().done(function(data){
 			//once the event content has been loaded
 			self.element.addClass('content-loaded');
 		});
+
+        this.modalBody.find('.cancelmeeting').on('click', function () {
+            var meetingid = $(this).parents('.event-info').find('.meetingid').val();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                method: "POST",
+                url: "./cancelMeeting",
+                data: {
+                    meetingid: meetingid
+                },
+                success: function(data) {
+                    location.reload();
+                },
+                error: function (xhr, status) {
+                    // console.log(status);
+                    // console.log(xhr.responseText);
+                }
+            });
+        });
+
+		this.modalBody.find('.dropcourse').on('click', function () {
+			var courseid = $(this).parents('.event-info').find('.courseid').val();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                method: "POST",
+                url: "./dropcourse",
+                data: {
+                    courseid: courseid
+                },
+                success: function(data) {
+                    location.reload();
+                },
+                error: function (xhr, status) {
+//                    console.log(status);
+//                    console.log(xhr.responseText);
+                }
+            });
+        });
 
 		this.element.addClass('modal-is-open');
 
