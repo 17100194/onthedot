@@ -5,7 +5,7 @@
     <!-- Section -->
     <section class="fullscreen" style="background:#d3d3d3; padding: 0;">
         <div class="container container-fullscreen">
-            <div>
+            <div class="text-middle">
                 <div class="text-center m-b-30">
                     <a href="{{url('/')}}" class="logo">
                         <img src="{{asset('public/images/onthedot.png')}}" style="width: 350px;" alt="Logo">
