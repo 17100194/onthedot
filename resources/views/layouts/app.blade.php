@@ -13,22 +13,22 @@
     <title>{{ config('app.name', 'On the DOT') }}</title>
 
     <!-- Stylesheets & Fonts -->
-    <link rel="shortcut icon" href="{{ asset('public/images/favicon.png') }}">
+    <link rel="shortcut icon" href="{{ secure_asset('public/images/favicon.png') }}">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" rel="stylesheet">
-    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,800,700,600|Montserrat:400,500,600,700|Raleway:100,300,600,700,800" rel="stylesheet" type="text/css" />
-    <link href="{{asset('css/plugins.css')}}" rel="stylesheet">
-    <link href="{{asset('css/style.css')}}" rel="stylesheet">
-    <link href="{{asset('css/responsive.css')}}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,800,700,600|Montserrat:400,500,600,700|Raleway:100,300,600,700,800" rel="stylesheet" type="text/css" />
+    <link href="{{secure_asset('css/plugins.css')}}" rel="stylesheet">
+    <link href="{{secure_asset('css/style.css')}}" rel="stylesheet">
+    <link href="{{secure_asset('css/responsive.css')}}" rel="stylesheet">
 
-    <link href="{{asset('css/select2.css')}}" rel="stylesheet">
+    <link href="{{secure_asset('css/select2.css')}}" rel="stylesheet">
 
     <!-- Timetable CSS -->
-    <link href="{{asset('css/reset.css')}}" rel="stylesheet">
-    <link href="{{asset('css/timetable.css')}}" rel="stylesheet">
+    <link href="{{secure_asset('css/reset.css')}}" rel="stylesheet">
+    <link href="{{secure_asset('css/timetable.css')}}" rel="stylesheet">
 
-    <script src="{{asset('js/jquery.js')}}"></script>
-    <script src="{{asset('js/select2.min.js')}}"></script>
-    <script src="{{asset('js/jquery.sticky-sidebar-scroll.min.js')}}"></script>
+    <script src="{{secure_asset('js/jquery.js')}}"></script>
+    <script src="{{secure_asset('js/select2.min.js')}}"></script>
+    <script src="{{secure_asset('js/jquery.sticky-sidebar-scroll.min.js')}}"></script>
 
     <script>
         window.Laravel = <?php echo json_encode([
@@ -37,35 +37,35 @@
     </script>
 
     <!-- LOADING FONTS AND ICONS -->
-    <link href="http://fonts.googleapis.com/css?family=Rubik:500%2C400%2C700" rel="stylesheet" property="stylesheet" type="text/css" media="all">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:500%2C400%2C700" rel="stylesheet" property="stylesheet" type="text/css" media="all">
 
-    <link rel="stylesheet" type="text/css" href="{{asset('js/plugins/revolution/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('js/plugins/revolution/fonts/font-awesome/css/font-awesome.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{secure_asset('js/plugins/revolution/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{secure_asset('js/plugins/revolution/fonts/font-awesome/css/font-awesome.css')}}">
 
     <!-- REVOLUTION STYLE SHEETS -->
-    <link rel="stylesheet" type="text/css" href="{{asset('js/plugins/revolution/css/settings.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{secure_asset('js/plugins/revolution/css/settings.css')}}">
 
     <style type="text/css">.tiny_bullet_slider .tp-bullet:before{content:" ";  position:absolute;  width:100%;  height:25px;  top:-12px;  left:0px;  background:transparent}</style>
     <style type="text/css">.bullet-bar.tp-bullets{}.bullet-bar.tp-bullets:before{content:" ";position:absolute;width:100%;height:100%;background:transparent;padding:10px;margin-left:-10px;margin-top:-10px;box-sizing:content-box}.bullet-bar .tp-bullet{width:60px;height:3px;position:absolute;background:#aaa;  background:rgba(204,204,204,0.5);cursor:pointer;box-sizing:content-box}.bullet-bar .tp-bullet:hover,.bullet-bar .tp-bullet.selected{background:rgba(204,204,204,1)}.bullet-bar .tp-bullet-image{}.bullet-bar .tp-bullet-title{}</style>
 
 
     <!-- REVOLUTION JS FILES -->
-    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/jquery.themepunch.tools.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/jquery.themepunch.revolution.min.js')}}"></script>
+    <script type="text/javascript" src="{{secure_asset('js/plugins/revolution/js/jquery.themepunch.tools.min.js')}}"></script>
+    <script type="text/javascript" src="{{secure_asset('js/plugins/revolution/js/jquery.themepunch.revolution.min.js')}}"></script>
 
     <!-- SLICEY ADD-ON FILES -->
-    <script type='text/javascript' src='{{asset('js/plugins/revolution/revolution-addons/slicey/js/revolution.addon.slicey.min.js?ver=1.0.0')}}'></script>
+    <script type='text/javascript' src='{{secure_asset('js/plugins/revolution/revolution-addons/slicey/js/revolution.addon.slicey.min.js?ver=1.0.0')}}'></script>
 
     <!-- SLIDER REVOLUTION 5.0 EXTENSIONS  (Load Extensions only on Local File Systems !  The following part can be removed on Server for On Demand Loading) -->
-    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.actions.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.carousel.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.kenburn.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.layeranimation.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.migration.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.navigation.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.parallax.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.slideanims.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.video.min.js')}}"></script>
+    <script type="text/javascript" src="{{secure_asset('js/plugins/revolution/js/extensions/revolution.extension.actions.min.js')}}"></script>
+    <script type="text/javascript" src="{{secure_asset('js/plugins/revolution/js/extensions/revolution.extension.carousel.min.js')}}"></script>
+    <script type="text/javascript" src="{{secure_asset('js/plugins/revolution/js/extensions/revolution.extension.kenburn.min.js')}}"></script>
+    <script type="text/javascript" src="{{secure_asset('js/plugins/revolution/js/extensions/revolution.extension.layeranimation.min.js')}}"></script>
+    <script type="text/javascript" src="{{secure_asset('js/plugins/revolution/js/extensions/revolution.extension.migration.min.js')}}"></script>
+    <script type="text/javascript" src="{{secure_asset('js/plugins/revolution/js/extensions/revolution.extension.navigation.min.js')}}"></script>
+    <script type="text/javascript" src="{{secure_asset('js/plugins/revolution/js/extensions/revolution.extension.parallax.min.js')}}"></script>
+    <script type="text/javascript" src="{{secure_asset('js/plugins/revolution/js/extensions/revolution.extension.slideanims.min.js')}}"></script>
+    <script type="text/javascript" src="{{secure_asset('js/plugins/revolution/js/extensions/revolution.extension.video.min.js')}}"></script>
 
 </head>
 
@@ -80,8 +80,8 @@
             <div class="container">
                 <!--Logo-->
                 <div id="logo">
-                    <a href="{{url('/')}}" class="logo" data-dark-logo="{{asset('public/images/onthedot.png')}}">
-                        <img src="{{asset('public/images/onthedot.png')}}" alt="Logo">
+                    <a href="{{url('/')}}" class="logo" data-dark-logo="{{secure_asset('public/images/onthedot.png')}}">
+                        <img src="{{secure_asset('public/images/onthedot.png')}}" alt="Logo">
                     </a>
                 </div>
                 <!--End: Logo-->
@@ -137,7 +137,7 @@
                                                 <div id="notifications">
 
                                                 </div>
-                                                <img id="loading" src="{{asset('public/images/preloader.gif')}}" class="center-block" style="display: none;">
+                                                <img id="loading" src="{{secure_asset('public/images/preloader.gif')}}" class="center-block" style="display: none;">
                                             </div>
                                         </ul>
                                     </li>
@@ -184,7 +184,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <!-- Footer widget area 1 -->
-                        <div class="widget clearfix widget-contact-us" style="background-image: url({{asset('public/images/world-map-dark.png')}}); background-position: 50% 20px; background-repeat: no-repeat">
+                        <div class="widget clearfix widget-contact-us" style="background-image: url({{secure_asset('public/images/world-map-dark.png')}}); background-position: 50% 20px; background-repeat: no-repeat">
                             <h4>About OntheDot</h4>
                             <hr>
                             <p>OntheDot is an institution based meeting scheduling platform where we believe in convenience and minimal human interaction when it comes to meeting scheduling.</p>
@@ -266,11 +266,11 @@
 <a id="goToTop"><i class="fa fa-angle-up top-icon"></i><i class="fa fa-angle-up"></i></a>
 
 <!--Plugins-->
-<script src="{{asset('js/plugins.js')}}"></script>
+<script src="{{secure_asset('js/plugins.js')}}"></script>
 
 <!--Template functions-->
-<script src="{{asset('js/functions.js')}}"></script>
-<script src="{{asset('js/custom.js')}}"></script>
+<script src="{{secure_asset('js/functions.js')}}"></script>
+<script src="{{secure_asset('js/custom.js')}}"></script>
 
 <script>
     $(document).ready(function () {
