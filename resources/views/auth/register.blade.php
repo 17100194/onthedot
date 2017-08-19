@@ -1,96 +1,74 @@
 @extends('layouts.header')
 
 @section('bodycontent')
-<div class="container">
-    <div class="row center-block">
-        <a href="{{ url('/') }}">
-            <img src="<?= asset('public/images/onthedot.png') ?>" class="img-responsive" style="display: block; margin: auto;">
-        </a>
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel-heading" style=" background-color: white; color:#3b3a36; font-weight:bold; text-align: center;">
-                <h2>Sign Up</h2>
-                <hr style="width:90%; border-width: 3px;">
-                @if(session()->has('message'))
-                    <div class="alert alert-success">
-                        {{ session()->pull('message') }}
-                    </div>
-                @endif
-            </div>
-            <div class="panel-body" style="background: white">
-                <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
-                    {{ csrf_field() }}
-
-                    <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                        <label for="name" class="col-md-4 control-label">Name</label>
-
-                        <div class="col-md-6">
-                            <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus>
-
-                            @if ($errors->has('name'))
-                                <span class="help-block">
+    <!-- Section -->
+    <section class="fullscreen" style="background:#d3d3d3; padding: 0;">
+        <div class="container container-fullscreen">
+            <div class="text-middle">
+                <div class="text-center m-b-30">
+                    <a href="{{url('/')}}" class="logo">
+                        <img src="{{asset('public/images/onthedot.png')}}" style="width: 350px;" alt="Logo">
+                    </a>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 center p-30 background-white b-r-6">
+                        <h3>Register New Account</h3>
+                        @if(session()->has('message'))
+                            <div class="alert alert-success">
+                                <i class="fa fa-check-circle"></i> {{ session()->pull('message') }}
+                            </div>
+                        @endif
+                        <form class="form-transparent-grey" method="POST" action="{{ url('/register') }}">
+                            {{ csrf_field() }}
+                            <div class="form-group{{ $errors->has('name') ? ' has-error has-feedback' : '' }}">
+                                <label class="sr-only">Full Name</label>
+                                <input id="name" name="name" type="text" value="{{ old('name') }}" required autofocus placeholder="Full Name" class="form-control">
+                                @if ($errors->has('name'))
+                                    <span class="fa fa-close form-control-feedback" aria-hidden="true"></span>
+                                    <span class="help-block">
                                         <strong>{{ $errors->first('name') }}</strong>
                                     </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                        <label for="email" class="col-md-4 control-label">Email</label>
-
-                        <div class="col-md-6">
-                            <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
-
-                            @if ($errors->has('email'))
-                                <span class="help-block">
+                                @endif
+                            </div>
+                            <div class="form-group{{ $errors->has('email') ? ' has-error has-feedback' : '' }}">
+                                <label class="sr-only">Email</label>
+                                <input id="email" name="email" type="email" value="{{old('email')}}" class="form-control" placeholder="Email Address" required autofocus>
+                                @if ($errors->has('email'))
+                                    <span class="fa fa-close form-control-feedback" aria-hidden="true"></span>
+                                    <span class="help-block">
                                         <strong>{{ $errors->first('email') }}</strong>
                                     </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                        <label for="password" class="col-md-4 control-label">Password</label>
-
-                        <div class="col-md-6">
-                            <input id="password" type="password" class="form-control" name="password" required>
-
-                            @if ($errors->has('password'))
-                                <span class="help-block">
+                                @endif
+                            </div>
+                            <div class="form-group {{ $errors->has('password') ? ' has-error has-feedback' : '' }}">
+                                <label class="sr-only">Password</label>
+                                <input id="password" type="password" placeholder="Password" class="form-control" name="password" required>
+                                @if ($errors->has('password'))
+                                    <span class="fa fa-close form-control-feedback" aria-hidden="true"></span>
+                                    <span class="help-block">
                                         <strong>{{ $errors->first('password') }}</strong>
                                     </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
-                        <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
-
-                        <div class="col-md-6">
-                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
-
-                            @if ($errors->has('password_confirmation'))
-                                <span class="help-block">
+                                @endif
+                            </div>
+                            <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error has-feedback' : '' }}">
+                                <label class="sr-only">Confirm Password</label>
+                                <input id="password-confirm" placeholder="Confirm Password" type="password" class="form-control" name="password_confirmation" required>
+                                @if ($errors->has('password_confirmation'))
+                                    <span class="fa fa-close form-control-feedback" aria-hidden="true"></span>
+                                    <span class="help-block">
                                         <strong>{{ $errors->first('password_confirmation') }}</strong>
                                     </span>
-                            @endif
-                        </div>
+                                @endif
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-default btn-block btn-shadow" type="submit">Register New Account</button>
+                                <p class="small">Already a member? <a href="{{url('login')}}">Sign In</a>
+                            </div>
+                        </form>
                     </div>
-
-                    <div class="form-group">
-                        <div class="col-md-6 col-md-offset-4">
-                            <button type="submit" class="button1" style="width: 100%;">
-                                Sign Up
-                            </button>
-                        </div>
-                        <div class="col-md-8 col-md-offset-4">
-                            <a class="btn btn-link" href="{{ url('/login') }}">
-                                Already registered? Sign in
-                            </a>
-                        </div>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+    </section>
+    <!-- end: Section -->
 @endsection

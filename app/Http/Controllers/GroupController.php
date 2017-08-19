@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,20 +30,65 @@ class GroupController extends Controller
         if($request->term == ""){
             return json_encode([]);
         }
-        $sql = "SELECT u.id, u.name, u.campusid FROM users u
-		WHERE u.name LIKE '%".$request->term."%' AND u.ID != ".Auth::id()."
+        $sql = "SELECT u.type, u.id, u.name, u.campusid FROM users u
+		WHERE u.name LIKE '%".$request->term."%' AND u.ID != ".Auth::id()." AND u.type != 'admin'
 		LIMIT 10";
 
         $result = DB::select($sql);
         if ($result) {
+            $json = [];
             foreach($result as $row) {
-                $json[] = ['id'=>$row->id, 'text'=>$row->name ." - ". $row->campusid];
+                if ($request->groupid){
+                    $hasgroup = DB::table('user_has_group')->where('id_user', '=', $row->id)->where('id_group', '=', $request->groupid)->first();
+                    if (is_null($hasgroup)){
+                        $json[] = ['id'=>$row->id, 'text'=>$row->name ." - ". $row->campusid];
+                    } else {
+                        continue;
+                    }
+                } else {
+                    $json[] = ['id'=>$row->id, 'text'=>$row->name ." - ". $row->campusid];
+                }
             }
-            echo json_encode($json);
-            return;
+            return json_encode($json);
         }
         return json_encode([]);
 
+    }
+
+    public function requests(){
+        $requests = DB::table('user_has_group_request')
+            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
+            ->join('users', 'users.id', '=', 'user_has_group_request.id_sender')
+            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'groups.created_on', 'user_has_group_request.id as requestid')
+            ->where('id_receiver', '=', Auth::id())
+            ->where('status', '=', 'pending')
+            ->paginate(10);
+        $active = 'group-requests';
+        return view('group.requests',compact('requests','active'));
+    }
+
+    public function requestDetails(Request $request){
+        $group = $this->getGroupByRequestId($request->requestid);
+        return view('group.request_details',['group'=>$group,'requestid'=>$request->requestid])->render();
+    }
+
+    public function showGroupMembers(Request $request){
+        $groupmembers = DB::table('user_has_group')
+            ->join('users', 'users.id', 'user_has_group.id_user')
+            ->where('user_has_group.id_group', '=', $request->groupid)
+            ->where('users.id', '!=', Auth::id())
+            ->select('users.name as name', 'users.id as id', 'users.campusid as campusid', 'users.type as type')
+            ->paginate(3);
+        return view('group.group_members')->with(['groupmembers' => $groupmembers, 'idcreator'=>$request->idcreator, 'groupid'=>$request->groupid])->render();
+    }
+
+    public function groupDetails(Request $request){
+        $group = DB::table('groups')
+            ->join('users', 'users.id', 'groups.id_creator')
+            ->where('groups.id', '=', $request->groupid)
+            ->select('groups.id as id', 'groups.name as name', 'users.name as creator', 'groups.created_on as created_on', 'groups.id_creator as id_creator')
+            ->first();
+        return view('group.group_details')->with(['group' => $group])->render();
     }
 
     public function all(){
@@ -52,24 +98,33 @@ class GroupController extends Controller
             ->where('user_has_group.id_user', '=', Auth::id())
             ->select('groups.name as groupname', 'groups.id', 'u2.name as creator', 'groups.created_on', 'groups.id_creator')
             ->orderby('groups.created_on', 'DESC')
-            ->get();
-        foreach ($groups as $group){
-            $groupMembers = DB::table('user_has_group')->where('id_group', '=', $group->id)->select('id_user')->get();
-            if (count($groupMembers) > 0) {
-                foreach ($groupMembers as $groupMember) {
-                    $group->members[] = $this->getUserById($groupMember->id_user);
-                }
-            }
-        }
+            ->paginate(10);
         $active = 'mygroups';
         return view('group.all', compact('groups', 'active'));
     }
 
     public function sendGroupRequest(Request $request){
         $users = $request->ids;
+        if (empty($users)){
+            return 'error';
+        }
         $groupid = $request->groupid;
         $group = $this->getGroupById($groupid);
         foreach($users as $user) {
+            $request = DB::table('user_has_group_request')
+                ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
+                ->join('users', 'users.id', '=', 'user_has_group_request.id_sender')
+                ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'groups.created_on', 'user_has_group_request.id as requestid')
+                ->where('id_receiver', '=', $user)
+                ->where('groups.id','=',$groupid)
+                ->where('status', '=', 'pending')
+                ->first();
+            if (count($request) > 0){
+                return '<div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
+                <i class="fa fa-times-circle"></i> You have already sent a pending request to atleast one of the users selected.
+                </div>';
+            }
             $insert = DB::table('user_has_group_request')->insertGetId(array(
                 'id_group'=>$groupid,
                 'id_sender' => Auth::id(),
@@ -77,11 +132,13 @@ class GroupController extends Controller
                 'status'=>'pending'));
             $notificationList = ','.$user.',';
             $loggedIn = $this->getUserById(Auth::id());
-            $html = '<a href="'.url('/notification?type=group-pending&id='. strval($insert)).'"><strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong>'. ' has requested you to join their group <strong>'.$group->name.'</strong></a>';
+            $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span>'. ' has requested you to join their group <span class="label label-info">'.$group->name.'</span>';
             DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group', 'userlist' => $notificationList));
         }
-
-        return 'success';
+        return '<div class="alert alert-success alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
+                <i class="fa fa-check-circle"></i> Request sent to all the users added!
+                </div>';
     }
 
     public function removeMember(Request $request){
@@ -90,7 +147,7 @@ class GroupController extends Controller
         DB::table('user_has_group')->where('id_user', '=', $userid)->where('id_group', '=', $groupid)->delete();
         $loggedIn = $this->getUserById(Auth::id());
         $group = $this->getGroupById($groupid);
-        $txt = '<strong>'.$loggedIn->name.'</strong> has removed you from the group'.$group->name;
+        $txt = '<span class="label label-info">'.$loggedIn->name.'</span> has removed you from the group <span class="label label-info">'.$group->name.'</span>';
         DB::table('user_notifications')->insert(array('notification_content' => $txt, 'type'=>'group', 'userlist'=> ','.$userid.','));
         return 'success';
     }
@@ -98,36 +155,40 @@ class GroupController extends Controller
     public function leaveGroup(Request $request) {
         $groupid = $request->groupid;
         $adminid = $request->adminid;
+        if ($adminid == 'none'){
+            return '<div class="alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
+                    <i class="fa fa-times-circle"></i> Please select an admin
+                    </div>';
+        }
         if($adminid == 'empty'){
             DB::table('user_has_group')->where('id_user', '=', Auth::id())->where('id_group', '=', intval($groupid))->delete();
             $group = $this->getGroupById($groupid);
             if (count($group->members) > 0){
                 $notificationList = implode(',', $group->members);
                 $loggedIn = $this->getUserById(Auth::id());
-                $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has left the group <strong>'. $group->name .'</strong>';
+                $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> has left the group <span class="label label-info">'. $group->name .'</span>';
                 DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => ','.$notificationList.','));
-                session(['message' => 'Group Left Successfully!']);
-                return;
+                session(['message' => 'You have left the group successfully!']);
+                return 'success';
             } else {
                 DB::table('groups')->where('id', '=', $groupid)->delete();
-                session(['message' => 'Group Left Successfully!']);
-                return;
+                session(['message' => 'Group Deleted Successfully!']);
+                return 'success';
             }
         }
         DB::table('user_has_group')->where('id_user', '=', Auth::id())->where('id_group', '=', intval($groupid))->delete();
         DB::table('groups')->where('id', '=', $groupid)->update(['id_creator' => $adminid]);
-        // get others notification that you left group
-
         $group = $this->getGroupById($groupid);
 
         if (count($group->members) > 0) {
             $notificationList = ','.implode(',', $group->members).',';
             $loggedIn = $this->getUserById(Auth::id());
-            $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has left the group <strong>'. $group->name .'</strong>';
+            $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> has left the group <span class="label label-info">'. $group->name .'</span>';
             DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => ','.$notificationList.','));
         }
-        session(['message' => 'Group Left Successfully!']);
-        return;
+        session(['message' => 'You have left the group successfully!']);
+        return 'success';
     }
 
     public function acceptRequest(Request $request) {
@@ -139,13 +200,14 @@ class GroupController extends Controller
         $group = $this->getGroupById($groupid);
         $notificationList = ','.$group->idcreator.',';
         $loggedIn = $this->getUserById(Auth::id());
-        $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has accepted the request for group <strong>'.$group->name .'</strong>';
+        $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> has accepted the request to join your group <span class="label label-info">'.$group->name .'</span>';
         DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => $notificationList));
 
         DB::table('user_has_group')->insert(array(
             'id_user'=>Auth::id(),
             'id_group'=>$groupid));
-
+        $request->session()->flash('message','Request Accepted! The user will be notified');
+        return;
     }
 
     public function rejectRequest(Request $request) {
@@ -154,20 +216,23 @@ class GroupController extends Controller
             ->update([
                 'status' => 'rejected'
             ]);
-
-
-
         $group = $this->getGroupByRequestId($requestid);
         $notificationList = ','.$group->idcreator.',';
         $loggedIn = $this->getUserById(Auth::id());
-        $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> has rejected the request for group <strong>'.$group->name .'</strong>';
+        $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> has rejected the request to join your group <span class="label label-info">'.$group->name .'</span>';
         DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => $notificationList));
-
+        $request->session()->flash('message','Request Rejected! The user will be notified');
+        return;
     }
 
     public function makegroup(Request $request){
-        $users = $request->ids;
-        $groupname = $request->groupname;
+        $users = $request->members;
+        $groupname = $request->group_name;
+        $validation = Validator::make($request->all(), ['group_name' => 'required', 'members' => 'required']);
+        if ($validation->fails())
+        {
+            return redirect()->back()->withInput()->withErrors($validation);
+        }
         $groupid = DB::table('groups')->insertGetId(array(
             'name'=>$groupname,
             'id_creator' => Auth::id()));
@@ -186,11 +251,11 @@ class GroupController extends Controller
             $notificationList = ','.strval($user).',';
             $loggedIn = $this->getUserById(Auth::id());
             $url = url("/notification?type=group-pending&id=". strval($insert));
-            $html = '<strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has requested you to join their group <strong>'.$groupname.'</strong></a>';
+            $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span> has requested you to join their group <span class="label label-info">'.$groupname.'</span>';
             DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group', 'userlist' => $notificationList));
 
         }
-        echo 'success';
+        return redirect()->back()->with('message-bold', 'Group created successfully!')->with('message', 'Requests to join the group have been sent to all the members.');
     }
 
 

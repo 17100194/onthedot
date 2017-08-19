@@ -1,81 +1,63 @@
 @extends('layouts.header')
 
 @section('bodycontent')
-<div class="container">
-    <div class="row center-block">
-        <a href="{{ url('/') }}">
-            <img src="<?= asset('public/images/onthedot.png') ?>" class="img-responsive" style="display: block; margin: auto;">
-        </a>
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel-heading" style=" background-color: white; color:#3b3a36; font-weight:bold; text-align: center;">
-                <h2>Sign In</h2>
-                <hr style="width:90%; border-width: 3px;">
-                @if(session()->has('message'))
-                    <div class="alert alert-danger">
-                        {{ session()->pull('message') }}
-                    </div>
-                @endif
-            </div>
-            <div class="panel-body" style="background: white;">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
-                        {{ csrf_field() }}
-
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">Email</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
-
+    <!-- Section -->
+    <section class="fullscreen" style="background:#d3d3d3; padding: 0;">
+        <div class="container container-fullscreen">
+            <div class="text-middle">
+                <div class="text-center m-b-30">
+                    <a href="{{url('/')}}" class="logo">
+                        <img src="{{asset('public/images/onthedot.png')}}" style="width: 350px;" alt="Logo">
+                    </a>
+                </div>
+                <div >
+                    <div class="col-md-4 center p-30 background-white b-r-6">
+                        <h3>Login to your account</h3>
+                        @if(session()->has('message'))
+                            <div class="alert alert-success">
+                                <i class="fa fa-check-circle"></i> {{ session()->pull('message') }}
+                            </div>
+                        @endif
+                        <form class="form-transparent-grey" role="form" method="POST" action="{{ url('/login') }}">
+                            {{ csrf_field() }}
+                            <div class="form-group {{ $errors->has('email') ? ' has-error has-feedback' : '' }}">
+                                <label class="sr-only">Email</label>
+                                <input id="email" name="email" type="email" class="form-control" placeholder="Email" value="{{ old('email') }}" required autofocus>
                                 @if ($errors->has('email'))
+                                    <span class="fa fa-close form-control-feedback" aria-hidden="true"></span>
                                     <span class="help-block">
                                         <strong>{{ $errors->first('email') }}</strong>
                                     </span>
                                 @endif
                             </div>
-                        </div>
-
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">Password</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required>
-
+                            <div class="form-group m-b-5 {{ $errors->has('password') ? ' has-error has-feedback' : '' }}">
+                                <label class="sr-only">Password</label>
+                                <input id="password" name="password" type="password" class="form-control" placeholder="Password" required>
                                 @if ($errors->has('password'))
+                                    <span class="fa fa-close form-control-feedback" aria-hidden="true"></span>
                                     <span class="help-block">
                                         <strong>{{ $errors->first('password') }}</strong>
                                     </span>
                                 @endif
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
+                            <div class="form-group form-inline text-left">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" name="remember"> Remember Me
+                                        <input type="checkbox" name="remember"><small> Remember me</small>
                                     </label>
                                 </div>
+                                <a href="{{ url('/password/reset') }}" class="float-right"><small>Lost your Password?</small></a>
                             </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="button1" style="width: 100%;">
-                                    Sign In
-                                </button>
+                            <div class="text-left form-group">
+                                <button type="submit" class="btn btn-block btn-shadow">Login</button>
                             </div>
-                            <div class="col-md-8 col-md-offset-4">
-                                <a class="btn btn-link" href="{{ url('/register') }}">
-                                    Not a member? Sign up
-                                </a>
-                                <a class="btn btn-link" href="{{ url('/password/reset') }}">
-                                    Forgot Your Password?
-                                </a>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                        <p class="small">Don't have an account yet? <a href="{{url('register')}}">Register Now</a>
+                        </p>
+                    </div>
                 </div>
+            </div>
         </div>
-    </div>
-</div>
+    </section>
+    <!-- end: Section -->
 @endsection

@@ -1,107 +1,73 @@
 @extends('layouts.sidemenu')
 
 @section('main')
-    <div class="row courses">
-        <div class="col-md-12">
-            <h4 style="text-align: center;"><a>My Courses</a></h4>
-            <hr>
-            @if(session('message'))
-                <div class="alert alert-success">
-                    {{ session()->pull('message') }}
-                </div>
-            @endif
-            @if (count($courses) > 0)
-                <ul style="list-style: none; padding-left: 0px;">
-                    @foreach($courses as $course)
-                        <li style="display: inline-block; width: 45%;">
-                            <div id="course_<?= $course->courseid ?>" class="notification-box" style="position: relative;">
-                                <button data-toggle="modal" data-target="#dropModal_<?= $course->courseid ?>" class="hover-action btn btn-danger drop">Drop <i class="fa fa-window-close fa-lg" aria-hidden="true"></i></button>
-                                <div class="meetBtn">
-                                    <a href="<?= url('/course/edit/'.$course->courseid) ?>">Edit Course</a>
-                                </div>
-                                <?= $course->coursecode ?> - <?= $course->section ?>
-                                <br>
-                                (<?= $course->name ?>)
-                                <hr>
-                                Instructor: <?= $course->instructor->name ?> (<?= $course->instructor->campusid ?>)
-                                <br>
-                                <?php
-                                $strt = date('h:iA', strtotime(explode('-', $course->timing)[0]));
-                                $endt = date('h:iA', strtotime(explode('-', $course->timing)[1]));
-                                ?>
-                                Timing: <?= $strt .' - '.$endt ?>
-                                <br>
-                                Days: <?= $course->days ?>
-                            </div>
-                            <div class="modal fade" id="dropModal_<?= $course->courseid ?>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header" style="text-align: center;">
-                                            <h2>Are you sure you want to drop this course?</h2>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row" style="text-align: center;">
-                                                <div class="col-md-6">
-                                                    <button id="yes_<?= $course->courseid ?>" class="button_sliding_bg_2 yes">Yes</button>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <button id="no_<?= $course->courseid ?>" class="button_sliding_bg_2 no">No</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    @endforeach
-                </ul>
-            @else
-                <p style="margin-left: 20px;">You have no enrolled courses at the moment</p>
-            @endif
+    <div data-animation="fadeInUp">
+        @if(session('message'))
+            <div class="alert alert-success alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
+                <i class="fa fa-check-circle"></i> {{ session()->pull('message') }}
+            </div>
+        @endif
+        <div class="heading heading-center m-b-40">
+            <h2>My Enrolled Courses</h2>
+            <span class="lead text-shadow-dark">Details of all your enrolled courses can be found here</span>
         </div>
+            <div class="col-md-12">
+                @if (count($courses) > 0)
+                    <div class="row col-no-margin equalize" data-equalize-item=".text-box">
+                        <?php $colors = array("#506681","#41566f","#32475f")?>
+                        @foreach($courses as $key => $course)
+                            @if($key >= 3 && $key%3 == 0)
+                                <div class="space"></div>
+                            @endif
+                            <div class="col-md-4" style="background-color: {{$colors[$key%3]}}">
+                                <div class="text-box hover-effect" data-target="#courseDetails" data-id="{{$course->courseid}}" data-toggle="modal">
+                                    <a>
+                                        <i class="fa fa-book"></i>
+                                        <h3>({{$course->coursecode}})<br>{{$course->name}}</h3>
+                                        <p>Click on the box to view course details</p>
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="modal fade" id="courseDetails" tabindex="-1" role="modal" aria-labelledby="modal-label" aria-hidden="true" style="display: none;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                            </div>
+                        </div>
+                    </div>
+                    <?php echo $courses->render(); ?>
+                @else
+                    <h5 class="text-center text-info">You have no enrolled courses at the moment</h5>
+                @endif
+            </div>
     </div>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('.notification-box').hover(function () {
-                $(this).find('.drop').fadeIn();
-            }, function () {
-                $(this).find('.drop').fadeOut();
-            });
-            $('.yes').on('click', function () {
-                var courseid = $(this).attr('id').split('_')[1];
+        $(document).ready(function() {
+            $('.text-box').on('click', function () {
+                $('.modal-content').html('<h3 class="text-center">Loading...</h3><img style="width:200px;" class="center-block" src="{{asset('public/images/three-dots.svg')}}">')
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
                 $.ajax({
-                    method: "POST",
-                    url: "./dropcourse",
+                    method: "GET",
+                    url: "./coursedetails",
                     data: {
-                        courseid: courseid
+                        courseid: $(this).data('id')
                     },
                     success: function(data) {
-                        location.reload();
+                        $('.modal-content').html(data);
                     },
                     error: function (xhr, status) {
-//                    console.log(status);
-//                    console.log(xhr.responseText);
+                        console.log(status);
+                        console.log(xhr.responseText);
                     }
                 });
             });
-            $('.no').on('click', function () {
-                var courseid = $(this).attr('id').split('_')[1];
-                jQuery.noConflict();
-                $('#dropModal_'+courseid).modal('hide');
-            });
-            if($('.alert')) {
-                $('.alert').show();
-                window.setTimeout(function () {
-                    $(".alert").fadeTo(500, 0).slideUp(500, function () {
-                        $(this).remove();
-                    });
-                }, 3000);
-            }
         });
     </script>
 @endsection

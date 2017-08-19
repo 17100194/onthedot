@@ -51,15 +51,11 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        $messages = [
-            'required' => 'This field is required.',
-            'email.unique'=>'Email already exists'
-        ];
         return Validator::make($data, [
             'name' => 'required|max:255',
             'email' => 'required|string|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
-        ], $messages);
+        ]);
     }
 
     // Get the user who has the same token and change his/her status to verified i.e. 1
@@ -68,7 +64,7 @@ class RegisterController extends Controller
         // The verified method has been added to the user model and chained here
         // for better readability
         User::where('email_token',$token)->firstOrFail()->verified();
-        return redirect('login');
+        return redirect('login')->with('message', 'Your account has been activated! Log in');
     }
 
     /**
@@ -79,20 +75,12 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        if(strpos($data['email'], 'lums.edu.pk') !== false){
-            return User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'campusid' => '20'.substr($data['email'], 0, 2).'-'.substr($data['email'], 2, 2).'-'.substr($data['email'], 4, 4),
-                'password' => bcrypt($data['password']),
-                'email_token' => str_random(10)
-            ]);
-        }
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'campusid' => '20'.substr($data['email'], 0, 2).'-'.substr($data['email'], 2, 2).'-'.substr($data['email'], 4, 4),
             'password' => bcrypt($data['password']),
-            'email_token' => str_random(10)
+            'email_token' => str_random(20)
         ]);
     }
 
@@ -109,12 +97,16 @@ class RegisterController extends Controller
         DB::beginTransaction();
         try
         {
-            $user = $this->create($request->all());
+            if(strpos($request->email, 'lums.edu.pk') !== false){
+                $user = $this->create($request->all());
+            } else {
+                return back()->withInput($request->all())->withErrors(['email' => 'You must register with your LUMS campus mail']);
+            }
             // After creating the user send an email with the random token generated in the create method above
             $email = new EmailVerification(new User(['email_token' => $user->email_token, 'name' => $user->name]));
             Mail::to($user->email)->send($email);
             DB::commit();
-            return back()->with('message', 'You have successfully registered! An activation email has been sent to your email');
+            return back()->with('message', 'An activation email has been sent to your email');
         }
         catch(Exception $e)
         {

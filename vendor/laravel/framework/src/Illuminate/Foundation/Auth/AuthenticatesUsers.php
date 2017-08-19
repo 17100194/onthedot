@@ -43,12 +43,22 @@ trait AuthenticatesUsers
             return $this->sendLoginResponse($request);
         }
 
+        $email = $request->get($this->username());
+        $user = User::where($this->username(), $email)->first();
+
         // If the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
         // user surpasses their maximum number of attempts they will get locked out.
         $this->incrementLoginAttempts($request);
+        if (count($user)>0){
+            if ($user->verified === 0) {
+                return $this->sendFailedLoginResponse($request, 'auth.fail_activation');
+            }
+        }else{
+            return $this->sendFailedLoginResponse($request, 'auth.no_user');
+        }
 
-        return $this->sendFailedLoginResponse($request);
+        return $this->sendFailedLoginResponse($request, 'auth.failed');
     }
 
     /**
@@ -117,7 +127,10 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
-        //
+        if ($user->type == 'admin'){
+            return redirect()->intended('/admin/dashboard');
+        }
+        return redirect()->intended('/dashboard');
     }
 
     /**
@@ -126,11 +139,11 @@ trait AuthenticatesUsers
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    protected function sendFailedLoginResponse(Request $request)
+    protected function sendFailedLoginResponse(Request $request, $error)
     {
         return redirect()->back()
             ->withInput($request->only($this->username(), 'remember'))
-            ->with('message', 'Either your account has not been activated OR you have entered invalid credentials');
+            ->withErrors([$this->username() => Lang::get($error)]);
     }
 
     /**

@@ -6,33 +6,37 @@
             $active = 'dashboard';
         }
     ?>
-<div class="container" style="width:90%;">
-    <div class="row">
-        <div class="col-md-2" style="padding-right: 0px; padding-left: 0px;">
-            <div class="panel panel-default dashboard-options" style="text-align: center;">
-                <a href="<?php echo url('/dashboard') ?>" style="display:block;" class="panel-heading <?php if ($active == "dashboard"): ?>active<?php endif; ?>">Dashboard</a>
-                <a href="<?php echo url('/search') ?>" style="display:block;" class="panel-heading <?php if ($active == "search"): ?>active<?php endif; ?>">Schedule Meeting</a>
-                <a href='<?php echo url('/requested') ?>' style="display:block;" class="panel-heading <?php if ($active == "requested"): ?>active<?php endif; ?>">Requested Meetings</a>
-                <a href="<?php echo url('/meetings/requests') ?>" style="display:block;" class="panel-heading <?php if ($active == "requests"): ?>active<?php endif; ?>">Meeting Requests (<?=count($requests)?>)</a>
-                <a href="<?php echo url('/course/all') ?>" style="display:block;" class="panel-heading <?php if ($active == "courses"): ?>active<?php endif; ?>">View My Courses</a>
-                <a href="<?php echo url('/meetings') ?>" style="display:block;" class="panel-heading <?php if ($active == "view-meeting"): ?>active<?php endif; ?>">View My Meetings</a>
-                <a href="<?php echo url('/group/all') ?>" style="display:block;" class="panel-heading <?php if ($active == "mygroups"): ?>active<?php endif; ?>">View My Groups</a>
-                <a href="<?php echo url('/group/make') ?>" style="display:block;" class="panel-heading <?php if ($active == "group"): ?>active<?php endif; ?>">Make a Group</a>
-                <?php if($user->type != 'teacher'): ?>
-                <a href="<?php echo url('/course/enroll') ?>" style="display:block;" class="panel-heading <?php if ($active == "addcourse"): ?>active<?php endif; ?>">Enroll in a Course</a>
-                <?php else: ?>
-                <a href="<?php echo url('/course/make') ?>" style="display:block;" class="panel-heading <?php if ($active == "addcourse"): ?>active<?php endif; ?>">Add a Course</a>
-                <?php endif; ?>
-                <a href="<?php echo url('/timetable') ?>" style="display:block;" class="panel-heading <?php if ($active == "timetable"): ?>active<?php endif; ?>">View My Timetable</a>
-            </div>
-        </div>
-        <div class="col-md-10" style="padding-left: 0px; padding-right: 0px;">
-            <div class="panel panel-default">
-                <div class="panel-body">
+    <section id="page-content" class="sidebar-left">
+        <div>
+            <div class="row">
+                <div class="sidebar sidebar-modern col-md-2" style="padding-right: 0; text-align: center;">
+                    <div id="sticky">
+                        <ul class="nav nav-pills nav-stacked">
+                            <li class="<?php if ($active == "dashboard"): ?>active<?php endif; ?>"><a href="<?php echo url('/dashboard') ?>">Dashboard</a></li>
+                            <li class="<?php if ($active == "meeting"): ?>active<?php endif; ?>"><a href="<?php echo url('/meeting/schedule') ?>">Schedule Meeting</a></li>
+                            <li class="<?php if ($active == "requested"): ?>active<?php endif; ?>"><a href='<?php echo url('/requested') ?>' >Sent Requests</a></li>
+                            <li class="<?php if ($active == "requests"): ?>active<?php endif; ?>"><a href="<?php echo url('/meetings/requests') ?>" >Meeting Requests <span id="meeting_requests" class="label label-default" style="display: none;"></span></a></li>
+                            <li class="<?php if ($active == "group-requests"): ?>active<?php endif; ?>"><a href="<?php echo url('/group/requests') ?>" >Group Requests <span id="group_requests" class="label label-default" style="display: none;"></span></a></li>
+                            <li class="<?php if ($active == "courses"): ?>active<?php endif; ?>"><a href="<?php echo url('/course/all') ?>" >My Courses</a></li>
+                            <li class="<?php if ($active == "view-meeting"): ?>active<?php endif; ?>"><a href="<?php echo url('/meetings') ?>" >My Meetings</a></li>
+                            <li class="<?php if ($active == "mygroups"): ?>active<?php endif; ?>"><a href="<?php echo url('/group/all') ?>" >My Groups</a></li>
+                            <li class="<?php if ($active == "group"): ?>active<?php endif; ?>"><a href="<?php echo url('/group/make') ?>" >Make a Group</a></li>
+                            <?php if(Auth::user()->type != 'teacher'): ?>
+                            <li class="<?php if ($active == "addcourse"): ?>active<?php endif; ?>"><a href="<?php echo url('/course/enroll') ?>" >Enroll in a Course</a></li>
+                            <?php else: ?>
+                            <li class="<?php if ($active == "addcourse"): ?>active<?php endif; ?>"><a href="<?php echo url('/course/make') ?>" >Add a Course</a></li>
+                            <?php endif; ?>
+                            <li class="<?php if ($active == "timetable"): ?>active<?php endif; ?>"><a href="<?php echo url('/timetable') ?>" >My Timetable</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="content col-md-10">
                     @yield('main')
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </section>
+    <script>
+        $.stickysidebarscroll('#sticky',{offset: {top:100,bottom:500}});
+    </script>
 @endsection

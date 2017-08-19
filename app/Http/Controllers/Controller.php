@@ -22,6 +22,7 @@ class Controller extends BaseController
      * @param $userId
      * @return Array of Objects
      */
+
     public function getUserById($userId) {
         return DB::table('users')
             ->where('id', '=', $userId)
@@ -55,17 +56,16 @@ class Controller extends BaseController
                 $groupInfo->creator = $this->getUserById($group->id_creator);
             }
             $groupUsers[] = $group->id_user;
-            $groupMembers[] = $this->getUserById($group->id_user);
+            if ($group->id_user != Auth::id()){
+                $groupMembers[] = $this->getUserById($group->id_user);
+            }
             $first = false;
         }
-//        var_dump($groupInfo);
         if (count($groupUsers) > 0) {
             $groupInfo->members = $groupUsers;
             $groupInfo->userlist = $groupMembers;
         }
-
         return $groupInfo;
-
     }
 
     /**

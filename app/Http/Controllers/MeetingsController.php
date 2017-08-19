@@ -6,14 +6,11 @@ use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use function Sodium\add;
+use Validator;
 
 class MeetingsController extends Controller
 {
-    public $timeTableStart = '08:00';
-    public $timeTableEnd = '18:00';
-    public $tableHeight = 550;
-    public $timeTableWidth = 155;
-
     public function index()
     {
         $meetings = DB::table('user_has_meeting AS u1')
@@ -23,9 +20,35 @@ class MeetingsController extends Controller
             ->where('meetings.status', '=', 'accepted')
             ->where('u1.userid', '=', Auth::id())
             ->where('u2.userid', '!=', Auth::id())
-            ->get();
+            ->paginate(10);
         $active = 'view-meeting';
         return view('meetings.scheduled', compact('meetings', 'active'));
+    }
+
+    public function meetingDetails(Request $request){
+        $meeting = DB::table('meetings')
+            ->join('user_has_meeting', 'user_has_meeting.meetingid', '=', 'meetings.id')
+            ->join('users', 'users.id', '=', 'user_has_meeting.userid')
+            ->where('users.id', '!=', Auth::id())
+            ->where('meetings.id', '=', $request->meetingid)
+            ->select('meetings.time as time', 'meetings.date as date', 'meetings.day as day', 'users.name as name', 'meetings.id as id')->first();
+        $date = str_replace("/", "-", $meeting->date);
+        $starttime = date('Y-m-d H:i',strtotime($date." ".explode('-',$meeting->time)[0]));
+        $endtime = strtotime(date('Y-m-d H:i',strtotime($date." ".explode('-',$meeting->time)[1])));
+        return view('meetings.meeting_details', ['meeting' => $meeting, 'starttime'=>$starttime,'endtime'=>$endtime])->render();
+    }
+
+    public function sentRequestDetails(Request $request){
+        $meeting = DB::table('user_has_meeting AS u1')
+            ->join('user_has_meeting as u2', 'u1.meetingid', '=', 'u2.meetingid')
+            ->join('users', 'u2.userid', '=', 'users.id')
+            ->join('meetings', 'u2.meetingid', '=', 'meetings.id')
+            ->where('meetings.status', '=', 'pending')
+            ->where('meetings.host', '=', Auth::id())
+            ->where('meetings.id','=',$request->meetingid)
+            ->where('u1.userid', '=', Auth::id())
+            ->where('u2.userid', '!=', Auth::id())->first();
+        return view('meetings.request_sent_details',['meeting'=>$meeting])->render();
     }
 
     public function requested()
@@ -37,7 +60,7 @@ class MeetingsController extends Controller
             ->where('meetings.status', '=', 'pending')
             ->where('meetings.host', '=', Auth::id())
             ->where('u1.userid', '=', Auth::id())
-            ->where('u2.userid', '!=', Auth::id())->get();
+            ->where('u2.userid', '!=', Auth::id())->paginate(10);
         $active = 'requested';
         return view('meetings.requested', compact('meetings', 'active'));
     }
@@ -45,7 +68,7 @@ class MeetingsController extends Controller
     public function cancelMeeting(Request $request) {
         $meetingid = $request->meetingid;
         DB::table('user_has_meeting')->where('userid', '=', Auth::id())->where('meetingid', '=', intval($meetingid))->delete();
-        // get others notification that you left meeting
+
         $userlist = DB::table('user_has_meeting')->where('meetingid', '=', intval($meetingid))->get();
 
         $meeting = $this->getMeetingById($meetingid);
@@ -58,14 +81,272 @@ class MeetingsController extends Controller
         $notificationList = implode(',', $users);
         $notificationList = ','.$notificationList.',';
         $loggedIn = $this->getUserById(Auth::id());
-        $txt = '<strong>'.$loggedIn->name.' (' . $loggedIn->campusid . ')</strong> will not be attending the meeting hosted on <strong>'.$meeting->time .' - '. $meeting->date.'</strong>';
+        $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> will not be able to attend the meeting hosted on <span class="label label-info">'.date('F d,Y',strtotime($meeting->date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])).'</span>';
         DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'meeting', 'userlist' => $notificationList));
         if(count($userlist) < 2) {
             DB::table('meetings')->where('id', '=', intval($meetingid))->delete();
         }
-        session(['message' => 'Meeting Cancelled Successfully']);
-        return 'success';
+        $request->session()->flash('message', 'Meeting request cancelled successfully!');
+        return;
 
+    }
+
+    public function requestDetails(Request $request){
+        $request = DB::table('meetings AS m')
+            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+            ->join('users AS u', 'u.id', '=', 'm.host')
+            ->where('um.userid', '=', Auth::id())
+            ->where('m.host', '!=', Auth::id())
+            ->where('m.id', '=', $request->meetingid)->first();
+        return view('meetings.request_details',['request'=>$request])->render();
+    }
+
+    public function getTimetable(Request $request){
+        $id = $request->id;
+        $type = $request->type;
+        $monday = $request->monday;
+        $tuesday = $request->tuesday;
+        $wednesday = $request->wednesday;
+        $thursday = $request->thursday;
+        $friday = $request->friday;
+        if ($monday == null){
+            $monday = date('Y-m-d',strtotime('monday this week'));
+        } else{
+            if ($request->button == 'next'){
+                $monday = date('Y-m-d', strtotime($monday. ' + 7 days'));
+            } else{
+                $monday = date('Y-m-d', strtotime($monday. ' - 7 days'));
+            }
+        }
+        if ($tuesday == null){
+            $tuesday = date('Y-m-d',strtotime('tuesday this week'));
+        } else {
+            if ($request->button == 'next'){
+                $tuesday = date('Y-m-d', strtotime($tuesday. ' + 7 days'));
+            } else{
+                $tuesday = date('Y-m-d', strtotime($tuesday. ' - 7 days'));
+            }
+        }
+        if ($wednesday == null){
+            $wednesday = date('Y-m-d',strtotime('wednesday this week'));
+        } else {
+            if ($request->button == 'next'){
+                $wednesday = date('Y-m-d', strtotime($wednesday. ' + 7 days'));
+            } else{
+                $wednesday = date('Y-m-d', strtotime($wednesday. ' - 7 days'));
+            }
+        }
+        if ($thursday == null){
+            $thursday = date('Y-m-d',strtotime('thursday this week'));
+        } else {
+            if ($request->button == 'next'){
+                $thursday = date('Y-m-d', strtotime($thursday. ' + 7 days'));
+            } else{
+                $thursday = date('Y-m-d', strtotime($thursday. ' - 7 days'));
+            }
+        }
+        if ($friday == null){
+            $friday = date('Y-m-d',strtotime('friday this week'));
+        } else {
+            if ($request->button == 'next'){
+                $friday = date('Y-m-d', strtotime($friday. ' + 7 days'));
+            } else{
+                $friday = date('Y-m-d', strtotime($friday. ' - 7 days'));
+            }
+        }
+        if ($type == 'student'){
+            $courses = DB::table('user_has_course')
+                ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+                ->where('user_has_course.userid', '=', Auth::id())
+                ->orwhere('user_has_course.userid', '=', $id)
+                ->get();
+            $courses = $courses->toArray();
+            $tmp1 = array();
+            foreach($courses as $key => $value) {
+                if(!array_key_exists($value->coursecode,$tmp1)) {
+                    $tmp1[$value->coursecode] = $value;
+                    $tmp1[$value->coursecode]->who = '';
+                } else {
+                    $tmp1[$value->coursecode]->who = 'common';
+                }
+            }
+            $courses = array_values($tmp1);
+            foreach ($courses as $course){
+                $course->type = 'course';
+                $course->days = explode(',',$course->days);
+                if ($course->userid == Auth::id() && $course->who != 'common'){
+                    $course->who = 'me';
+                } else {
+                    if ($course->who != 'common'){
+                        $course->who = 'user';
+                    }
+                }
+            }
+            $meetings = DB::table('user_has_meeting')
+                ->join('meetings', 'user_has_meeting.meetingid', '=', 'meetings.id')
+                ->where('user_has_meeting.userid', '=', Auth::id())
+                ->where('meetings.status','=','accepted')
+                ->orwhere('user_has_meeting.userid', '=', $id)
+                ->where('meetings.status','=','accepted')
+                ->get();
+            $meetings = $meetings->toArray();
+            $tmp2 = array();
+            foreach($meetings as $key => $value) {
+                if(!array_key_exists($value->meetingid,$tmp2)) {
+                    $tmp2[$value->meetingid] = $value;
+                    $tmp2[$value->meetingid]->who = '';
+                } else {
+                    $tmp2[$value->meetingid]->who = 'common';
+                }
+            }
+            $meetings = array_values($tmp2);
+            foreach ($meetings as $meeting){
+                $meeting->type = 'meeting';
+                $meeting->days = array($meeting->day);
+                if (($meeting->userid == Auth::id() || intval($meeting->host) == Auth::id()) && $meeting->who != 'common'){
+                    $meeting->who = 'me';
+                } else {
+                    if ($meeting->who != 'common'){
+                        $meeting->who = 'user';
+                    }
+                }
+            }
+            $allevents = array_merge($courses,$meetings);
+            return view('meetings.student_timetable',['id'=>$id,'allevents'=>$allevents,'monday'=>$monday,'tuesday'=>$tuesday,'wednesday'=>$wednesday,'thursday'=>$thursday,'friday'=>$friday])->render();
+        }
+        if ($type == 'instructor'){
+            $courses = DB::table('user_has_course')
+                ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+                ->where('user_has_course.userid', '=', Auth::id())
+                ->orwhere('user_has_course.userid', '=', $id)
+                ->get();
+            $courses = $courses->toArray();
+            $tmp1 = array();
+            foreach($courses as $key => $value) {
+                if(!array_key_exists($value->coursecode,$tmp1)) {
+                    $tmp1[$value->coursecode] = $value;
+                    $tmp1[$value->coursecode]->who = '';
+                } else {
+                    $tmp1[$value->coursecode]->who = 'common';
+                }
+            }
+            $courses = array_values($tmp1);
+            foreach ($courses as $course){
+                $course->type = 'course';
+                $course->days = explode(',',$course->days);
+                if ($course->userid == Auth::id() && $course->who != 'common'){
+                    $course->who = 'me';
+                } else {
+                    if ($course->who != 'common'){
+                        $course->who = 'user';
+                    }
+                }
+            }
+            $meetings = DB::table('user_has_meeting')
+                ->join('meetings', 'user_has_meeting.meetingid', '=', 'meetings.id')
+                ->where('user_has_meeting.userid', '=', Auth::id())
+                ->where('meetings.status','=','accepted')
+                ->orwhere('user_has_meeting.userid', '=', $id)
+                ->where('meetings.status','=','accepted')
+                ->get();
+            $meetings = $meetings->toArray();
+            $tmp2 = array();
+            foreach($meetings as $key => $value) {
+                if(!array_key_exists($value->meetingid,$tmp2)) {
+                    $tmp2[$value->meetingid] = $value;
+                    $tmp2[$value->meetingid]->who = '';
+                } else {
+                    $tmp2[$value->meetingid]->who = 'common';
+                }
+            }
+            $meetings = array_values($tmp2);
+            foreach ($meetings as $meeting){
+                $meeting->type = 'meeting';
+                $meeting->days = array($meeting->day);
+                if (($meeting->userid == Auth::id() || intval($meeting->host) == Auth::id()) && $meeting->who != 'common'){
+                    $meeting->who = 'me';
+                } else {
+                    if ($meeting->who != 'common'){
+                        $meeting->who = 'user';
+                    }
+                }
+            }
+            $allevents = array_merge($courses,$meetings);
+            return view('meetings.instructor_timetable',['id'=>$id,'allevents'=>$allevents,'monday'=>$monday,'tuesday'=>$tuesday,'wednesday'=>$wednesday,'thursday'=>$thursday,'friday'=>$friday])->render();
+        }
+        if ($type == 'group'){
+            $group = $this->getGroupById($id);
+            foreach ($group->members as $member){
+                $results[] = DB::table('user_has_course')
+                    ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+                    ->where('user_has_course.userid', '=', Auth::id())
+                    ->orwhere('user_has_course.userid', '=', $member)
+                    ->get()->toArray();
+                $results2[] = DB::table('user_has_meeting')
+                    ->join('meetings', 'user_has_meeting.meetingid', '=', 'meetings.id')
+                    ->where('user_has_meeting.userid', '=', Auth::id())
+                    ->where('meetings.status','=','accepted')
+                    ->orwhere('user_has_meeting.userid', '=', $member)
+                    ->where('meetings.status','=','accepted')
+                    ->get()->toArray();
+            }
+            $courses = [];
+            $meetings = [];
+            foreach ($results as $result){
+                foreach ($result as $value){
+                    $courses[] = $value;
+                }
+            }
+            foreach ($results2 as $result2){
+                foreach ($result2 as $value2){
+                    $meetings[] = $value2;
+                }
+            }
+            $tmp1 = array();
+            foreach($courses as $key => $value) {
+                if(!array_key_exists($value->coursecode,$tmp1)) {
+                    $tmp1[$value->coursecode] = $value;
+                    $tmp1[$value->coursecode]->who = '';
+                } else {
+                    $tmp1[$value->coursecode]->who = 'common';
+                }
+            }
+            $courses = array_values($tmp1);
+            foreach ($courses as $course){
+                $course->type = 'course';
+                $course->days = explode(',',$course->days);
+                if ($course->userid == Auth::id() && $course->who != 'common'){
+                    $course->who = 'me';
+                } else {
+                    if ($course->who != 'common'){
+                        $course->who = 'user';
+                    }
+                }
+            }
+            $tmp2 = array();
+            foreach($meetings as $key => $value) {
+                if(!array_key_exists($value->meetingid,$tmp2)) {
+                    $tmp2[$value->meetingid] = $value;
+                    $tmp2[$value->meetingid]->who = '';
+                } else {
+                    $tmp2[$value->meetingid]->who = 'common';
+                }
+            }
+            $meetings = array_values($tmp2);
+            foreach ($meetings as $meeting){
+                $meeting->type = 'meeting';
+                $meeting->days = array($meeting->day);
+                if (($meeting->userid == Auth::id() || intval($meeting->host) == Auth::id()) && $meeting->who != 'common'){
+                    $meeting->who = 'me';
+                } else {
+                    if ($meeting->who != 'common'){
+                        $meeting->who = 'user';
+                    }
+                }
+            }
+            $allevents = array_merge($courses,$meetings);
+            return view('meetings.group_timetable',['id'=>$id,'allevents'=>$allevents,'monday'=>$monday,'tuesday'=>$tuesday,'wednesday'=>$wednesday,'thursday'=>$thursday,'friday'=>$friday])->render();
+        }
     }
 
     public function requests(){
@@ -74,487 +355,305 @@ class MeetingsController extends Controller
             ->join('users AS u', 'u.id', '=', 'm.host')
             ->where('um.userid', '=', Auth::id())
             ->where('m.host', '!=', Auth::id())
-            ->where('m.status', '=', 'pending')->get();
+            ->where('m.status', '=', 'pending')->paginate(10);
         $active = 'requests';
-        return view('meetings.requests', compact('requests', 'active'));
+        return view('meetings.requests', compact('requests', 'active','requested'));
+    }
+
+    public function searchUser(Request $request){
+        $query = $request->searchuser;
+        $validation = Validator::make($request->all(),[
+            'searchuser'=>'required'
+        ]);
+        if ($validation->fails()){
+            return response()->json(['success' => false, 'errors' => $validation->getMessageBag()->toArray()]);
+        }
+
+        $groups = DB::table('groups')->where('name', 'LIKE', '%' . $query . '%')->paginate(10,['*'],'groups');
+        foreach ($groups as $group){
+            $groupinfo = $this->getGroupById($group->id);
+            $group->admin = $this->getUserById($group->id_creator)->name;
+            $group->members = $groupinfo->members;
+            $group->userlist = $groupinfo->userlist;
+        }
+
+        $instructors = DB::table('users')->where('type', '=', 'teacher')->where(function ($q) use ($query){
+            $q->where('users.id', '!=', Auth::id())->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%')->where('users.id', '!=', Auth::id());
+        })->paginate(10,['*'],'instructors');
+
+        $users = DB::table('users')->where('type', '=', 'student')->where(function ($q) use ($query){
+            $q->where('users.id', '!=', Auth::id())->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%')->where('users.id', '!=', Auth::id());
+        })->paginate(10,['*'],'users');
+
+        return view('meetings.search_results',['groups'=>$groups,'instructors'=>$instructors,'users'=>$users,'query'=>$query])->render();
+    }
+
+    public function scheduleMeeting(){
+        $active = 'meeting';
+        return view('meetings.schedule',compact('active'));
     }
 
     public function q(Request $request)
     {
         $query = $request->input('query');
-        $allCourses[] = array();
         $active = 'meeting';
-        $users = [];
-        $groups = [];
-        $usercourses = [];
-        $meetingList = [];
-        $instructors = [];
-        $meetingArr = array();
 
         if (!$query) {
-            $active = 'meeting';
-            return view('meetings.search', compact('allCourses', 'instructors', 'users', 'usercourses', 'meetingList', 'query', 'groups', 'active'));
+            $users = [];
+            $instructors = [];
+            $groups = [];
+            return view('meetings.search', compact( 'instructors', 'users', 'groups', 'active'));
         }
-        $groups = DB::table('groups')->where('name', 'LIKE', '%' . $query . '%')->paginate(10);
+
+        $groups = DB::table('groups')->where('name', 'LIKE', '%' . $query . '%')->paginate(10,['*'],'groups');
         foreach ($groups as $group){
-            $groupInfo = $this->getGroupById($group->id);
-            $group->creator_name = $this->getUserById($group->id_creator);
-            $group->members = $groupInfo->members;
-            $group->userlist = $groupInfo->userlist;
+            $groupinfo = $this->getGroupById($group->id);
+            $group->admin = $this->getUserById($group->id_creator)->name;
+            $group->members = $groupinfo->members;
+            $group->userlist = $groupinfo->userlist;
         }
+
         $instructors = DB::table('users')->where('type', '=', 'teacher')->where(function ($q) use ($query){
-            $q->where('users.id', '!=', Auth::id())->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%');
-        })->paginate(10);
+            $q->where('users.id', '!=', Auth::id())->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%')->where('users.id', '!=', Auth::id());
+        })->paginate(10,['*'],'instructors');
 
         $users = DB::table('users')->where('type', '=', 'student')->where(function ($q) use ($query){
-            $q->where('users.id', '!=', Auth::id())->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%');
-        })->paginate(10);
-//        var_dump($users);
-        $loggedInCoursesQ = DB::table('users')
-            ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
-            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-            ->where('users.id', '=', Auth::id())
-            ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
-            ->orderby('courses.timing', 'DESC')
-            ->get();
+            $q->where('users.id', '!=', Auth::id())->where('name', 'LIKE', '%' . $query . '%')->orwhere('campusid', 'LIKE', '%' . $query . '%')->where('users.id', '!=', Auth::id());
+        })->paginate(10,['*'],'users');
 
-
-//        $loggedInMeetings = array();
-        //logged in data
-        $loggedInCourses = array();
-        $loggedInMeetingsQ = $this->getUserMeetings(Auth::id());
-
-        foreach($loggedInCoursesQ as $course) {
-            $app = app();
-            $courseData = $app->make('stdClass');
-            $courseData->name = $course->courseName;
-            $courseData->timing = $course->timing;
-            $courseData->section = $course->section;
-            $courseData->height = $this->timeToMins($course->timing);
-            $courseData->width = $this->timeTableWidth;
-            $courseData->days = explode(',', $course->days);
-            $courseData->max = $this->tableHeight;
-            $courseData->min = 0;
-            $courseData->startingHeight = $this->startingHeight($course->timing);
-            $courseData->color = "#2ca02c";
-            $courseData->loggedIn = true;
-
-            $loggedInCourses[] = $courseData;
-        }
-        $meetingList = [];
-//        if (count($loggedInMeetingsQ) > 0) {
-            foreach($loggedInMeetingsQ as $meeting) {
-                if ($meeting->status == "accepted") {
-                    $app = app();
-                    $meetingData = $app->make('stdClass');
-                    $meetingData->name = $meeting->date;
-                    $meetingData->timing = $meeting->time;
-                    $meetingData->section = "";
-                    $meetingData->height = $this->timeToMins($meeting->time);
-                    $meetingData->width = $this->timeTableWidth;
-                    $meetingData->days = array($meeting->day);
-                    $meetingData->max = $this->tableHeight;
-                    $meetingData->min = 0;
-                    $meetingData->startingHeight = $this->startingHeight($meeting->time);
-                    $meetingData->color = "#2ca02c";
-                    $meetingData->loggedIn = true;
-
-                    $meetingList[] = $meetingData;
-                }
-            }
-//        }
-//        else {
-
-//        }
-
-        // loggedin users
-        // foreach groups
-        //      foreach members as member
-        //      add logged in user at end
-
-        $groupMap = array();
-
-        if (count($groups) > 0) {
-            foreach ($groups as $group) {
-                $aggregate = array();
-                foreach($group->members as $user) {
-                    $userCourses = DB::table('users')
-                        ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
-                        ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-                        ->where('users.id', '=', $user)
-                        ->where('users.id', '!=', Auth::id())
-                        ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
-                        ->orderby('courses.timing', 'DESC')
-                        ->get();
-                    if (Auth::id() != $user) {
-                        $userMeetings = $this->getUserMeetings($user);
-
-                        $meetingArr = array();
-
-                        foreach($userMeetings as $meeting) {
-                            if ($meeting->status == "accepted") {
-                                $app = app();
-                                $meetingData = $app->make('stdClass');
-                                $meetingData->name = $meeting->date;
-                                $meetingData->timing = $meeting->time;
-                                $meetingData->section = "";
-                                $meetingData->height = $this->timeToMins($meeting->time);
-                                $meetingData->width = $this->timeTableWidth;
-                                $meetingData->days = array($meeting->day);
-                                $meetingData->max = $this->tableHeight;
-                                $meetingData->min = 0;
-                                $meetingData->startingHeight = $this->startingHeight($meeting->time);
-                                $meetingData->color = "#2ca02c";
-                                $meetingData->loggedIn = true;
-
-                                $meetingArr[] = $meetingData;
-                            }
-                        }
-                    } else {
-//                        $meetingArr = array();
-                    }
-
-                    $userData = array();
-
-                    foreach($userCourses as $course) {
-                        $app = app();
-                        $courseData = $app->make('stdClass');
-                        $courseData->name = $course->courseName;
-                        $courseData->timing = $course->timing;
-                        $courseData->section = $course->section;
-                        $courseData->height = $this->timeToMins($course->timing);
-                        $courseData->width = $this->timeTableWidth;
-                        $courseData->days = explode(',', $course->days);
-                        $courseData->max = $this->tableHeight;
-                        $courseData->min = 0;
-                        $courseData->startingHeight = $this->startingHeight($course->timing);
-                        $courseData->color = "#3c948b";
-                        $courseData->loggedIn = false;
-
-                        $userData[] = $courseData;
-                    }
-                    $transition = array_merge($meetingArr, $userData);
-                    $aggregate = array_merge($aggregate, $transition);
-                }
-                $temp = array_merge($meetingList, $loggedInCourses);
-                $groupMap[$group->id] = array_merge($aggregate, $temp);
-            }
-        } else {
-//            $meetingList = array();
-        }
-
-        $hashMap = array();
-        foreach ($users as $user) {
-            if ($user->id != Auth::id()) {
-                $userCourses = DB::table('users')
-                    ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
-                    ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-                    ->where('users.id', '=', $user->id)
-                    ->where('users.id', '!=', Auth::id())
-                    ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
-                    ->orderby('courses.timing', 'DESC')
-                    ->get();
-
-                $userData = array();
-
-                foreach ($userCourses as $course) {
-                    $app = app();
-                    $courseData = $app->make('stdClass');
-                    $courseData->name = $course->courseName;
-                    $courseData->timing = $course->timing;
-                    $courseData->section = $course->section;
-                    $courseData->height = $this->timeToMins($course->timing);
-                    $courseData->width = $this->timeTableWidth;
-                    $courseData->days = explode(',', $course->days);
-                    $courseData->max = $this->tableHeight;
-                    $courseData->min = 0;
-                    $courseData->startingHeight = $this->startingHeight($course->timing);
-                    $courseData->color = "#3c948b";
-                    $courseData->loggedIn = false;
-
-                    $userData[] = $courseData;
-                }
-                $array1 = array_merge($loggedInCourses, $userData);
-
-                $hashMap[$user->id] = array_merge($array1, $meetingList);
-            }
-
-        }
-
-        foreach ($instructors as $instructor) {
-            $userCourses = DB::table('users')
-                ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
-                ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-                ->where('users.id', '=', $instructor->id)
-                ->where('users.id', '!=', Auth::id())
-                ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
-                ->orderby('courses.timing', 'DESC')
-                ->get();
-
-            $userData = array();
-
-            foreach($userCourses as $course) {
-                $app = app();
-                $courseData = $app->make('stdClass');
-                $courseData->name = $course->courseName;
-                $courseData->timing = $course->timing;
-                $courseData->section = $course->section;
-                $courseData->height = $this->timeToMins($course->timing);
-                $courseData->width = $this->timeTableWidth;
-                $courseData->days = explode(',', $course->days);
-                $courseData->max = $this->tableHeight;
-                $courseData->min = 0;
-                $courseData->startingHeight = $this->startingHeight($course->timing);
-                $courseData->color = "#3c948b";
-                $courseData->loggedIn = false;
-
-                $userData[] = $courseData;
-            }
-            $array1 = array_merge($loggedInCourses, $userData);
-
-            $hashMap[$instructor->id] = array_merge($array1, $meetingList);
-
-        }
-
-        return view('meetings.search', compact('allCourses', 'instructors', 'users', 'hashMap', 'query', 'groups', 'active', 'groupMap'));
-    }
-
-    public function timeToMins($time) {
-        $startTime = strtotime(explode('-', $time)[0]);
-        $endTime = strtotime(explode('-', $time)[1]);
-        $minutes = abs($endTime - $startTime) / 60;
-
-        $totalMinutes = abs(strtotime($this->timeTableEnd) - strtotime($this->timeTableStart)) / 60;
-
-        return $minutes/$totalMinutes * $this->tableHeight;
-    }
-
-    public function startingHeight($time) {
-        $startTime = strtotime($this->timeTableStart);
-        $endTime = strtotime(explode('-', $time)[0]);
-        if ($endTime == $startTime) {
-            return 0;
-        }
-        $minutes = abs($endTime - $startTime) / 60;
-
-        $totalHeight = ($this->tableHeight/(abs(strtotime($this->timeTableEnd) - strtotime($this->timeTableStart)) / 60)) * $minutes;
-
-        return $totalHeight;
-    }
-
-    public function singleConflict($userid, $time, $day, $date){
-
-        $user1Courses = $this->getUserCourses($userid);
-
-        $user1Meetings = $this->getUserMeetings($userid);
-
-
-        $ret = true;
-        foreach ($user1Courses as $course) {
-            $courseDays =  explode(',', $course->days);
-            foreach ($courseDays as $thisDay) {
-                if ($thisDay == $day) {
-                    // this course is on the day of the meeting
-                    $startTime = explode('-', $course->timing)[0];
-                    $endTime = explode('-', $course->timing)[1];
-
-                    $startTimeMeeting = explode('-', $time)[0];
-                    $endTimeMeeting = explode('-', $time)[1];
-                    if((strtotime($startTimeMeeting) >= strtotime($startTime) && strtotime($startTimeMeeting) <= strtotime($endTime)) ||
-                        (strtotime($endTimeMeeting) >= strtotime($startTime) && strtotime($endTimeMeeting) <= strtotime($endTime)) ||
-                        (strtotime($startTimeMeeting) <= strtotime($startTime) && strtotime($endTimeMeeting) >= strtotime($endTime))){
-                        $ret = false;
-                        return false;
-                    } else {
-                        $ret = true;
-                    }
-                }
-            }
-        }
-
-        // check for meetings
-        foreach ($user1Meetings as $meeting) {
-            if ($meeting->status == "accepted") {
-                $meetingDay =  $meeting->day;
-                if ($meetingDay == $day) {
-                    // this meeting is on the day of the meeting
-                    $startTime = explode('-', $meeting->time)[0];
-                    $endTime = explode('-', $meeting->time)[1];
-
-                    $startTimeMeeting = explode('-', $time)[0];
-                    $endTimeMeeting = explode('-', $time)[1];
-                    if((strtotime($startTimeMeeting) >= strtotime($startTime) && strtotime($startTimeMeeting) <= strtotime($endTime)) ||
-                        (strtotime($endTimeMeeting) >= strtotime($startTime) && strtotime($endTimeMeeting) <= strtotime($endTime)) ||
-                        (strtotime($startTimeMeeting) <= strtotime($startTime) && strtotime($endTimeMeeting) >= strtotime($endTime))){
-                        $ret = false;
-                        return false;
-                    } else {
-                        $ret = true;
-                    }
-                }
-            }
-
-        }
-
-        return $ret;
-    }
-
-    public function checkConflict($hostid, $userid, $time, $day, $date){
-        // get day
-        // get courses of both users
-        // check courses for that day for both users
-        $user1Courses = $this->getUserCourses($userid);
-        $user2Courses = $this->getUserCourses($hostid);
-
-        $user1Meetings = $this->getUserMeetings($userid);
-        $user2Meetings = $this->getUserMeetings($hostid);
-
-
-        $ret = true;
-        foreach ($user1Courses as $course) {
-            $courseDays =  explode(',', $course->days);
-            foreach ($courseDays as $thisDay) {
-                if ($thisDay == $day) {
-                    // this course is on the day of the meeting
-                    $startTime = explode('-', $course->timing)[0];
-                    $endTime = explode('-', $course->timing)[1];
-
-                    $startTimeMeeting = explode('-', $time)[0];
-                    $endTimeMeeting = explode('-', $time)[1];
-                    if((strtotime($startTimeMeeting) >= strtotime($startTime) && strtotime($startTimeMeeting) <= strtotime($endTime)) ||
-                        (strtotime($endTimeMeeting) >= strtotime($startTime) && strtotime($endTimeMeeting) <= strtotime($endTime)) ||
-                        (strtotime($startTimeMeeting) <= strtotime($startTime) && strtotime($endTimeMeeting) >= strtotime($endTime))){
-                        $ret = false;
-                        return false;
-                    } else {
-                        $ret = true;
-                    }
-                }
-            }
-        }
-
-        foreach ($user2Courses as $course) {
-            $courseDays =  explode(',', $course->days);
-            foreach ($courseDays as $thisDay) {
-                if ($thisDay == $day) {
-                    // this course is on the day of the meeting
-                    $startTime = explode('-', $course->timing)[0];
-                    $endTime = explode('-', $course->timing)[1];
-
-                    $startTimeMeeting = explode('-', $time)[0];
-                    $endTimeMeeting = explode('-', $time)[1];
-                    if ((strtotime($startTimeMeeting) >= strtotime($startTime) && strtotime($startTimeMeeting) <= strtotime($endTime)) ||
-                        (strtotime($endTimeMeeting) >= strtotime($startTime) && strtotime($endTimeMeeting) <= strtotime($endTime)) ||
-                        (strtotime($startTimeMeeting) <= strtotime($startTime) && strtotime($endTimeMeeting) >= strtotime($endTime))) {
-                        $ret = false;
-                        return false;
-                    } else {
-                        $ret = true;
-                    }
-                }
-            }
-        }
-
-        // check for meetings
-        foreach ($user1Meetings as $meeting) {
-            if ($meeting->status == "accepted") {
-                $meetingDay =  $meeting->day;
-                if ($meetingDay == $day) {
-                    // this meeting is on the day of the meeting
-                    $startTime = explode('-', $meeting->time)[0];
-                    $endTime = explode('-', $meeting->time)[1];
-
-                    $startTimeMeeting = explode('-', $time)[0];
-                    $endTimeMeeting = explode('-', $time)[1];
-                    if((strtotime($startTimeMeeting) >= strtotime($startTime) && strtotime($startTimeMeeting) <= strtotime($endTime)) ||
-                        (strtotime($endTimeMeeting) >= strtotime($startTime) && strtotime($endTimeMeeting) <= strtotime($endTime)) ||
-                        (strtotime($startTimeMeeting) <= strtotime($startTime) && strtotime($endTimeMeeting) >= strtotime($endTime))){
-                        $ret = false;
-                        return false;
-                    } else {
-                        $ret = true;
-                    }
-                }
-            }
-
-        }
-
-        foreach ($user2Meetings as $meeting) {
-            if ($meeting->status == "accepted") {
-                $meetingDay =  $meeting->day;
-                if ($meetingDay == $day) {
-                    // this meeting is on the day of the meeting
-                    $startTime = explode('-', $meeting->time)[0];
-                    $endTime = explode('-', $meeting->time)[1];
-
-                    $startTimeMeeting = explode('-', $time)[0];
-                    $endTimeMeeting = explode('-', $time)[1];
-                    if((strtotime($startTimeMeeting) >= strtotime($startTime) && strtotime($startTimeMeeting) <= strtotime($endTime)) ||
-                        (strtotime($endTimeMeeting) >= strtotime($startTime) && strtotime($endTimeMeeting) <= strtotime($endTime)) ||
-                        (strtotime($startTimeMeeting) <= strtotime($startTime) && strtotime($endTimeMeeting) >= strtotime($endTime))){
-                        $ret = false;
-                        return false;
-                    } else {
-                        $ret = true;
-                    }
-                }
-            }
-
-        }
-
-
-        return $ret;
+        return view('meetings.search', compact( 'instructors', 'users', 'groups', 'active','query'));
     }
 
     public function schedule(Request $request)
     {
-        $time = $request->Time;
-        $day = $request->Day;
-        $date = $request->Date;
-        $userid = $request->User;
-        $time = str_replace(" ","",$time);
-        if($this->checkConflict(Auth::id(), $userid, $time, $day, $date) == false) {
-            return 'error';
+        $start = $request->start;
+        $duration = $request->duration;
+        $date = $request->date;
+        $userid = $request->id;
+        $validation = Validator::make($request->all(),[
+            'start'=>'required|after:09:00AM|before:06:00PM',
+            'duration'=>'required|numeric|between:1,60',
+            'date'=>'required|date|after:today'
+        ]);
+        $end = date("H:i", strtotime('+'.$duration.' minutes', strtotime($start)));
+        $day = date('l',strtotime($date));
+        if ($validation->fails()){
+            if ($day == 'Sunday' || $day == 'Saturday'){
+                $validation->getMessageBag()->add('date','date cannot be a weekend');
+            }
+            return response()->json(['success' => false, 'errors' => $validation->getMessageBag()->toArray()]);
         }
-
+        if ($day == 'Sunday' || $day == 'Saturday'){
+            $validation->getMessageBag()->add('date','date cannot be a weekend');
+            return response()->json(['success' => false, 'errors' => $validation->getMessageBag()->toArray()]);
+        }
+        $request = DB::table('meetings AS m')
+            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+            ->join('users AS u', 'u.id', '=', 'm.host')
+            ->where('um.userid', '=', $userid)
+            ->where('m.host', '=', Auth::id())
+            ->where('m.date','=',$date)
+            ->where('m.time','=',$start.'-'.$end)
+            ->where('m.status', '=', 'pending')->first();
+        if (count($request) > 0){
+            return response()->json(['conflict'=>'<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-times-circle"></i> You have already sent a pending meeting request to this user at the suggested slot. Try another slot</div>']);
+        }
+        $courses = DB::table('user_has_course')
+            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+            ->where('user_has_course.userid', '=', Auth::id())
+            ->orwhere('user_has_course.userid', '=', $userid)
+            ->get();
+        $courses = $courses->toArray();
+        $tmp1 = array();
+        foreach($courses as $key => $value) {
+            if(!array_key_exists($value->coursecode,$tmp1)) {
+                $tmp1[$value->coursecode] = $value;
+            }
+        }
+        $courses = array_values($tmp1);
+        foreach ($courses as $course){
+            $course->days = explode(',',$course->days);
+            $course->starttime = explode('-',$course->timing)[0];
+            $course->endtime = explode('-',$course->timing)[1];
+            $course->type = 'course';
+        }
+        $meetings = DB::table('user_has_meeting')
+            ->join('meetings', 'user_has_meeting.meetingid', '=', 'meetings.id')
+            ->where('user_has_meeting.userid', '=', Auth::id())
+            ->where('meetings.status','=','accepted')
+            ->orwhere('user_has_meeting.userid', '=', $userid)
+            ->where('meetings.status','=','accepted')
+            ->get();
+        $meetings = $meetings->toArray();
+        $tmp2 = array();
+        foreach($meetings as $key => $value) {
+            if(!array_key_exists($value->meetingid,$tmp2)) {
+                $tmp2[$value->meetingid] = $value;
+            }
+        }
+        $meetings = array_values($tmp2);
+        foreach ($meetings as $meeting){
+            $meeting->days = array($meeting->day);
+            $meeting->starttime = date('H:i',strtotime(explode('-',$meeting->time)[0]));
+            $meeting->endtime = date('H:i',strtotime(explode('-',$meeting->time)[1]));
+            $meeting->type = 'meeting';
+        }
+        $allevents = array_merge($courses,$meetings);
+        foreach ($allevents as $event){
+            if ($event->type == 'course'){
+                foreach ($event->days as $eventday){
+                    if ($eventday == $day){
+                        if (($start >= $event->starttime && $start <= $event->endtime) || ($end >= $event->starttime && $end <= $event->endtime)){
+                            return response()->json(['conflict'=>'<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-times-circle"></i> Conflict detected! Please select another slot</div>']);
+                        }
+                    } else {
+                        continue;
+                    }
+                }
+            } else {
+                foreach ($event->days as $eventday){
+                    if ($eventday == $day && $event->date == date('Y-m-d',strtotime(str_replace("/", "-", $event->date)))){
+                        if (($start >= $event->starttime && $start <= $event->endtime) || ($end >= $event->starttime && $end <= $event->endtime)){
+                            return response()->json(['conflict'=>'<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-times-circle"></i> Conflict detected! Please select another slot</div>']);
+                        }
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        }
+        $time = $start.'-'.$end;
         $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending']);
         DB::table('user_has_meeting')->insert(array('userid'=>Auth::id(), 'meetingid'=>$insert));
         DB::table('user_has_meeting')->insert(array('userid'=>$userid, 'meetingid'=>$insert));
 
-        // attach notification
-
         $notificationList = ','.$userid.',';
         $loggedIn = $this->getUserById(Auth::id());
-        $html = '<strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has requested to meet you at '.strval($time) .' - ' . strval($date);
+        $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span> has requested to meet you on <span class="label label-info">'.date('F d,Y',strtotime($date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$time)[0])).' - '.date('h:iA',strtotime(explode('-',$time)[1])).'</span>';
         DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
 
-
-        return 'success';
+        return response()->json(['success'=>'<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-check-circle"></i> Request sent successfully and the user notified!</div>']);
     }
 
     public function scheduleGroupMeeting(Request $request){
-        $time = $request->Time;
-        $day = $request->Day;
-        $date = $request->Date;
-        $groupid = $request->Group;
-        $time = str_replace(" ","",$time);
+        $start = $request->start;
+        $duration = $request->duration;
+        $date = $request->date;
+        $groupid = $request->id;
+        $validation = Validator::make($request->all(),[
+            'start'=>'required|after:09:00AM|before:06:00PM',
+            'duration'=>'required|numeric|between:1,60',
+            'date'=>'required|date|after:today'
+        ]);
+        $end = date("H:i", strtotime('+'.$duration.' minutes', strtotime($start)));
+        $day = date('l',strtotime($date));
+        if ($validation->fails()){
+            if ($day == 'Sunday' || $day == 'Saturday'){
+                $validation->getMessageBag()->add('date','date cannot be a weekend');
+            }
+            return response()->json(['success' => false, 'errors' => $validation->getMessageBag()->toArray()]);
+        }
+        if ($day == 'Sunday' || $day == 'Saturday'){
+            $validation->getMessageBag()->add('date','date cannot be a weekend');
+            return response()->json(['success' => false, 'errors' => $validation->getMessageBag()->toArray()]);
+        }
         $group = $this->getGroupById($groupid);
-
-        $first = true;
-        foreach ($group->members as $user) {
-
-            if($this->singleConflict($user, $time, $day, $date) == false) {
-                return 'error';
+        foreach ($group->members as $member){
+            $request = DB::table('meetings AS m')
+                ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
+                ->join('users AS u', 'u.id', '=', 'm.host')
+                ->where('um.userid', '=', $member)
+                ->where('m.host', '=', Auth::id())
+                ->where('m.date','=',$date)
+                ->where('m.time','=',$start.'-'.$end)
+                ->where('m.status', '=', 'pending')->first();
+            if (count($request) > 0){
+                return response()->json(['conflict'=>'<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-times-circle"></i> You have already sent a pending meeting request to this group at the suggested slot. Try another slot</div>']);
             }
-            if ($first) {
-                $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending']);
-                $first = false;
+            $results[] = DB::table('user_has_course')
+                ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
+                ->where('user_has_course.userid', '=', Auth::id())
+                ->orwhere('user_has_course.userid', '=', $member)
+                ->get()->toArray();
+            $results2[] = DB::table('user_has_meeting')
+                ->join('meetings', 'user_has_meeting.meetingid', '=', 'meetings.id')
+                ->where('user_has_meeting.userid', '=', Auth::id())
+                ->where('meetings.status','=','accepted')
+                ->orwhere('user_has_meeting.userid', '=', $member)
+                ->where('meetings.status','=','accepted')
+                ->get()->toArray();
+        }
+        foreach ($results as $result){
+            foreach ($result as $value){
+                $courses[] = $value;
             }
-            DB::table('user_has_meeting')->insert(array('userid'=>$user, 'meetingid'=>$insert));
-
+        }
+        foreach ($results2 as $result2){
+            foreach ($result2 as $value2){
+                $meetings[] = $value2;
+            }
+        }
+        $tmp1 = array();
+        foreach($courses as $key => $value) {
+            if(!array_key_exists($value->coursecode,$tmp1)) {
+                $tmp1[$value->coursecode] = $value;
+            }
+        }
+        $courses = array_values($tmp1);
+        foreach ($courses as $course){
+            $course->type = 'course';
+            $course->starttime = explode('-',$course->timing)[0];
+            $course->endtime = explode('-',$course->timing)[1];
+            $course->days = explode(',',$course->days);
+        }
+        $tmp2 = array();
+        foreach($meetings as $key => $value) {
+            if(!array_key_exists($value->meetingid,$tmp2)) {
+                $tmp2[$value->meetingid] = $value;
+            }
+        }
+        $meetings = array_values($tmp2);
+        foreach ($meetings as $meeting){
+            $meeting->type = 'meeting';
+            $meeting->starttime = date('H:i',strtotime(explode('-',$meeting->time)[0]));
+            $meeting->endtime = date('H:i',strtotime(explode('-',$meeting->time)[1]));
+            $meeting->days = array($meeting->day);
+        }
+        $allevents = array_merge($courses,$meetings);
+        foreach ($allevents as $event){
+            if ($event->type == 'course'){
+                foreach ($event->days as $eventday){
+                    if ($eventday == $day){
+                        if (($start >= $event->starttime && $start <= $event->endtime) || ($end >= $event->starttime && $end <= $event->endtime)){
+                            return response()->json(['conflict'=>'<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-times-circle"></i> Conflict detected! Please select another slot</div>']);
+                        }
+                    } else {
+                        continue;
+                    }
+                }
+            } else {
+                foreach ($event->days as $eventday){
+                    if ($eventday == $day && $event->date == date('Y-m-d',strtotime(str_replace("/", "-", $event->date)))){
+                        if (($start >= $event->starttime && $start <= $event->endtime) || ($end >= $event->starttime && $end <= $event->endtime)){
+                            return response()->json(['conflict'=>'<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-times-circle"></i> Conflict detected! Please select another slot</div>']);
+                        }
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        }
+        $time = $start.'-'.$end;
+        $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending']);
+        foreach ($group->members as $memberid){
+            DB::table('user_has_meeting')->insert(array('userid'=>$memberid, 'meetingid'=>$insert));
+            $notificationList = ','.$memberid.',';
+            $loggedIn = $this->getUserById(Auth::id());
+            $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span> has requested to meet you on <span class="label label-info">'.date('F d,Y',strtotime($date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$time)[0])).' - '.date('h:iA',strtotime(explode('-',$time)[1])).'</span>';
+            DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
         }
 
-        return "success";
+        return response()->json(['success'=>'<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-check-circle"></i> Request sent successfully and the user notified!</div>']);
     }
 
     public function accept(Request $request) {
@@ -566,14 +665,21 @@ class MeetingsController extends Controller
 
         $notificationList = ','.$meeting->host.',';
         $loggedIn = $this->getUserById(Auth::id());
-        $html = '<strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong> has accepted your request for meeting at '.$meeting->time .' - ' . $meeting->date;
+        $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span> has accepted your request to meet on <span class="label label-info">'.date('F d,Y',strtotime($meeting->date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])).'</span>';
         DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
-
+        $request->session()->flash('message','Meeting Confirmed! You can now see it under your scheduled meetings');
+        return;
     }
 
     public function reject(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'reason'=>'required'
+        ]);
+        if ($validation->fails()){
+            return response()->json(['success' => false, 'errors' => $validation->getMessageBag()->toArray()]);
+        }
         $meetingid = $request->meetingid;
-        $message = $request->message;
+        $message = $request->reason;
         DB::table('meetings')->where('id', '=', $meetingid)
             ->update([
                 'status' => 'rejected',
@@ -583,8 +689,9 @@ class MeetingsController extends Controller
         $meeting = $this->getMeetingById($meetingid);
         $loggedIn = $this->getUserById(Auth::id());
         $notificationList = ','.$meeting->host.',';
-        $html = '<strong>'.$loggedIn->name . ' ('.$loggedIn->campusid.')</strong>'. ' has rejected your request to meet. Reason: <strong> '.$message .'</strong>';
+        $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span>'. ' has rejected your request to meet on <span class="label label-info">'.date('F d,Y',strtotime($meeting->date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])).'. </span><span class="label label-default">Reason: '.$message.'</span>';
         DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
-
+        $request->session()->flash('message','Meeting Rejected! Others will be notified about it');
+        return;
     }
 }

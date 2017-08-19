@@ -1,122 +1,72 @@
 @extends('layouts.sidemenu')
 
 @section('main')
-    <div class="requests row justify-content-center">
-        <div class=" col-md-12 ">
-            <h4 style="text-align: center;"><a>Meeting Requests (<?=count($requests)?>)</a></h4>
-            <hr>
-            @if (count($requests) > 0)
-                <ul style="list-style: none;">
-                    @foreach($requests as $request)
-                        <li style="display: inline-block; width: 45%;">
-                            <div class="alert alert-success" style="display:none;">
-                                <strong>Meeting Request Accepted!</strong>
-                            </div>
-                            <div class="row" id="request_<?= $request->meetingid ?>">
-                                <div class="col-md-4 center-block">
-                                    <div class="notification-box">
-                                        Meeting requested by: <?= $request->name ?>
-                                        <br>
-                                        Timing: <?= $request->time ?>
-                                        <br>
-                                        Date: <?= $request->date ?>
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="col-md-3 center-block actionbtn">
-                                    <button type="button" class="button_sliding_bg accept-request" data-placement="request_<?= $request->meetingid ?>" style=" display: block;">Accept</button>
-                                </div>
-                                <div class="col-md-3 center-block actionbtn">
-                                    <div class="alert alert-warning" style="display:none;">
-                                        <strong>Meeting Request Rejected!</strong> The rejection reason will be shown on their profile.
-                                    </div>
-                                    <button type="button" class="button_sliding_bg decline-request" data-placement="request_<?= $request->meetingid ?>" data-toggle="modal" data-target="#reject_<?= $request->meetingid ?>" style=" display: block;">Reject/Reschedule</button>
-                                    <div id="reject_<?= $request->meetingid ?>" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-                                        <div class="modal-dialog modal-sm" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-body">
-                                                    <h4 class="text-center">Rejection Reason</h4>
-                                                    <textarea style="width: 90%; height: 100px; margin: 10px;"></textarea>
-                                                    <button data-meetingid="<?= $request->meetingid ?>" type="button" class="reject-btn btn btn-danger" data-placement="" style=" display: block;">Reject</button>
-                                                    <hr/>
-                                                    <h4 class="text-center">You may also ask for the meeting to be rescheduled</h4>
-                                                    <button type="button" class="button_sliding_bg" data-placement="" style="margin: 20px auto; display: block;">Reschedule</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr/>
-                        </li>
-                    @endforeach
-                </ul>
-            @else
-                <h4 style="text-align: center;">No requests at the moment</h4>
-            @endif
+    <div data-animation="fadeInUp">
+        @if(session('message'))
+            <div class="alert alert-success alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
+                <i class="fa fa-check-circle"></i> {{ session()->pull('message') }}
+            </div>
+        @endif
+        <div class="heading heading-center m-b-40">
+            <h2>Meeting Requests Received</h2>
+            <span class="lead text-shadow-dark">You can manage all your meeting requests received here</span>
         </div>
+            <div class="col-md-12">
+                @if (count($requests) > 0)
+                    <div class="row col-no-margin equalize" data-equalize-item=".text-box">
+                        <?php $colors = array("#506681","#41566f","#32475f")?>
+                        @foreach($requests as $key => $request)
+                            @if($key >= 3 && $key%3 == 0)
+                                <div class="space"></div>
+                            @endif
+                            <div class="col-md-4" style="background-color: {{$colors[$key%3]}}">
+                                <div class="text-box hover-effect" data-target="#requestDetails" data-id="{{$request->meetingid}}" data-toggle="modal">
+                                    <a>
+                                        <i class="fa fa-inbox"></i>
+                                        <h3>From: {{$request->name}}</h3>
+                                        <p>Click on the box to view meeting request details</p>
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="modal fade" id="requestDetails" tabindex="-1" role="modal" aria-labelledby="modal-label" aria-hidden="true" style="display: none;">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                            </div>
+                        </div>
+                    </div>
+                    <?php echo $requests->render(); ?>
+                @else
+                    <h5 class="text-center text-info">You have no pending meeting requests to display at the moment</h5>
+                @endif
+            </div>
     </div>
     <script type="text/javascript">
-        $(".accept-request").click(function(){
-            var t = $(this);
-            var tp = t.parents('li');
-            console.log(t.data('placement').replace('request_', ''));
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                method: "POST",
-                url: "./accept",
-                data: {
-                    meetingid: t.data('placement').replace('request_', '')
-                },
-                success: function(data) {
-                    $('#'+t.data('placement')).hide();
-                    t.parents('.row').siblings('.alert').show();
-                    window.setTimeout(function () {
-                        t.parents('.row').siblings('.alert').fadeTo(500, 0).slideUp(500, function () {
-                            tp.remove();
-                        });
-                    }, 2000);
-                },
-                error: function (xhr, status) {
-                }
-            });
-        });
-
-        $('.reject-btn').click(function() {
-            var t = $(this);
-            var msg = t.siblings('textarea').val();
-            var mId = t.attr('data-meetingid');
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                method: "POST",
-                url: "./reject",
-                data: {
-                    meetingid: mId,
-                    message: msg
-                },
-                success: function(data) {
-                    t.parents('.modal-dialog').hide();
-                    $('body').css('overflow-y', 'scroll');
-                    $('.modal-backdrop').hide();
-                    $('#request_'+mId).hide();
-                    t.parents('.row').siblings('.alert-warning').show();
-                    window.setTimeout(function () {
-                        t.parents('.row').siblings('.alert-warning').fadeTo(500, 0).slideUp(500, function () {
-                            tp.remove();
-                        });
-                    }, 2000);
-                },
-                error: function (xhr, status) {
-                }
+        $(document).ready(function() {
+            $('.text-box').on('click', function () {
+                $('.modal-content').html('<h3 class="text-center">Loading...</h3><img style="width:200px;" class="center-block" src="{{asset('public/images/three-dots.svg')}}">')
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    method: "GET",
+                    url: "./requestdetails",
+                    data: {
+                        meetingid: $(this).data('id')
+                    },
+                    success: function(data) {
+                        $('.modal-content').html(data);
+                    },
+                    error: function (xhr, status) {
+                        console.log(status);
+                        console.log(xhr.responseText);
+                    }
+                });
             });
         });
     </script>

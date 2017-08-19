@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,167 +9,410 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Document title -->
     <title>{{ config('app.name', 'On the DOT') }}</title>
 
-    <!-- Styles -->
+    <!-- Stylesheets & Fonts -->
     <link rel="shortcut icon" href="{{ asset('public/images/favicon.png') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
-    <link href="{{ asset('public/css/app.css') }}" rel="stylesheet" type="text/css" >
-    <link href="{{ asset('public/css/style.css') }}" rel="stylesheet" type="text/css" >
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="{{asset('public/css/normalize.css')}}" />
-    <link rel="stylesheet" type="text/css" href="{{asset('public/css/demo.css')}}" />
-    <link rel="stylesheet" type="text/css" href="{{asset('public/css/icons.css')}}" />
-    <link rel="stylesheet" type="text/css" href="{{asset('public/css/component.css')}}" />
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600" rel="stylesheet">
-</head>
-<body>
-<!-- Scripts -->
-<script
-        src="https://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-        crossorigin="anonymous"></script>
-<script src="{{asset('public/js/modernizr.custom.js')}}"></script>
-<script src="{{asset('public/js/modernizr.js')}}"></script>
-<script src="{{asset('public/js/main.js')}}"></script>
-<script
-        src="{{ asset('public/js/app.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-{{--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>--}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-<script src="{{ asset('public/js/scripts.js')}}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.min.js"></script>
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,800,700,600|Montserrat:400,500,600,700|Raleway:100,300,600,700,800" rel="stylesheet" type="text/css" />
+    <link href="{{asset('css/plugins.css')}}" rel="stylesheet">
+    <link href="{{asset('css/style.css')}}" rel="stylesheet">
+    <link href="{{asset('css/responsive.css')}}" rel="stylesheet">
 
-<script>
-    window.Laravel = <?php echo json_encode([
+    <link href="{{asset('css/select2.css')}}" rel="stylesheet">
+
+    <!-- Timetable CSS -->
+    <link href="{{asset('css/reset.css')}}" rel="stylesheet">
+    <link href="{{asset('css/timetable.css')}}" rel="stylesheet">
+
+    <script src="{{asset('js/jquery.js')}}"></script>
+    <script src="{{asset('js/select2.min.js')}}"></script>
+    <script src="{{asset('js/jquery.sticky-sidebar-scroll.min.js')}}"></script>
+
+    <script>
+        window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
-    ]); ?>
-</script>
+        ]); ?>
+    </script>
 
-<!-- Scripts End -->
-<div id="app">
-    <nav class="navbar navbar-default" role="navigation" style="background-color:#fff; border: 1px solid #b3c2bf;  width: 90%; margin: 0px auto;">
-        <div class="container">
-            <div class="navbar-header">
+    <!-- LOADING FONTS AND ICONS -->
+    <link href="http://fonts.googleapis.com/css?family=Rubik:500%2C400%2C700" rel="stylesheet" property="stylesheet" type="text/css" media="all">
 
-                <!-- Collapsed Hamburger -->
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse" style="background-color: #3b3a36; color:#b3c2bf;">
-                    <span class="sr-only">Toggle Navigation</span>
-                    <span class="icon-bar top-bar"></span>
-                    <span class="icon-bar middle-bar"></span>
-                    <span class="icon-bar bottom-bar"></span>
-                </button>
+    <link rel="stylesheet" type="text/css" href="{{asset('js/plugins/revolution/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('js/plugins/revolution/fonts/font-awesome/css/font-awesome.css')}}">
 
-                <!-- Branding Image -->
-                <a class="navbar-brand" href="{{ url('/') }}" style="width: 177px; padding-top: 0px;">
-                    <img src="<?= asset('public/images/onthedot.png') ?>" class="img-responsive">
-                </a>
-            </div>
+    <!-- REVOLUTION STYLE SHEETS -->
+    <link rel="stylesheet" type="text/css" href="{{asset('js/plugins/revolution/css/settings.css')}}">
 
-            <div class="collapse navbar-collapse" id="app-navbar-collapse">
+    <style type="text/css">.tiny_bullet_slider .tp-bullet:before{content:" ";  position:absolute;  width:100%;  height:25px;  top:-12px;  left:0px;  background:transparent}</style>
+    <style type="text/css">.bullet-bar.tp-bullets{}.bullet-bar.tp-bullets:before{content:" ";position:absolute;width:100%;height:100%;background:transparent;padding:10px;margin-left:-10px;margin-top:-10px;box-sizing:content-box}.bullet-bar .tp-bullet{width:60px;height:3px;position:absolute;background:#aaa;  background:rgba(204,204,204,0.5);cursor:pointer;box-sizing:content-box}.bullet-bar .tp-bullet:hover,.bullet-bar .tp-bullet.selected{background:rgba(204,204,204,1)}.bullet-bar .tp-bullet-image{}.bullet-bar .tp-bullet-title{}</style>
 
-                <!-- Right Side Of Navbar -->
-                <ul class="nav navbar-nav navbar-right">
-                    <!-- Authentication Links -->
-                    @if (Auth::guest())
-                        <li><a href="{{ url('/login') }}" >Login</a></li>
-                        <li><a href="{{ url('/register') }}" >Sign Up</a></li>
-                    @else
-                        <li class="dropdown">
-                            <a class="dropdown-toggle notification-button" data-toggle="dropdown" style="position: relative;" role="button" aria-expanded="false">
-                            <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
-                                @if (count($notifications) > 0)
-                                    <?php $num = 0;?>
-                                    @foreach($notifications as $notification)
-                                        @if($notification->seen == 'no')
-                                            <?php $num = $num + 1?>
-                                            @endif
-                                        @endforeach
-                                    @if($num != 0)
-                                    <div class="notification"><?= $num?></div>
-                                        @endif
-                                @endif
-                            </a>
-                            <ul id="notifications" class="dropdown-menu" role="menu" style="min-width: 340px; text-align: center; color: #666;">
-                                <div style="text-align: center; border-bottom: 1px solid #dddddd; padding: 8px;">Notifications</div>
-                                <div id="notificationsBody" class="style-1">
-                                    @if (count($requests) > 0)
-                                        <ul class="notificationbox" style="list-style: none;">
-                                            @foreach($requests as $request)
-                                                <li><?= $request?></li>
-                                            @endforeach
-                                        </ul>
-                                    @else
-                                        <ul>
-                                            <h4 style="color: #666;">No notifications at the moment</h4>
-                                        </ul>
-                                    @endif
-                                </div>
-                                <a href="#" class="btn-link"><div id="notificationFooter">See All</div></a>
-                            </ul>
+
+    <!-- REVOLUTION JS FILES -->
+    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/jquery.themepunch.tools.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/jquery.themepunch.revolution.min.js')}}"></script>
+
+    <!-- SLICEY ADD-ON FILES -->
+    <script type='text/javascript' src='{{asset('js/plugins/revolution/revolution-addons/slicey/js/revolution.addon.slicey.min.js?ver=1.0.0')}}'></script>
+
+    <!-- SLIDER REVOLUTION 5.0 EXTENSIONS  (Load Extensions only on Local File Systems !  The following part can be removed on Server for On Demand Loading) -->
+    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.actions.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.carousel.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.kenburn.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.layeranimation.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.migration.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.navigation.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.parallax.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.slideanims.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/plugins/revolution/js/extensions/revolution.extension.video.min.js')}}"></script>
+
+</head>
+
+<body>
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Header -->
+    <header id="header" class="<?php if (Request::is('/')):?>header-transparent<?php else:?>header-static<?php endif?>">
+        <div id="header-wrap">
+            <div class="container">
+                <!--Logo-->
+                <div id="logo">
+                    <a href="{{url('/')}}" class="logo" data-dark-logo="{{asset('public/images/onthedot.png')}}">
+                        <img src="{{asset('public/images/onthedot.png')}}" alt="Logo">
+                    </a>
+                </div>
+                <!--End: Logo-->
+
+                <!--Top Search Form-->
+                <div id="top-search">
+                    <form method="get" action="{{ action('MeetingsController@q') }}">
+                        <input required type="text" name="query" class="form-control" value="" placeholder="Search for a member & press  &quot;Enter&quot;">
+                    </form>
+                </div>
+                <!--end: Top Search Form-->
+
+                <!--Header Extras-->
+                <div class="header-extras">
+                    <ul>
+                        <li class="hidden-sm hidden-xs">
+                            @if(Auth::guest())
+                            <a href="{{url('register')}}" class="btn btn-outline">Sign Up</a>
+                            @endif
                         </li>
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->name }} <span class="caret"></span>
+                        <li>
+                            <!--top search-->
+                            <a id="top-search-trigger" href="#" class="toggle-item">
+                                <i class="fa fa-search"></i>
+                                <i class="fa fa-close"></i>
                             </a>
+                            <!--end: top search-->
+                        </li>
+                    </ul>
+                </div>
+                <!--end: Header Extras-->
 
-                            <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="{{ url('/dashboard') }}">
-                                        <i class="fa fa-user" aria-hidden="true"></i> Dashboard
-                                    </a>
-                                    <a href="#">
-                                        <i class="fa fa-cog" aria-hidden="true"></i> My Account
-                                    </a>
-                                    <a href="{{ url('/logout') }}"
-                                       onclick="event.preventDefault();
+                <!--Navigation Resposnive Trigger-->
+                <div id="mainMenu-trigger">
+                    <button class="lines-button x"> <span class="lines"></span> </button>
+                </div>
+                <!--end: Navigation Resposnive Trigger-->
+
+                <!--Navigation-->
+                <div id="mainMenu">
+                    <div class="container">
+                        <nav>
+                            <ul>
+                                @if (Auth::guest())
+                                    <li><a href="{{ url('/login') }}" >Login</a></li>
+                                    <li class="visible-sm visible-xs"><a href="{{url('register')}}">Sign Up</a></li>
+                                @else
+                                    <li id="notification-dropdown" class="dropdown">
+                                        <a><i class="fa fa-bell fa-4x" aria-hidden="true"></i><span id="notificationCounter" class="label label-danger" style="position: absolute; right: 0px; top: 0px; display: none;"></span></a>
+                                        <ul class="dropdown-menu" style="text-align: center; min-width: 400px; right: 4px; left: auto;">
+                                            <h6 style="border-bottom: 2px solid grey; text-align: left; margin: 0;">Notifications<a href="#" class="right"></a></h6>
+                                            <div id="notification-content" style="height: 350px; overflow-y: auto;">
+                                                <div id="notifications">
+
+                                                </div>
+                                                <img id="loading" src="{{asset('public/images/preloader.gif')}}" class="center-block" style="display: none;">
+                                            </div>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown">
+                                        <a>{{ Auth::user()->name }} <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a href="{{ url('/dashboard') }}">
+                                                    <i class="fa fa-user" aria-hidden="true"></i> Dashboard
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <i class="fa fa-cog" aria-hidden="true"></i> My Account
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ url('/logout') }}"
+                                                   onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
-                                    </a>
-
-                                    <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                                        {{ csrf_field() }}
-                                    </form>
-                                </li>
+                                                    <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+                                                </a>
+                                                <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                                                    {{ csrf_field() }}
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                @endif
                             </ul>
-                        </li>
-                    @endif
-                </ul>
-                <form role="form" id="form-buscar" class="navbar-form <?php if (parse_url($_SERVER['REQUEST_URI'])['path'] == "/"):?>hidden<?php endif; ?>" style="outline: none; border: none" method="get" action="{{ action('MeetingsController@q') }}">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <input id="1" class="form-control" type="text" name="query" placeholder="Search for a User or Group.." required/>
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit">
-                                    <i class="fa fa-search fa-lg" aria-hidden="true"></i>
-                                </button>
-                            </span>
-                        </div>
+                        </nav>
                     </div>
-                </form>
+                </div>
+                <!--end: Navigation-->
             </div>
         </div>
-    </nav>
-    @yield('content')
+    </header>
+    <!-- end: Header -->
+        @yield('content')
+    <!-- Footer -->
+    <footer id="footer" class="footer-light">
+        <div class="footer-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <!-- Footer widget area 1 -->
+                        <div class="widget clearfix widget-contact-us" style="background-image: url({{asset('public/images/world-map-dark.png')}}); background-position: 50% 20px; background-repeat: no-repeat">
+                            <h4>About OntheDot</h4>
+                            <hr>
+                            <p>OntheDot is an institution based meeting scheduling platform where we believe in convenience and minimal human interaction when it comes to meeting scheduling.</p>
+                            <!-- Social icons -->
+                            <div class="social-icons social-icons-border float-left m-t-20">
+                                <ul>
+                                    <li class="social-facebook"><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                </ul>
+                            </div>
+                            <!-- end: Social icons -->
+                        </div>
+                        <!-- end: Footer widget area 1 -->
+                    </div>
+                    <div class="col-md-2">
+                        <!-- Footer widget area 2 -->
+                        <div class="widget">
+                            <h4>Quick LInks</h4>
+                            <ul class="list-icon list-icon-arrow">
+                                <li><a href="#">About</a></li>
+                                <li><a href="#">Contact</a></li>
+                                <li><a href="#">Home</a></li>
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">Portfolio</a></li>
+                                <li><a href="#">Shortcodes</a></li>
+                            </ul>
+                        </div>
+                        <!-- end: Footer widget area 2 -->
+                    </div>
+                    <div class="col-md-3">
+                        <!-- Footer widget area 3 -->
+                        <div class="widget">
+                            <h4>Latest From Our Blog</h4>
+                            <div class="post-thumbnail-list">
+                                <div class="post-thumbnail-entry">
+
+                                    <div class="post-thumbnail-content">
+                                        <a href="#">Suspendisse consectetur fringilla luctus</a>
+                                        <span class="post-date"><i class="fa fa-clock-o"></i> 6m ago</span>
+                                        <span class="post-category"><i class="fa fa-tag"></i> Technology</span>
+                                    </div>
+                                </div>
+                                <div class="post-thumbnail-entry">
+
+                                    <div class="post-thumbnail-content">
+                                        <a href="#">Consectetur adipiscing elit</a>
+                                        <span class="post-date"><i class="fa fa-clock-o"></i> 24h ago</span>
+                                        <span class="post-category"><i class="fa fa-tag"></i> Lifestyle</span>
+                                    </div>
+                                </div>
+                                <div class="post-thumbnail-entry">
+
+                                    <div class="post-thumbnail-content">
+                                        <a href="#">Lorem ipsum dolor sit amet, consectetur adipiscing elit</a>
+                                        <span class="post-date"><i class="fa fa-clock-o"></i> 11h ago</span>
+                                        <span class="post-category"><i class="fa fa-tag"></i> Lifestyle</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end: Footer widget area 3 -->
+                    </div>
+                    <div class="col-md-3">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="copyright-content">
+            <div class="container">
+                <div class="copyright-text text-center">&copy; 2017 OntheDot. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- end: Footer -->
 </div>
+<!-- end: Wrapper -->
+
+<!-- Go to top button -->
+<a id="goToTop"><i class="fa fa-angle-up top-icon"></i><i class="fa fa-angle-up"></i></a>
+
+<!--Plugins-->
+<script src="{{asset('js/plugins.js')}}"></script>
+
+<!--Template functions-->
+<script src="{{asset('js/functions.js')}}"></script>
+<script src="{{asset('js/custom.js')}}"></script>
+
 <script>
-    $('.notification-button').click(function () {
+    $(document).ready(function () {
+        $('#notification-content').on('scroll', function() {
+            if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+                console.log(1);
+                var url = $(this).find('.pagination li>a[rel=next]').attr('href');
+                console.log(url);
+                if (url == null){
+                    return;
+                }
+                $('#loading').show();
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url : url
+                }).done(function (data) {
+                    $('#loading').hide();
+                    $('#notifications').find('.pagination').remove();
+                    $('#notifications').append(data.html);
+                    if (data.count > 0){
+                        $('#notificationCounter').show();
+                        $('#notificationCounter').html(data.count);
+                    } else {
+                        $('#notificationCounter').hide();
+                    }
+                }).fail(function () {
+                    alert('No new notifications.')
+                });
+            }
+        });
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
         $.ajax({
-            method: "POST",
-            url: "http://onthedot.herokuapp.com/seeNotifications",
+            method: "GET",
+            url: "{{url('/getnotifications')}}",
+            beforeSend: function () {
+                $('#loading').show();
+            },
             success: function(data) {
-                $('.notification').hide();
+                $('#loading').hide();
+                $('#notifications').html(data.html);
+                if (data.count > 0){
+                    $('#notificationCounter').show();
+                    $('#notificationCounter').html(data.count);
+                } else {
+                    $('#notificationCounter').hide();
+                }
             },
             error: function (xhr, status) {
+                console.log(status);
+                console.log(xhr.responseText);
             }
         });
+        setInterval(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                method: "GET",
+                url: "{{url('/getnotifications')}}",
+                success: function(data) {
+                    $('#notifications').html(data.html);
+                    if (data.count > 0){
+                        $('#notificationCounter').show();
+                        $('#notificationCounter').html(data.count);
+                    } else {
+                        $('#notificationCounter').hide();
+                    }
+                },
+                error: function (xhr, status) {
+                    console.log(status);
+                    console.log(xhr.responseText);
+                }
+            });
+        },20000);
+        $('#notification-dropdown').hover(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                method: "POST",
+                url: "{{url('/seenotifications')}}",
+                success: function(data) {
+                    $('#notificationCounter').hide();
+                },
+                error: function (xhr, status) {
+                    console.log(status);
+                    console.log(xhr.responseText);
+                }
+            });
+        });
+        setInterval(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                method: "GET",
+                url: "{{url('/checknotifications')}}",
+                success: function(data) {
+                    $.each(data.notifications,function (index,value) {
+                        $('#notifications').prepend(value.html);
+                    });
+                    if (data.meeting > 0){
+                        $('#meeting_requests').fadeIn("slow",function () {
+                           $(this).html('New');
+                        });
+                    } else {
+                        $('#meeting_requests').fadeOut("slow");
+                    }
+                    if (data.group > 0){
+                        $('#group_requests').fadeIn("slow",function () {
+                            $(this).html('New');
+                        });
+                    } else {
+                        $('#group_requests').fadeOut("slow");
+                    }
+                    if (data.count > 0){
+                        $('#notificationCounter').show();
+                        $('#notificationCounter').html(data.count);
+                    } else {
+                        $('#notificationCounter').hide();
+                    }
+                },
+                error: function (xhr, status) {
+                    console.log(status);
+                    console.log(xhr.responseText);
+                }
+            });
+        },5000)
     });
 </script>
 </body>

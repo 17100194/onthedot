@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="Scheduler ">
+  <component name="PublishConfigData" serverName="OntheDot">
     <serverData>
-      <paths name="Scheduler ">
+      <paths name="Funkars">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/schedulerapp/trunk/public" />
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="OntheDot">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="onthedot/trunk" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="Schedulerapp">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="SportsApp">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

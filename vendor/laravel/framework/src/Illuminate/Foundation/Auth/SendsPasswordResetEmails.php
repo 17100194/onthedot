@@ -30,6 +30,12 @@ trait SendsPasswordResetEmails
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
+        $user = User::where('email', $request->email)->first();
+        if (count($user) > 0){
+            if ($user->verified == 0) {
+                return back()->withInput($request->only('email'))->withErrors(['email' => 'Your account is not activated. Please activate it first']);
+            }
+        }
         $response = $this->broker()->sendResetLink(
             $request->only('email')
         );

@@ -10,10 +10,6 @@ use DataTimeZone;
 
 class HomeController extends Controller
 {
-    public $timeTableStart = '08:00';
-    public $timeTableEnd = '18:00';
-    public $tableHeight = 550;
-    public $timeTableWidth = 167;
     /**
      * Create a new controller instance.
      *
@@ -33,11 +29,13 @@ class HomeController extends Controller
     {
         $meetings = DB::table('user_has_meeting AS u1')
             ->join('user_has_meeting as u2', 'u1.meetingid', '=', 'u2.meetingid')
-                ->join('users', 'u2.userid', '=', 'users.id')
+            ->join('users', 'u2.userid', '=', 'users.id')
             ->join('meetings', 'u2.meetingid', '=', 'meetings.id')
             ->where('meetings.status', '=', 'accepted')
             ->where('u1.userid', '=', Auth::id())
-            ->where('u2.userid', '!=', Auth::id())->get();
+            ->where('u2.userid', '!=', Auth::id())
+            ->orderBy('date','desc')
+            ->limit(6)->get();
 
         $requests = DB::table('meetings AS m')
             ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
@@ -45,8 +43,7 @@ class HomeController extends Controller
             ->where('um.userid', '=', Auth::id())
             ->where('m.host', '!=', Auth::id())
             ->where('m.status', '=', 'pending')->get();
-        $user = DB::table('users')->where('users.id', '=', Auth::id())->get();
-        $user = $user[0];
+
         $courses = DB::table('user_has_course')
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
             ->where('user_has_course.userid', '=', Auth::id())->get();
@@ -68,7 +65,6 @@ class HomeController extends Controller
             ->where('status', '=', 'rejected')
             ->get();
 
-//
         $groupRequestPending = DB::table('user_has_group_request')
             ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
             ->join('users', 'users.id', '=', 'user_has_group_request.id_sender')
@@ -86,58 +82,60 @@ class HomeController extends Controller
             ->get();
         $active = 'dashboard';
 
-        $allCourses[] = array();
-        foreach ($courses as $course) {
-
-            $app = app();
-            $courseData = $app->make('stdClass');
-            $courseData->name = $course->name;
-            $courseData->timing = $course->timing;
-            $courseData->section = $course->section;
-            $courseData->height = $this->timeToMins($course->timing);
-            $courseData->width = $this->timeTableWidth;
-            $courseData->days = explode(',', $course->days);
-            $courseData->max = $this->tableHeight;
-            $courseData->min = 0;
-
-            $allCourses[] = $courseData;
-        }
-
-
-        return view('home', compact('allCourses', 'courses', 'meetings', 'requests', 'user', 'groupRequestPending', 'groupRequestRejected', 'groupRequestAccepted', 'groups', 'active'));
+        return view('home',compact('meetings','courses', 'groups', 'active'));
     }
 
-    public function seeNotifications(){
-        $Notifications = DB::table('user_notifications')
-            ->where('userlist', 'LIKE', '%,'.Auth::id().',%')->where('seen', '=', 'no')->get();
-        if(count($Notifications) > 0){
-            DB::table('user_notifications')
-                ->where('userlist', 'LIKE', '%,'.Auth::id().',%')
-                ->update(['seen' => 'yes']);
-            return;
+    public function showTimetable(Request $request){
+        $monday = $request->monday;
+        $tuesday = $request->tuesday;
+        $wednesday = $request->wednesday;
+        $thursday = $request->thursday;
+        $friday = $request->friday;
+        if ($monday == null){
+            $monday = date('Y-m-d',strtotime('monday this week'));
         } else{
-            return;
-        }
-    }
-
-    function search($array, $key, $value)
-    {
-        $results = array();
-
-        if (is_array($array)) {
-            if (isset($array[$key]) && $array[$key] == $value) {
-                $results[] = $array;
-            }
-
-            foreach ($array as $subarray) {
-                $results = array_merge($results, search($subarray, $key, $value));
+            if ($request->button == 'next'){
+                $monday = date('Y-m-d', strtotime($monday. ' + 7 days'));
+            } else{
+                $monday = date('Y-m-d', strtotime($monday. ' - 7 days'));
             }
         }
-
-        return $results;
-    }
-
-    public  function Timetable(){
+        if ($tuesday == null){
+            $tuesday = date('Y-m-d',strtotime('tuesday this week'));
+        } else {
+            if ($request->button == 'next'){
+                $tuesday = date('Y-m-d', strtotime($tuesday. ' + 7 days'));
+            } else{
+                $tuesday = date('Y-m-d', strtotime($tuesday. ' - 7 days'));
+            }
+        }
+        if ($wednesday == null){
+            $wednesday = date('Y-m-d',strtotime('wednesday this week'));
+        } else {
+            if ($request->button == 'next'){
+                $wednesday = date('Y-m-d', strtotime($wednesday. ' + 7 days'));
+            } else{
+                $wednesday = date('Y-m-d', strtotime($wednesday. ' - 7 days'));
+            }
+        }
+        if ($thursday == null){
+            $thursday = date('Y-m-d',strtotime('thursday this week'));
+        } else {
+            if ($request->button == 'next'){
+                $thursday = date('Y-m-d', strtotime($thursday. ' + 7 days'));
+            } else{
+                $thursday = date('Y-m-d', strtotime($thursday. ' - 7 days'));
+            }
+        }
+        if ($friday == null){
+            $friday = date('Y-m-d',strtotime('friday this week'));
+        } else {
+            if ($request->button == 'next'){
+                $friday = date('Y-m-d', strtotime($friday. ' + 7 days'));
+            } else{
+                $friday = date('Y-m-d', strtotime($friday. ' - 7 days'));
+            }
+        }
         $allCourses[] = array();
         $courses = DB::table('user_has_course')
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
@@ -152,19 +150,14 @@ class HomeController extends Controller
             $courseData = $app->make('stdClass');
             $courseData->type = 'course';
             $time = date("g:i a", strtotime(explode('-',$course->timing)[0])).'-'.date("g:i a", strtotime(explode('-',$course->timing)[1]));
-            $courseData->content = "<div style='text-align: center'><h3>$course->name ($course->coursecode)</h3><hr><div class='row'><div class='col-xs-6'><h4>Instructor:</h4></div><div class='col-xs-6'><h4>$instructor->name</h4></div></div><div class='row'><div class='col-xs-6'><h4>Section:</h4></div><div class='col-xs-6'><h4>$course->section</h4></div></div><div class='row'><div class='col-xs-6'><h4>Timing:</h4></div><div class='col-xs-6'><h4>$time</h4></div></div><div class='row'><div class='col-xs-6'><h4>Days:</h4></div><div class='col-xs-6'><h4>$course->days</h4></div></div><input type='hidden' class='courseid' value='$course->courseid'><button class='button_sliding_bg dropcourse' style='font-size: 2rem;'>Drop Course</button></div>";
+            $courseData->content = "<div class='text-center'><h3 class='text-shadow-dark'>$course->name ($course->coursecode)</h3><div class='separator'><span>Course Details</span></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Instructor</label> $instructor->name</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Section</label> $course->section</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Timing</label> $time</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Days</label> $course->days</h3></div></div></div>";
             $courseData->meetingid = "";
+            $courseData->code = $course->coursecode;
             $courseData->with = "";
             $courseData->name = $course->name;
             $courseData->timing = $course->timing;
             $courseData->section = $course->section;
-            $courseData->height = $this->timeToMins($course->timing);
-            $courseData->width = $this->timeTableWidth;
             $courseData->days = explode(',', $course->days);
-            $courseData->max = $this->tableHeight;
-            $courseData->min = 0;
-            $courseData->startingHeight = $this->startingHeight($course->timing);
-            $courseData->color = "";
             $allCourses[] = $courseData;
         }
 
@@ -176,93 +169,37 @@ class HomeController extends Controller
                 }
             }
             $with = implode(', ', $with);
-            if ($meeting->status == "accepted") {
-                $userDetails = $this->getUserById($meeting->with);
+            $date = str_replace("/", "-", $meeting->date);
+            if ($meeting->status == "accepted" && ((date('Y-m-d',strtotime($date)) == $monday)||(date('Y-m-d',strtotime($date)) == $tuesday)||(date('Y-m-d',strtotime($date)) == $wednesday)||(date('Y-m-d',strtotime($date)) == $thursday)||(date('Y-m-d',strtotime($date)) == $friday))){
                 $meetingData = $app->make('stdClass');
                 $time = date("g:i a", strtotime(explode('-',$meeting->time)[0])).'-'.date("g:i a", strtotime(explode('-',$meeting->time)[1]));
                 $meetingData->type = 'meeting';
-                $meetingData->content = "<div style='text-align: center'><h3>Meeting Details</h3><hr><div class='row'><div class='col-xs-6'><h4>With:</h4></div><div class='col-xs-6'><h4>$with</h4></div></div><div class='row'><div class='col-xs-6'><h4>Time:</h4></div><div class='col-xs-6'><h4>$time</h4></div></div><div class='row'><div class='col-xs-6'><h4>Date:</h4></div><div class='col-xs-6'><h4>$meeting->date</h4></div></div><input type='hidden' class='meetingid' value='$meeting->meetingid'><button class='button_sliding_bg cancelmeeting' style='font-size: 2rem;'>Cancel</button></div>";
+                $start = strtotime(date('Y-m-d H:i',strtotime($date." ".explode('-',$meeting->time)[0])));
+                $end = strtotime(date('Y-m-d H:i',strtotime($date." ".explode('-',$meeting->time)[1])));
+                $now = strtotime('now');
+                if ($now >= $start && $now <= $end) {
+                    $meetingData->content = "<div class='text-center'><h3 class='text-shadow-dark'>Meeting Details</h3><div class='separator'><i class='fa fa-handshake-o'></i></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>With</label> $with</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Time</label> $time</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Date</label> $meeting->date</h3></div></div><div class='separator'><span>Meeting Status</span></div><h4 class='text-info'>In Progress</h4></div>";
+                } elseif ($now < $start) {
+                    $meetingData->content = "<div class='text-center'><h3 class='text-shadow-dark'>Meeting Details</h3><div class='separator'><i class='fa fa-handshake-o'></i></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>With</label> $with</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Time</label> $time</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Date</label> $meeting->date</h3></div></div><div class='separator'><span>Meeting Status</span></div><h4 class='text-info'>Not Started</h4></div>";
+                } else {
+                    $meetingData->content = "<div class='text-center'><h3 class='text-shadow-dark'>Meeting Details</h3><div class='separator'><i class='fa fa-handshake-o'></i></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>With</label> $with</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Time</label> $time</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Date</label> $meeting->date</h3></div></div><div class='separator'><span>Meeting Status</span></div><h4 class='text-info'>Finished</h4></div>";
+                }
                 $meetingData->meetingid = 'meeting_'.$meeting->meetingid;
                 $meetingData->with = $with;
                 $meetingData->name = $meeting->date;
                 $meetingData->timing = $meeting->time;
+                $meetingData->code = "";
                 $meetingData->section = "";
-                $meetingData->height = $this->timeToMins($meeting->time);
-                $meetingData->width = $this->timeTableWidth;
                 $meetingData->days = array($meeting->day);
-                $meetingData->max = $this->tableHeight;
-                $meetingData->min = 0;
-                $meetingData->color = "#3EA608";
-                $meetingData->startingHeight = $this->startingHeight($meeting->time);
 
                 $allCourses[] = $meetingData;
             }
         }
+        return view('timetable_result',['allCourses'=>$allCourses,'monday'=>$monday,'tuesday'=>$tuesday,'wednesday'=>$wednesday,'thursday'=>$thursday,'friday'=>$friday])->render();
+    }
 
+    public  function Timetable(){
         $active = 'timetable';
-        return view('timetable', compact('allCourses', 'active'));
+        return view('timetable', compact('active'));
     }
-
-    public function timeToMins($time){
-        $startTime = strtotime(explode('-', $time)[0]);
-        $endTime = strtotime(explode('-', $time)[1]);
-        $minutes = abs($endTime - $startTime) / 60;
-
-        $totalMinutes = abs(strtotime($this->timeTableEnd) - strtotime($this->timeTableStart)) / 60;
-
-        return $minutes/$totalMinutes * $this->tableHeight;
-    }
-
-    public function startingHeight($time){
-        $startTime = strtotime($this->timeTableStart);
-        $endTime = strtotime(explode('-', $time)[0]);
-        if ($endTime == $startTime) {
-            return 0;
-        }
-        $minutes = abs($endTime - $startTime) / 60;
-
-        $totalHeight = ($this->tableHeight/(abs(strtotime($this->timeTableEnd) - strtotime($this->timeTableStart)) / 60)) * $minutes;
-
-        return $totalHeight;
-    }
-
-    /**
-     * http://stackoverflow.com/questions/1416697/converting-timestamp-to-time-ago-in-php-e-g-1-day-ago-2-days-ago
-     *
-     * X time ago
-     *
-     * @param $datetime
-     * @param bool $full
-     * @return string
-     */
-    public function timeElapsed($datetime, $full = false) {
-        $tz = new DateTimeZone('Asia/Karachi');
-        $now = new DateTime('now', $tz);
-        $ago = new DateTime($datetime, $tz);
-        $diff = $now->diff($ago);
-        $diff->w = floor($diff->d / 7);
-        $diff->d -= $diff->w * 7;
-
-        $string = array(
-            'y' => 'year',
-            'm' => 'month',
-            'w' => 'week',
-            'd' => 'day',
-            'h' => 'hour',
-            'i' => 'minute',
-            's' => 'second',
-        );
-        foreach ($string as $k => &$v) {
-            if ($diff->$k) {
-                $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
-            } else {
-                unset($string[$k]);
-            }
-        }
-
-        if (!$full) $string = array_slice($string, 0, 1);
-        return $string ? implode(', ', $string) . ' ago' : 'just now';
-    }
-
-
 }
