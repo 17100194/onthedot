@@ -36,7 +36,4 @@
             </div>
         </div>
     </section>
-    <script>
-        $.stickysidebarscroll('#sticky',{offset: {top:100,bottom:500}});
-    </script>
 @endsection
