@@ -272,6 +272,7 @@
 <script src="{{asset('js/functions.js')}}"></script>
 <script src="{{asset('js/custom.js')}}"></script>
 
+@if(!Auth::guest())
 <script>
     $(document).ready(function () {
         $('#notification-content').on('scroll', function() {
@@ -415,5 +416,6 @@
         },5000)
     });
 </script>
+@endif
 </body>
 </html>
