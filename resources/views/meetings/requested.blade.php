@@ -44,7 +44,7 @@
                             </div>
                         </div>
                     </div>
-                    <?php echo $meetings->render(); ?>
+                    <?= $meetings->setPath(url('/requested'))->render() ?>
                 @else
                     <h5 class="text-center text-info">You have no pending sent requests to display at the moment</h5>
                 @endif
