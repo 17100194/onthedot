@@ -62,6 +62,7 @@ class GroupController extends Controller
             ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'groups.created_on', 'user_has_group_request.id as requestid')
             ->where('id_receiver', '=', Auth::id())
             ->where('status', '=', 'pending')
+            ->orderBy('created_on','desc')
             ->paginate(10);
         $active = 'group-requests';
         return view('group.requests',compact('requests','active'));
@@ -158,7 +159,7 @@ class GroupController extends Controller
         if ($adminid == 'none'){
             return '<div class="alert alert-danger alert-dismissable">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
-                    <i class="fa fa-times-circle"></i> Please select an admin
+                    <i class="fa fa-times-circle"></i> You must select an admin
                     </div>';
         }
         if($adminid == 'empty'){
