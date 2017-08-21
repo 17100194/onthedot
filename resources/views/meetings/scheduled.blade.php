@@ -15,22 +15,29 @@
             <div class="col-md-12">
                 @if (count($meetings) > 0)
                     <div class="row col-no-margin equalize" data-equalize-item=".text-box">
-                        <?php $colors = array("#506681","#41566f","#32475f")?>
-                        @foreach($meetings as $key => $meeting)
-                            @if($key >= 3 && $key%3 == 0)
+                        <?php $colors = array("#506681","#41566f","#32475f"); $key = 0;?>
+                        @foreach($meetings as $id=>$meeting)
+                            <?php $users = array();?>
+                            @foreach($meeting as $value)
+                                <?php $users[] = $value->name;?>
+                            @endforeach
+                            @if($key == 2)
+                                <?php $key = 0;?>
                                 <div class="space"></div>
                             @endif
-                            <div class="col-md-4" style="background-color: {{$colors[$key%3]}}">
-                                <div class="text-box hover-effect" data-target="#meetingDetails" data-id="{{$meeting->id}}" data-toggle="modal">
+                            <div class="col-md-4" style="background-color: {{$colors[$key]}}">
+                                <div class="text-box hover-effect" data-target="#meetingDetails" data-id="{{$id}}" data-toggle="modal">
                                     <a>
                                         <i class="fa fa-handshake-o"></i>
-                                        <h3>With: {{$meeting->name}}</h3>
+                                        <h3>With: <?php if (count($users) > 1):?>Group<?php else:?>{{implode(',',$users)}}<?php endif;?></h3>
                                         <p>Click on the box to view meeting details</p>
                                     </a>
                                 </div>
                             </div>
+                            <?php $key = $key + 1;?>
                         @endforeach
                     </div>
+                    <?= $meetings->setPath(url('/meetings'))->render() ?>
                     <div class="modal fade" id="meetingDetails" tabindex="-1" role="modal" aria-labelledby="modal-label" aria-hidden="true" style="display: none;">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -38,7 +45,6 @@
                             </div>
                         </div>
                     </div>
-                    <?php echo $meetings->render(); ?>
                 @else
                     <h5 class="text-center text-info">You have no scheduled meetings to display at the moment</h5>
                 @endif

@@ -103,7 +103,8 @@ class Controller extends BaseController
             ->where('meetings.status', '=', 'accepted')
             ->where('u1.userid', '=', $idUser)
             ->where('u2.userid', '!=', $idUser)
-            ->select('u2.meetingid', 'u2.userid as with', 'host', 'time', 'date', 'day', 'status', 'message', 'meetings.created_on')->get();
+            ->where('u1.status_meeting','=','accepted')
+            ->select('u2.meetingid', 'u2.userid as with', 'host', 'time', 'date', 'day', 'status','u1.status_meeting', 'meetings.created_on')->get();
     }
 
     public function getUserMeetingsObject($idUser) {
@@ -114,7 +115,8 @@ class Controller extends BaseController
             ->where('meetings.status', '=', 'accepted')
             ->where('u1.userid', '=', $idUser)
             ->where('u2.userid', '!=', $idUser)
-            ->select('u2.meetingid', 'host', 'time', 'date', 'day', 'status', 'message', 'meetings.created_on')->get();
+            ->where('u1.status_meeting','=','accepted')
+            ->select('u2.meetingid', 'host', 'time', 'date', 'day', 'status','u1.status_meeting', 'meetings.created_on')->get();
 
         $meetings = array();
 
@@ -132,6 +134,7 @@ class Controller extends BaseController
     public function getMeetingMembers($idmeeting) {
         $query = DB::table('user_has_meeting AS u1')
             ->where('u1.meetingid', '=', $idmeeting)
+            ->where('u1.status_meeting','=','accepted')
             ->select('u1.userid')->get()->all();
         return $query;
     }

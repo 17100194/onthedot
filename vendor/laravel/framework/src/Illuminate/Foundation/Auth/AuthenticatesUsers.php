@@ -127,10 +127,6 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
-        if ($user->type == 'admin'){
-            return redirect()->intended('/admin/dashboard');
-        }
-        return redirect()->intended('/dashboard');
     }
 
     /**

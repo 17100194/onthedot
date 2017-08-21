@@ -4,13 +4,14 @@ use Illuminate\Support\Facades\Auth;
 ?>
 
 <div class="modal-header">
-    <div class="hr-title center">
-        <abbr>Course Details</abbr>
-    </div>
+    <button aria-hidden="true" data-dismiss="modal" class="close" type="button"><i class="fa fa-times"></i></button>
 </div>
 <div class="modal-body">
     <div class="row">
         <div class="col-sm-12">
+            <div class="hr-title center">
+                <abbr>Course Details</abbr>
+            </div>
             <div class="text-left">
                 <form>
                     <input type="hidden" id="courseid" name="courseid" value="<?= $course->courseid?>">

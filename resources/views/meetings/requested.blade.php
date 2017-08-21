@@ -15,20 +15,26 @@
             <div class="col-md-12">
                 @if (count($meetings) > 0)
                     <div class="row col-no-margin equalize" data-equalize-item=".text-box">
-                        <?php $colors = array("#506681","#41566f","#32475f")?>
-                        @foreach($meetings as $key => $meeting)
-                            @if($key >= 3 && $key%3 == 0)
+                        <?php $colors = array("#506681","#41566f","#32475f"); $key = 0;?>
+                        @foreach($meetings as $id=>$meeting)
+                            <?php $users = array();?>
+                            @foreach($meeting as $value)
+                                <?php $users[] = $value->name;?>
+                            @endforeach
+                            @if($key == 2)
+                                <?php $key = 0;?>
                                 <div class="space"></div>
                             @endif
-                            <div class="col-md-4" style="background-color: {{$colors[$key%3]}}">
-                                <div class="text-box hover-effect" data-target="#requestDetails" data-id="{{$meeting->id}}" data-toggle="modal">
+                            <div class="col-md-4" style="background-color: {{$colors[$key]}}">
+                                <div class="text-box hover-effect" data-target="#requestDetails" data-id="{{$id}}" data-toggle="modal">
                                     <a>
-                                        <i class="fa fa-arrow-up"></i>
-                                        <h3>To: {{$meeting->name}}</h3>
-                                        <p>Click on the box to view meeting request details</p>
+                                        <i class="fa fa-handshake-o"></i>
+                                        <h3>To: <?php if (count($users) > 1):?>Group<?php else:?>{{implode(',',$users)}}<?php endif;?></h3>
+                                        <p>Click on the box to view meeting details</p>
                                     </a>
                                 </div>
                             </div>
+                            <?php $key = $key + 1;?>
                         @endforeach
                     </div>
                     <div class="modal fade" id="requestDetails" tabindex="-1" role="modal" aria-labelledby="modal-label" aria-hidden="true" style="display: none;">

@@ -121,7 +121,7 @@
                 <!--end: Navigation Resposnive Trigger-->
 
                 <!--Navigation-->
-                <div id="mainMenu">
+                <div id="mainMenu" class="menu-onclick">
                     <div class="container">
                         <nav>
                             <ul>
@@ -129,8 +129,8 @@
                                     <li><a href="{{ url('/login') }}" >Login</a></li>
                                     <li class="visible-sm visible-xs"><a href="{{url('register')}}">Sign Up</a></li>
                                 @else
-                                    <li id="notification-dropdown" class="dropdown">
-                                        <a><i class="fa fa-bell fa-4x" aria-hidden="true"></i><span id="notificationCounter" class="label label-danger" style="position: absolute; right: 0px; top: 0px; display: none;"></span></a>
+                                    <li class="dropdown">
+                                        <a id="notification-dropdown" href="#"><i class="fa fa-bell fa-4x" aria-hidden="true"></i><span id="notificationCounter" class="label label-danger" style="position: absolute; right: 0px; top: 0px; display: none;"></span></a>
                                         <ul class="dropdown-menu" style="text-align: center; min-width: 400px; right: 4px; left: auto;">
                                             <h6 style="border-bottom: 2px solid grey; text-align: left; margin: 0;">Notifications<a href="#" class="right"></a></h6>
                                             <div id="notification-content" style="height: 350px; overflow-y: auto;">
@@ -142,7 +142,7 @@
                                         </ul>
                                     </li>
                                     <li class="dropdown">
-                                        <a>{{ Auth::user()->name }} <span class="caret"></span></a>
+                                        <a href="#">{{ Auth::user()->name }} <span class="caret"></span></a>
                                         <ul class="dropdown-menu">
                                             <li>
                                                 <a href="{{ url('/dashboard') }}">
@@ -277,9 +277,7 @@
     $(document).ready(function () {
         $('#notification-content').on('scroll', function() {
             if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
-                console.log(1);
                 var url = $(this).find('.pagination li>a[rel=next]').attr('href');
-                console.log(url);
                 if (url == null){
                     return;
                 }
@@ -356,7 +354,7 @@
                 }
             });
         },20000);
-        $('#notification-dropdown').hover(function () {
+        $('#notification-dropdown').on('click',function () {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

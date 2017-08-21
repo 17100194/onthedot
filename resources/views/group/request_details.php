@@ -1,5 +1,8 @@
 <div class="modal-header">
+    <button aria-hidden="true" data-dismiss="modal" class="close" type="button"><i class="fa fa-times"></i></button>
     <div class="status"></div>
+</div>
+<div class="modal-body">
     <div class="hr-title center">
         <abbr>Group Details</abbr>
     </div>
@@ -13,8 +16,7 @@
             </div>
         </div>
     </div>
-</div>
-<div class="modal-body">
+    <div class="space"></div>
     <div class="row">
         <div class="col-sm-12">
             <div class="hr-title center">

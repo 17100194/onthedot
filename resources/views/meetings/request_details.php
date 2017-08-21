@@ -3,13 +3,14 @@ use App\Http\Controllers\MeetingsController;
 ?>
 
 <div class="modal-header">
-    <div class="hr-title center">
-        <abbr>Meeting Request Details</abbr>
-    </div>
+    <button aria-hidden="true" data-dismiss="modal" class="close" type="button"><i class="fa fa-times"></i></button>
 </div>
 <div class="modal-body">
     <div class="row">
         <div class="col-sm-12">
+            <div class="hr-title center">
+                <abbr>Meeting Request Details</abbr>
+            </div>
             <div class="text-center">
                 <h4><span class="label label-info">From</span> <?= $request->name?></h4>
                 <h4><span class="label label-info">Date</span> <?= $request->date?></h4>
