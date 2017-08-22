@@ -134,7 +134,7 @@ class GroupController extends Controller
             $notificationList = ','.$user.',';
             $loggedIn = $this->getUserById(Auth::id());
             $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span>'. ' has requested you to join their group <span class="label label-info">'.$group->name.'</span>';
-            DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group', 'userlist' => $notificationList));
+            DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group-request', 'userlist' => $notificationList));
         }
         return '<div class="alert alert-success alert-dismissable">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
@@ -253,7 +253,7 @@ class GroupController extends Controller
             $loggedIn = $this->getUserById(Auth::id());
             $url = url("/notification?type=group-pending&id=". strval($insert));
             $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span> has requested you to join their group <span class="label label-info">'.$groupname.'</span>';
-            DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group', 'userlist' => $notificationList));
+            DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group-request', 'userlist' => $notificationList));
 
         }
         return redirect()->back()->with('message-bold', 'Group created successfully!')->with('message', 'Requests to join the group have been sent to all the members.');

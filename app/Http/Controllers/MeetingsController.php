@@ -587,7 +587,7 @@ class MeetingsController extends Controller
         $notificationList = ','.$userid.',';
         $loggedIn = $this->getUserById(Auth::id());
         $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span> has requested to meet you on <span class="label label-info">'.date('F d,Y',strtotime($date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$time)[0])).' - '.date('h:iA',strtotime(explode('-',$time)[1])).'</span>';
-        DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
+        DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting-request', 'userlist' => $notificationList));
 
         return response()->json(['success'=>'<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-check-circle"></i> Request sent successfully and the user notified!</div>']);
     }
@@ -718,7 +718,7 @@ class MeetingsController extends Controller
                 $notificationList = ','.$memberid.',';
                 $loggedIn = $this->getUserById(Auth::id());
                 $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span> has requested to meet you on <span class="label label-info">'.date('F d,Y',strtotime($date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$time)[0])).' - '.date('h:iA',strtotime(explode('-',$time)[1])).'</span>';
-                DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
+                DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting-request', 'userlist' => $notificationList));
             }
         }
 
