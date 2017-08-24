@@ -81,7 +81,11 @@ use Illuminate\Support\Facades\Auth;
                 groupid: <?=$group->id?>,
                 adminid: adminid
             },
+            beforeSend: function () {
+                $('.status').html('<div class="text-center">Processing</div><img src="<?=asset('public/images/preloader.gif')?>" class="center-block">');
+            },
             success: function(data) {
+                $('.status').html('');
                 if (data == 'success'){
                     location.reload();
                 } else {
@@ -148,7 +152,11 @@ use Illuminate\Support\Facades\Auth;
                     ids: $('.searchuser').select2('val'),
                     groupid: <?=$group->id?>
                 },
+                beforeSend: function () {
+                    $('.status').html('<div class="text-center">Processing</div><img src="<?=asset('public/images/preloader.gif')?>" class="center-block">');
+                },
                 success: function(data) {
+                    $('.status').html('');
                     if (data == 'error'){
                         $('.status').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-times-circle"></i> You must select at least one user</div>');
                     } else {

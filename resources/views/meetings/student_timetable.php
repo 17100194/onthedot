@@ -275,8 +275,10 @@ use Illuminate\Support\Facades\Auth;
                 beforeSend: function() {
                     $('.form-group').removeClass('has-error');
                     $('.help-block').remove();
+                    $('.student').find('#status').html('<div class="text-center">Processing</div><img src="<?=asset('public/images/preloader.gif')?>" class="center-block">');
                 },
                 success: function(data) {
+                    $('.student').find('#status').html('');
                     if(data.success == false)
                     {
                         var arr = data.errors;

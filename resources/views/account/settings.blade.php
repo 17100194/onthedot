@@ -20,7 +20,7 @@
         <div class="container">
             <h2>Account Details</h2>
             <hr>
-            <form class="form-horizontal">
+            <form class="form-transparent-grey">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label>Full Name</label>
