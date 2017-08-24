@@ -3,7 +3,7 @@
 <!-- Main Content -->
 @section('bodycontent')
     <!-- Section -->
-    <section class="fullscreen" style="background:#d3d3d3; padding: 0;">
+    <section class="fullscreen" style="background:url({{asset('public/images/meeting-background.png')}}); background-size: cover; padding: 0;">
         <div class="container container-fullscreen">
             <div class="text-middle">
                 <div class="text-center m-b-30">
