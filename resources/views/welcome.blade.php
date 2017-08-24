@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Revolution Slider -->	<section id="slider">
-
+    <section id="slider">
         <div id="rev_slider_24_1_wrapper" class="rev_slider_wrapper fullscreen-container" data-alias="website-intro" data-source="gallery" style="background:#000000;padding:0px;">
             <!-- START REVOLUTION SLIDER 5.4.1 fullscreen mode -->
             <div id="rev_slider_24_1" class="rev_slider fullscreenbanner tiny_bullet_slider" style="display:none;" data-version="5.4.1">
@@ -395,7 +394,7 @@
 
                         <!-- LAYER NR. 34 -->
                         <a class="tp-caption rev-btn  tp-resizeme"
-                           href="https://revolution.themepunch.com/direct-customer-benefits/" target="_blank"			 id="slide-66-layer-7"
+                           href="#howitworks"			 id="slide-66-layer-7"
                            data-x="['center','center','center','center']" data-hoffset="['0','0','0','0']"
                            data-y="['middle','middle','middle','middle']" data-voffset="['200','200','160','120']"
                            data-width="250"
@@ -413,64 +412,170 @@
                            data-paddingbottom="[0,0,0,0]"
                            data-paddingleft="[50,50,50,50]"
 
-                           style="z-index: 21; min-width: 250px; max-width: 250px; white-space: nowrap; font-size: 18px; line-height: 60px; font-weight: 700; color: rgba(255,255,255,1); letter-spacing: px;font-family:Rubik;background-color:rgb(87,202,133);border-color:rgba(0,0,0,1);border-radius:30px 30px 30px 30px;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;text-decoration: none;">DIVE RIGHT IN </a>
+                           style="z-index: 21; min-width: 250px; max-width: 250px; white-space: nowrap; font-size: 18px; line-height: 60px; font-weight: 700; color: rgba(255,255,255,1); letter-spacing: px;font-family:Rubik;background-color:rgb(87,202,133);border-color:rgba(0,0,0,1);border-radius:30px 30px 30px 30px;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;cursor:pointer;text-decoration: none;">How it works?</a>
                     </li>
                 </ul>
-        </div><!-- END REVOLUTION SLIDER -->
-        <script type="text/javascript">
+            </div>
+        </div>
+    </section>
+    <section id="howitworks">
+        <div class="container">
+            <div class="text-center">
+                <h2>How it works?</h2>
+                <hr>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-8" data-animation="fadeInLeft" data-animation-delay="500">
+                        <img src="{{asset('public/images/searchscreen.png')}}" class="img-responsive">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="hr-title center">
+                            <abbr>Step 1</abbr>
+                        </div>
+                        <div class="space"></div>
+                        <div class="icon-box effect large light">
+                            <div class="icon"><a><i class="fa fa-search"></i></a></div>
+                            <h3>Search for an Individual</h3>
+                            <p>Search for an individual or a group you want to schedule a meeting with.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-4">
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="hr-title center">
+                            <abbr>Step 2</abbr>
+                        </div>
+                        <div class="space"></div>
+                        <div class="icon-box effect large light">
+                            <div class="icon"><a><i class="fa fa-calendar-o"></i></a></div>
+                            <h3>Schedule an Appointment</h3>
+                            <p>Have a look at the users weekly agenda to know the free slots on which you can request the individual for an appointment.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-8" data-animation="fadeInRight" data-animation-delay="500">
+                        <img src="{{asset('public/images/schedulescreen.png')}}" class="img-responsive">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-8" data-animation="fadeInLeft" data-animation-delay="500">
+                        <img src="{{asset('public/images/requestscreen.png')}}" class="img-responsive">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="hr-title center">
+                            <abbr>Step 3</abbr>
+                        </div>
+                        <div class="space"></div>
+                        <div class="icon-box effect large light">
+                            <div class="icon"><a><i class="fa fa-check"></i></a></div>
+                            <h3>Accept Meeting Request</h3>
+                            <p>Once a meeting request is sent to the individual they are notified through our real-time notification system. If the individual finds it suitable they'll accept your request to confirm the appointment.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-4">
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="space"></div>
+                        <div class="hr-title center">
+                            <abbr>Step 4</abbr>
+                        </div>
+                        <div class="space"></div>
+                        <div class="icon-box effect large light">
+                            <div class="icon"><a><i class="fa fa-handshake-o"></i></a></div>
+                            <h3>Meeting Confirmed</h3>
+                            <p>Once your request to meet has been accepted by the individual, you'll be notified of it and it will be added to your agenda for everyone to see.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-8" data-animation="fadeInRight" data-animation-delay="500">
+                        <img src="{{asset('public/images/confirmscreen.png')}}" class="img-responsive">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script type="text/javascript">
+        jQuery('body').on('click', 'a.tp-caption', function() {
 
-            var tpj=jQuery;
-            var revapi24;
-            tpj(document).ready(function() {
-                if(tpj("#rev_slider_24_1").revolution == undefined){
-                    revslider_showDoubleJqueryError("#rev_slider_24_1");
-                }else{
-                    revapi24 = tpj("#rev_slider_24_1").show().revolution({
-                        sliderType:"standard",
-                        jsFileLocation:"revolution/js/",
-                        sliderLayout:"fullscreen",
-                        dottedOverlay:"none",
-                        delay:9000,
-                        navigation: {
-                            keyboardNavigation:"off",
-                            keyboard_direction: "horizontal",
-                            mouseScrollNavigation:"off",
-                            mouseScrollReverse:"default",
-                            onHoverStop:"off"
-                        },
-                        responsiveLevels:[1240,1024,778,480],
-                        visibilityLevels:[1240,1024,778,480],
-                        gridwidth:[1240,1024,778,480],
-                        gridheight:[868,768,960,720],
-                        lazyType:"none",
-                        shadow:0,
-                        spinner:"off",
-                        stopLoop:"on",
-                        stopAfterLoops:-1,
-                        stopAtSlide:-1,
-                        shuffle:"off",
-                        autoHeight:"off",
-                        fullScreenAutoWidth:"off",
-                        fullScreenAlignForce:"off",
-                        fullScreenOffsetContainer: "",
-                        fullScreenOffset: "0px",
-                        hideThumbsOnMobile:"off",
-                        hideSliderAtLimit:0,
-                        hideCaptionAtLimit:0,
-                        hideAllCaptionAtLilmit:0,
-                        debugMode:false,
-                        fallbacks: {
-                            simplifyAll:"off",
-                            nextSlideOnWindowFocus:"off",
-                            disableFocusListener:false,
-                        }
-                    });
-                }
-                if(revapi24) revapi24.revSliderSlicey();
-            });	/*ready*/
-        </script></section>
+            var $this = jQuery(this),
+                href = $this.attr('href');
 
+            if(!href || href.charAt(0) !== '#') return;
+            var el = jQuery(href);
 
-    <!-- end: Revolution Slider-->
+            if(!el.length) el = jQuery('a[name=' + href.substring(1, href.length) + ']');
+            if(!el.length) return;
 
+            jQuery('html, body').animate({scrollTop: el.offset().top}, 1500);
+            return false;
+
+        });
+        var tpj=jQuery;
+        var revapi24;
+        tpj(document).ready(function() {
+            if(tpj("#rev_slider_24_1").revolution == undefined){
+                revslider_showDoubleJqueryError("#rev_slider_24_1");
+            }else{
+                revapi24 = tpj("#rev_slider_24_1").show().revolution({
+                    sliderType:"standard",
+                    jsFileLocation:"revolution/js/",
+                    sliderLayout:"fullscreen",
+                    dottedOverlay:"none",
+                    delay:9000,
+                    navigation: {
+                        keyboardNavigation:"off",
+                        keyboard_direction: "horizontal",
+                        mouseScrollNavigation:"off",
+                        mouseScrollReverse:"default",
+                        onHoverStop:"off"
+                    },
+                    responsiveLevels:[1240,1024,778,480],
+                    visibilityLevels:[1240,1024,778,480],
+                    gridwidth:[1240,1024,778,480],
+                    gridheight:[868,768,960,720],
+                    lazyType:"none",
+                    shadow:0,
+                    spinner:"off",
+                    stopLoop:"on",
+                    stopAfterLoops:-1,
+                    stopAtSlide:-1,
+                    shuffle:"off",
+                    autoHeight:"off",
+                    fullScreenAutoWidth:"off",
+                    fullScreenAlignForce:"off",
+                    fullScreenOffsetContainer: "",
+                    fullScreenOffset: "0px",
+                    hideThumbsOnMobile:"off",
+                    hideSliderAtLimit:0,
+                    hideCaptionAtLimit:0,
+                    hideAllCaptionAtLilmit:0,
+                    debugMode:false,
+                    fallbacks: {
+                        simplifyAll:"off",
+                        nextSlideOnWindowFocus:"off",
+                        disableFocusListener:false,
+                    }
+                });
+            }
+            if(revapi24) revapi24.revSliderSlicey();
+        });	/*ready*/
+    </script>
 @endsection

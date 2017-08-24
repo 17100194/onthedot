@@ -132,6 +132,7 @@ class MeetingsController extends Controller
             }
             if(count($userlist) < 2) {
                 DB::table('meetings')->where('id', '=', intval($meetingid))->delete();
+                DB::table('user_has_meeting')->where('meetingid','=',intval($meetingid))->delete();
             }
             $request->session()->flash('message', 'Meeting request cancelled successfully!');
             return;

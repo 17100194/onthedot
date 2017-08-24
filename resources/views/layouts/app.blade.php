@@ -133,7 +133,7 @@
                                         <a id="notification-dropdown" href="#"><i class="fa fa-bell fa-4x" aria-hidden="true"></i><span id="notificationCounter" class="label label-danger" style="position: absolute; right: 0px; top: 0px; display: none;"></span></a>
                                         <ul class="dropdown-menu" style="text-align: center; min-width: 400px; right: 4px; left: auto;">
                                             <h6 style="border-bottom: 2px solid grey; text-align: left; margin: 0;">Notifications<a href="#" class="right"></a></h6>
-                                            <div id="notification-content" style="height: 350px; overflow-y: auto;">
+                                            <div id="notification-content">
                                                 <div id="notifications">
 
                                                 </div>
@@ -185,9 +185,8 @@
                     <div class="col-md-4">
                         <!-- Footer widget area 1 -->
                         <div class="widget clearfix widget-contact-us" style="background-image: url({{asset('public/images/world-map-dark.png')}}); background-position: 50% 20px; background-repeat: no-repeat">
-                            <h4>About OntheDot</h4>
-                            <hr>
-                            <p>OntheDot is an institution based meeting scheduling platform where we believe in convenience and minimal human interaction when it comes to meeting scheduling.</p>
+                            <h4>About On the Dot</h4>
+                            <p>OntheDot is an institution based meeting scheduling platform where we've tried to make the process as automated as possible with minimal human intervention.</p>
                             <!-- Social icons -->
                             <div class="social-icons social-icons-border float-left m-t-20">
                                 <ul>
@@ -197,56 +196,6 @@
                             <!-- end: Social icons -->
                         </div>
                         <!-- end: Footer widget area 1 -->
-                    </div>
-                    <div class="col-md-2">
-                        <!-- Footer widget area 2 -->
-                        <div class="widget">
-                            <h4>Quick LInks</h4>
-                            <ul class="list-icon list-icon-arrow">
-                                <li><a href="#">About</a></li>
-                                <li><a href="#">Contact</a></li>
-                                <li><a href="#">Home</a></li>
-                                <li><a href="#">Blog</a></li>
-                                <li><a href="#">Portfolio</a></li>
-                                <li><a href="#">Shortcodes</a></li>
-                            </ul>
-                        </div>
-                        <!-- end: Footer widget area 2 -->
-                    </div>
-                    <div class="col-md-3">
-                        <!-- Footer widget area 3 -->
-                        <div class="widget">
-                            <h4>Latest From Our Blog</h4>
-                            <div class="post-thumbnail-list">
-                                <div class="post-thumbnail-entry">
-
-                                    <div class="post-thumbnail-content">
-                                        <a href="#">Suspendisse consectetur fringilla luctus</a>
-                                        <span class="post-date"><i class="fa fa-clock-o"></i> 6m ago</span>
-                                        <span class="post-category"><i class="fa fa-tag"></i> Technology</span>
-                                    </div>
-                                </div>
-                                <div class="post-thumbnail-entry">
-
-                                    <div class="post-thumbnail-content">
-                                        <a href="#">Consectetur adipiscing elit</a>
-                                        <span class="post-date"><i class="fa fa-clock-o"></i> 24h ago</span>
-                                        <span class="post-category"><i class="fa fa-tag"></i> Lifestyle</span>
-                                    </div>
-                                </div>
-                                <div class="post-thumbnail-entry">
-
-                                    <div class="post-thumbnail-content">
-                                        <a href="#">Lorem ipsum dolor sit amet, consectetur adipiscing elit</a>
-                                        <span class="post-date"><i class="fa fa-clock-o"></i> 11h ago</span>
-                                        <span class="post-category"><i class="fa fa-tag"></i> Lifestyle</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end: Footer widget area 3 -->
-                    </div>
-                    <div class="col-md-3">
                     </div>
                 </div>
             </div>
@@ -267,6 +216,7 @@
 
 <!--Plugins-->
 <script src="{{asset('js/plugins.js')}}"></script>
+<script src="{{asset('js/jquery.slimscroll.min.js')}}"></script>
 
 <!--Template functions-->
 <script src="{{asset('js/functions.js')}}"></script>
@@ -275,6 +225,9 @@
 @if(!Auth::guest())
 <script>
     $(document).ready(function () {
+        $('#notification-content').slimScroll({
+            height: '350px'
+        });
         $('#notification-content').on('scroll', function() {
             if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
                 var url = $(this).find('.pagination li>a[rel=next]').attr('href');
