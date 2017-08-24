@@ -207,6 +207,10 @@ class HomeController extends Controller
         return view('timetable_result',['allCourses'=>$allCourses,'monday'=>$monday,'tuesday'=>$tuesday,'wednesday'=>$wednesday,'thursday'=>$thursday,'friday'=>$friday])->render();
     }
 
+    public function Settings(){
+        return view('account.settings');
+    }
+
     public  function Timetable(){
         $active = 'timetable';
         return view('timetable', compact('active'));

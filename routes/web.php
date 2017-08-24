@@ -74,3 +74,4 @@ Route::get('/checknotifications', 'NotificationController@checkNotifications')->
 Route::get('/checkrequests', 'HomeController@checkRequests')->middleware('auth');
 Route::get('/group/requests','GroupController@requests')->middleware('auth');
 Route::get('/group/requestdetails', 'GroupController@requestDetails')->middleware('auth');
+Route::get('/settings','HomeController@Settings')->middleware('auth');

@@ -75,7 +75,7 @@
 <div id="wrapper">
 
     <!-- Header -->
-    <header id="header" class="<?php if (Request::is('/')):?>header-transparent<?php else:?><?php endif?>">
+    <header id="header" class="<?php if (Request::is('/') || Request::is('settings')):?>header-transparent<?php else:?><?php endif?>">
         <div id="header-wrap">
             <div class="container">
                 <!--Logo-->
@@ -130,9 +130,9 @@
                                     <li class="visible-sm visible-xs"><a href="{{url('register')}}">Sign Up</a></li>
                                 @else
                                     <li class="dropdown">
-                                        <a id="notification-dropdown" href="#"><i class="fa fa-bell fa-4x" aria-hidden="true"></i><span id="notificationCounter" class="label label-danger" style="position: absolute; right: 0px; top: 0px; display: none;"></span></a>
+                                        <a id="notification-dropdown" href="#"><i class="fa fa-bell fa-4x" aria-hidden="true"></i><span id="notificationCounter" style="display: none;"></span></a>
                                         <ul class="dropdown-menu" style="text-align: center; min-width: 400px; right: 4px; left: auto;">
-                                            <h6 style="border-bottom: 2px solid grey; text-align: left; margin: 0;">Notifications<a href="#" class="right"></a></h6>
+                                            <h6 style="border-bottom: 2px solid grey; text-align: left; margin: 0;">Notifications</h6>
                                             <div id="notification-content">
                                                 <div id="notifications">
 
@@ -150,7 +150,7 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#">
+                                                <a href="{{url('/settings')}}">
                                                     <i class="fa fa-cog" aria-hidden="true"></i> My Account
                                                 </a>
                                             </li>
@@ -186,7 +186,7 @@
                         <!-- Footer widget area 1 -->
                         <div class="widget clearfix widget-contact-us" style="background-image: url({{asset('public/images/world-map-dark.png')}}); background-position: 50% 20px; background-repeat: no-repeat">
                             <h4>About On the Dot</h4>
-                            <p>OntheDot is an institution based meeting scheduling platform where we've tried to make the process as automated as possible with minimal human intervention.</p>
+                            <p><strong>OntheDot</strong> is an institution based meeting scheduling platform where we've tried to make the process as automated as possible with minimal human intervention.</p>
                             <!-- Social icons -->
                             <div class="social-icons social-icons-border float-left m-t-20">
                                 <ul>

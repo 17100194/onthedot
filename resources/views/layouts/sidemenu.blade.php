@@ -15,8 +15,8 @@
                             <li class="<?php if ($active == "dashboard"): ?>active<?php endif; ?>"><a href="<?php echo url('/dashboard') ?>">Dashboard</a></li>
                             <li class="<?php if ($active == "meeting"): ?>active<?php endif; ?>"><a href="<?php echo url('/meeting/schedule') ?>">Schedule Meeting</a></li>
                             <li class="<?php if ($active == "requested"): ?>active<?php endif; ?>"><a href='<?php echo url('/requested') ?>' >Sent Requests</a></li>
-                            <li class="<?php if ($active == "requests"): ?>active<?php endif; ?>"><a href="<?php echo url('/meetings/requests') ?>" >Meeting Requests <span id="meeting_requests" class="label label-default" style="display: none;"></span></a></li>
-                            <li class="<?php if ($active == "group-requests"): ?>active<?php endif; ?>"><a href="<?php echo url('/group/requests') ?>" >Group Requests <span id="group_requests" class="label label-default" style="display: none;"></span></a></li>
+                            <li class="<?php if ($active == "requests"): ?>active<?php endif; ?>"><a href="<?php echo url('/meetings/requests') ?>" >Meeting Requests</a></li>
+                            <li class="<?php if ($active == "group-requests"): ?>active<?php endif; ?>"><a href="<?php echo url('/group/requests') ?>" >Group Requests</a></li>
                             <li class="<?php if ($active == "courses"): ?>active<?php endif; ?>"><a href="<?php echo url('/course/all') ?>" >My Courses</a></li>
                             <li class="<?php if ($active == "view-meeting"): ?>active<?php endif; ?>"><a href="<?php echo url('/meetings') ?>" >My Meetings</a></li>
                             <li class="<?php if ($active == "mygroups"): ?>active<?php endif; ?>"><a href="<?php echo url('/group/all') ?>" >My Groups</a></li>
