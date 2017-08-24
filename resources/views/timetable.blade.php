@@ -10,7 +10,9 @@
         @endif
         <div class="heading heading-center m-b-40">
             <h2>My Timetable</h2>
-            <span class="lead text-shadow-dark">A virtual display of all your current activities</span>
+            <div class="separator">
+                <span>A virtual display of all your week to week activities</span>
+            </div>
         </div>
             <div class="col-md-12">
                 <div id="timetable">

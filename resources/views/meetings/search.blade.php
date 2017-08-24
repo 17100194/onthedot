@@ -5,7 +5,9 @@
         <div data-animation="fadeInUp">
             <div class="heading heading-center m-b-40">
                 <h2>Search Results for: <?=$query?></h2>
-                <span class="lead text-shadow-dark">Displaying all the users and groups found</span>
+                <div class="separator">
+                    <span>Displaying all the users and groups found</span>
+                </div>
             </div>
             <div>
                 <div class="col-md-12">

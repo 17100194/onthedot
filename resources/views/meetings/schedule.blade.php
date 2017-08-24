@@ -4,7 +4,9 @@
     <div data-animation="fadeInUp">
         <div class="heading heading-center m-b-40">
             <h2>Schedule Meeting</h2>
-            <span class="lead text-shadow-dark">Search for a user or group below to schedule a meeting with them</span>
+            <div class="separator">
+                <span>Search for a user or group below to schedule a meeting with them</span>
+            </div>
         </div>
         <div class="col-md-12">
             <div class="col-sm-6 center">

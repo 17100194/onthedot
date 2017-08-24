@@ -8,7 +8,9 @@
         </div>
         <div class="heading heading-center m-b-40">
             <h2>Enroll in a Course</h2>
-            <span class="lead text-shadow-dark">Search for a course that you're taking this semester. You may search for the course code (example, CS100) or the course name as well (example, Introduction to Computing).</span>
+            <div class="separator">
+                <span>Search for a course that you're taking this semester. You may search for the course code (example, CS100) or the course name as well (example, Introduction to Computing).</span>
+            </div>
         </div>
         <div class="col-md-12">
             <div class="col-md-5 center">

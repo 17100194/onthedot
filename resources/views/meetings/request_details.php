@@ -11,10 +11,11 @@ use App\Http\Controllers\MeetingsController;
             <div class="hr-title center">
                 <abbr>Meeting Request Details</abbr>
             </div>
-            <div class="text-center">
-                <h4><span class="label label-info">From</span> <?= $request->name?></h4>
-                <h4><span class="label label-info">Date</span> <?= $request->date?></h4>
-                <h4><span class="label label-info">Time</span> <?= $request->time?></h4>
+            <div class="text-left">
+                <div class="col-sm-6"><h4><span class="label label-info">From</span> <?= $request->name?></h4></div>
+                <div class="col-sm-6"><h4><span class="label label-info">Date</span> <?= $request->date?></h4></div>
+                <div class="col-sm-6"><h4><span class="label label-info">Time</span> <?= $request->time?></h4></div>
+                <div class="col-sm-6"><h4><span class="label label-info">Venue</span> <?= $request->venue?></h4></div>
             </div>
         </div>
     </div>
@@ -24,6 +25,7 @@ use App\Http\Controllers\MeetingsController;
             <div class="hr-title center">
                 <abbr>Available?</abbr>
             </div>
+            <p>Accept the request by clicking the button below and let the others know of your availability</p>
             <button type="button" data-id="<?=$request->meetingid?>" class="btn btn-success accept"><i class="fa fa-check"></i> Accept</button>
         </div>
         <div class="col-sm-6 text-center">

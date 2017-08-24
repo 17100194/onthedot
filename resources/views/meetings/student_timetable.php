@@ -251,11 +251,12 @@ use Illuminate\Support\Facades\Auth;
         $('.student').find('.scheduleform').popover({
             html: true,
             placement: 'bottom',
-            content: "<div id='status'></div><div class='form-group'><label>Start Time</label><input type='time' class='form-control' id='start' name='start'></div><div class='form-group'><label>Date</label><input type='date' class='form-control' id='date' name='date'></div><div class='form-group'><label>Duration (Minutes)</label><input type='text' class='form-control' id='duration' name='duration'></div><div class='form-group'><button id='send' class='btn'>Send Meeting Request</button></div>"
+            content: "<div id='status'></div><div class='form-group'><label>Start Time</label><input type='time' class='form-control' id='start' name='start'></div><div class='form-group'><label>Date</label><input type='date' class='form-control' id='date' name='date'></div><div class='form-group'><label>Duration (Minutes)</label><input type='text' class='form-control' id='duration' name='duration'></div><div class='form-group'><label>Venue</label><input type='text' class='form-control' id='venue' name='venue'></div><div class='form-group'><button id='send' class='btn'>Send Meeting Request</button></div>"
         }).parent().delegate('button#send', 'click', function() {
             var start = $('.student').find('#start').val();
             var date = $('.student').find('#date').val();
             var duration = $('.student').find('#duration').val();
+            var venue = $('.student').find('#venue').val();
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -268,7 +269,8 @@ use Illuminate\Support\Facades\Auth;
                     id:<?=$id?>,
                     start: start,
                     date: date,
-                    duration: duration
+                    duration: duration,
+                    venue: venue
                 },
                 beforeSend: function() {
                     $('.form-group').removeClass('has-error');

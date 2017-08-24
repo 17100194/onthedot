@@ -26,6 +26,9 @@ use Illuminate\Support\Facades\Auth;
                 <div class="col-sm-6">
                     <h4><span class="label label-info">Day</span> <?= $meeting->first()->day?></h4>
                 </div>
+                <div class="col-sm-6">
+                    <h4><span class="label label-info">Venue</span> <?= $meeting->first()->venue?></h4>
+                </div>
                 <?php if($meeting->first()->type == 'group'):?>
                 <div class="space"></div>
                 <div class="hr-title center">

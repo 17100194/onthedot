@@ -10,7 +10,9 @@
         @endif
         <div class="heading heading-center m-b-40">
             <h2>My Enrolled Courses</h2>
-            <span class="lead text-shadow-dark">Details of all your enrolled courses can be found here</span>
+            <div class="separator">
+                <span>Details of all your enrolled courses can be found here</span>
+            </div>
         </div>
             <div class="col-md-12">
                 @if (count($courses) > 0)

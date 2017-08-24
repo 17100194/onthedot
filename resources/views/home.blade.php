@@ -4,7 +4,9 @@
     <div data-animation="fadeInUp">
         <div class="heading heading-center m-b-40">
             <h2>Dashboard</h2>
-            <span class="lead text-shadow-dark">A brief overview of all your activities</span>
+            <div class="separator">
+                <span>A brief overview of all your activities</span>
+            </div>
         </div>
         <div class="col-md-12">
             <h3>Meetings</h3>

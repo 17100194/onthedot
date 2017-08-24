@@ -10,7 +10,9 @@
         @endif
         <div class="heading heading-center m-b-40">
             <h2>Meeting Requests Received</h2>
-            <span class="lead text-shadow-dark">You can manage all your meeting requests received here</span>
+            <div class="separator">
+                <span>You can manage all your meeting requests received here</span>
+            </div>
         </div>
             <div class="col-md-12">
                 @if (count($requests) > 0)

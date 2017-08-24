@@ -40,7 +40,7 @@ class MeetingsController extends Controller
             ->join('users', 'users.id', '=', 'user_has_meeting.userid')
             ->where('users.id', '!=', Auth::id())
             ->where('meetings.id', '=', $request->meetingid)
-            ->select('meetings.time as time','meetings.type as type', 'meetings.host as host', 'meetings.date as date', 'meetings.day as day','users.id as userid', 'users.name as name', 'meetings.id as id')->get()->groupBy('id')->first();
+            ->select('meetings.time as time','meetings.type as type', 'meetings.venue as venue', 'meetings.host as host', 'meetings.date as date', 'meetings.day as day','users.id as userid', 'users.name as name', 'meetings.id as id')->get()->groupBy('id')->first();
         if ($meeting->first()->type == 'group'){
             $users = array();
             foreach ($meeting as $value){
@@ -483,10 +483,12 @@ class MeetingsController extends Controller
         $duration = $request->duration;
         $date = $request->date;
         $userid = $request->id;
+        $venue = $request->venue;
         $validation = Validator::make($request->all(),[
             'start'=>'required|after:09:00AM|before:06:00PM',
             'duration'=>'required|numeric|between:1,60',
-            'date'=>'required|date|after:today'
+            'date'=>'required|date|after:today',
+            'venue'=>'required'
         ]);
         $end = date("H:i", strtotime('+'.$duration.' minutes', strtotime($start)));
         $day = date('l',strtotime($date));
@@ -580,7 +582,7 @@ class MeetingsController extends Controller
             }
         }
         $time = $start.'-'.$end;
-        $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending']);
+        $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'venue'=>strval($venue) , 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending']);
         DB::table('user_has_meeting')->insert(array('userid'=>Auth::id(), 'meetingid'=>$insert,'status_meeting'=>'accepted'));
         DB::table('user_has_meeting')->insert(array('userid'=>$userid, 'meetingid'=>$insert));
 
@@ -597,10 +599,12 @@ class MeetingsController extends Controller
         $duration = $request->duration;
         $date = $request->date;
         $groupid = $request->id;
+        $venue = $request->venue;
         $validation = Validator::make($request->all(),[
             'start'=>'required|after:09:00AM|before:06:00PM',
             'duration'=>'required|numeric|between:1,60',
-            'date'=>'required|date|after:today'
+            'date'=>'required|date|after:today',
+            'venue'=>'required'
         ]);
         $end = date("H:i", strtotime('+'.$duration.' minutes', strtotime($start)));
         $day = date('l',strtotime($date));
@@ -707,7 +711,7 @@ class MeetingsController extends Controller
             }
         }
         $time = $start.'-'.$end;
-        $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending', 'type'=>'group']);
+        $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'venue'=>strval($venue), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending', 'type'=>'group']);
         foreach ($group->members as $memberid){
             if ($memberid == Auth::id()){
                 DB::table('user_has_meeting')->insert(array('userid'=>$memberid, 'meetingid'=>$insert,'status_meeting'=>'accepted'));

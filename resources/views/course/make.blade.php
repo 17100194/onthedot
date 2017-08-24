@@ -10,7 +10,9 @@
         @endif
         <div class="heading heading-center m-b-40">
             <h2>Add a Course</h2>
-            <span class="lead text-shadow-dark">Please fill in the form below to add a course which you're teaching this semester</span>
+            <div class="separator">
+                <span>Please fill in the form below to add a course which you're teaching this semester</span>
+            </div>
         </div>
             <div class="col-md-12">
                 <form class="form-transparent-grey col-md-6 center" role="form" method="POST" action="{{ url('/addcourse') }}">

@@ -10,7 +10,9 @@
         @endif
         <div class="heading heading-center m-b-40">
             <h2>My Groups</h2>
-            <span class="lead text-shadow-dark">Details of all the groups you are a part of can be found here</span>
+            <div class="separator">
+                <span>Details of all the groups you are a part of can be found here</span>
+            </div>
         </div>
             <div class="col-md-12">
                 @if (count($groups) > 0)
