@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Validator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
 
 class MeetingsController extends Controller
 {
@@ -120,7 +121,7 @@ class MeetingsController extends Controller
                 $notificationList = ','.$user->userid.',';
                 $loggedIn = $this->getUserById(Auth::id());
                 $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> has cancelled the meeting hosted on <span class="label label-info">'.date('F d,Y',strtotime($meeting->date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])).'</span>';
-                DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'meeting', 'userlist' => $notificationList));
+                DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'meeting', 'userlist' => $notificationList,'created_on'=>Carbon::now()));
             }
             return;
         } else {
@@ -128,7 +129,7 @@ class MeetingsController extends Controller
                 $notificationList = ','.$user->userid.',';
                 $loggedIn = $this->getUserById(Auth::id());
                 $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> will not be able to attend the meeting hosted on <span class="label label-info">'.date('F d,Y',strtotime($meeting->date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])).'</span>';
-                DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'meeting', 'userlist' => $notificationList));
+                DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'meeting', 'userlist' => $notificationList,'created_on'=>Carbon::now()));
             }
             if(count($userlist) < 2) {
                 DB::table('meetings')->where('id', '=', intval($meetingid))->delete();
@@ -583,14 +584,14 @@ class MeetingsController extends Controller
             }
         }
         $time = $start.'-'.$end;
-        $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'venue'=>strval($venue) , 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending']);
+        $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'venue'=>strval($venue) , 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending','created_on'=>Carbon::now()]);
         DB::table('user_has_meeting')->insert(array('userid'=>Auth::id(), 'meetingid'=>$insert,'status_meeting'=>'accepted'));
         DB::table('user_has_meeting')->insert(array('userid'=>$userid, 'meetingid'=>$insert));
 
         $notificationList = ','.$userid.',';
         $loggedIn = $this->getUserById(Auth::id());
         $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span> has requested to meet you on <span class="label label-info">'.date('F d,Y',strtotime($date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$time)[0])).' - '.date('h:iA',strtotime(explode('-',$time)[1])).'</span>';
-        DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting-request', 'userlist' => $notificationList));
+        DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting-request', 'userlist' => $notificationList,'created_on'=>Carbon::now()));
 
         return response()->json(['success'=>'<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-check-circle"></i> Request sent successfully and the user notified!</div>']);
     }
@@ -712,7 +713,7 @@ class MeetingsController extends Controller
             }
         }
         $time = $start.'-'.$end;
-        $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'venue'=>strval($venue), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending', 'type'=>'group']);
+        $insert = DB::table('meetings')->insertGetId(['time'=>strval($time), 'venue'=>strval($venue), 'day'=>strval($day), 'date'=>strval($date), 'host'=>strval(Auth::id()), 'status' => 'pending', 'type'=>'group','created_on'=>Carbon::now()]);
         foreach ($group->members as $memberid){
             if ($memberid == Auth::id()){
                 DB::table('user_has_meeting')->insert(array('userid'=>$memberid, 'meetingid'=>$insert,'status_meeting'=>'accepted'));
@@ -723,7 +724,7 @@ class MeetingsController extends Controller
                 $notificationList = ','.$memberid.',';
                 $loggedIn = $this->getUserById(Auth::id());
                 $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span> has requested to meet you on <span class="label label-info">'.date('F d,Y',strtotime($date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$time)[0])).' - '.date('h:iA',strtotime(explode('-',$time)[1])).'</span>';
-                DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting-request', 'userlist' => $notificationList));
+                DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting-request', 'userlist' => $notificationList,'created_on'=>Carbon::now()));
             }
         }
 
@@ -741,7 +742,7 @@ class MeetingsController extends Controller
         $notificationList = ','.$meeting->host.',';
         $loggedIn = $this->getUserById(Auth::id());
         $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span> has accepted your request to meet on <span class="label label-info">'.date('F d,Y',strtotime($meeting->date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])).'</span>';
-        DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
+        DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList,'created_on'=>Carbon::now()));
         $request->session()->flash('message','Meeting Confirmed! You can now see it under your scheduled meetings');
         return;
     }
@@ -771,7 +772,7 @@ class MeetingsController extends Controller
         $loggedIn = $this->getUserById(Auth::id());
         $notificationList = ','.$meeting->host.',';
         $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span>'. ' has rejected your request to meet on <span class="label label-info">'.date('F d,Y',strtotime($meeting->date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])).'. </span><span class="label label-default">Reason: '.$message.'</span>';
-        DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList));
+        DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'meeting', 'userlist' => $notificationList,'created_on'=>Carbon::now()));
         $request->session()->flash('message','Meeting Rejected! Others will be notified about it');
         return;
     }
