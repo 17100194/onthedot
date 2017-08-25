@@ -34,7 +34,7 @@ trait RoutesNotifications
             case 'database':
                 return $this->notifications();
             case 'mail':
-                return substr(str_replace("-", "", $this->campusid),2).'@lums.edu.pk';
+                return $this->email;
             case 'nexmo':
                 return $this->phone_number;
         }

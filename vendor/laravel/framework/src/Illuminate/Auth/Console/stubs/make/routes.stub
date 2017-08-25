@@ -1,4 +1,4 @@
 
 Auth::routes();
 
-Route::get('/dashboard', 'HomeController@index');
+Route::get('/home', 'HomeController@index');

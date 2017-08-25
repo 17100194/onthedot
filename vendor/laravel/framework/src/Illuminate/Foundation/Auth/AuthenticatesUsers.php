@@ -43,22 +43,12 @@ trait AuthenticatesUsers
             return $this->sendLoginResponse($request);
         }
 
-        $email = $request->get($this->username());
-        $user = User::where($this->username(), $email)->first();
-
         // If the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
         // user surpasses their maximum number of attempts they will get locked out.
         $this->incrementLoginAttempts($request);
-        if (count($user)>0){
-            if ($user->verified === 0) {
-                return $this->sendFailedLoginResponse($request, 'auth.fail_activation');
-            }
-        }else{
-            return $this->sendFailedLoginResponse($request, 'auth.no_user');
-        }
 
-        return $this->sendFailedLoginResponse($request, 'auth.failed');
+        return $this->sendFailedLoginResponse($request);
     }
 
     /**
@@ -95,11 +85,7 @@ trait AuthenticatesUsers
      */
     protected function credentials(Request $request)
     {
-        return [
-            'email' => $request->email,
-            'password' => $request->password,
-            'verified' => 1,
-        ];
+        return $request->only($this->username(), 'password');
     }
 
     /**
@@ -127,6 +113,7 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
+        //
     }
 
     /**
@@ -135,11 +122,13 @@ trait AuthenticatesUsers
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    protected function sendFailedLoginResponse(Request $request, $error)
+    protected function sendFailedLoginResponse(Request $request)
     {
         return redirect()->back()
             ->withInput($request->only($this->username(), 'remember'))
-            ->withErrors([$this->username() => Lang::get($error)]);
+            ->withErrors([
+                $this->username() => Lang::get('auth.failed'),
+            ]);
     }
 
     /**

@@ -71,7 +71,7 @@ $style = [
                     <tr>
                         <td style="{{ $style['email-masthead'] }}">
                             <a style="{{ $fontFamily }} {{ $style['email-masthead_name'] }}" href="{{ url('/') }}" target="_blank">
-                                <img src="{{ $message->embed('public/images/onthedot.png') }}" width="250">
+                                {{ config('app.name') }}
                             </a>
                         </td>
                     </tr>

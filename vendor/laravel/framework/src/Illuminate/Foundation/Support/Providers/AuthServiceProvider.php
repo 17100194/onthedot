@@ -2,7 +2,6 @@
 
 namespace Illuminate\Foundation\Support\Providers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,4 +29,8 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * {@inheritdoc}
      */
+    public function register()
+    {
+        //
+    }
 }
