@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use DateTime;
 use DataTimeZone;
+use Validator;
+use Hash;
 
 class HomeController extends Controller
 {
@@ -209,6 +211,20 @@ class HomeController extends Controller
 
     public function Settings(){
         return view('account.settings');
+    }
+
+    public function updatePassword(Request $request){
+        $user = Auth::user();
+        $validation = Validator::make($request->all(), [
+            'old_password' => 'required|hash:' . $user->password,
+            'password' => 'required|min:6|different:old_password|confirmed'
+        ]);
+        if ($validation->fails()){
+            return response()->json(['success' => false, 'errors' => $validation->getMessageBag()->toArray()]);
+        }
+        $user->password = Hash::make($request->password);
+        $user->save();
+        return response()->json(['success' => '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-check-circle"></i> Password changed successfully!</div>']);
     }
 
     public  function Timetable(){

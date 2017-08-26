@@ -75,7 +75,7 @@
 <div id="wrapper">
 
     <!-- Header -->
-    <header id="header" class="<?php if (Request::is('/') || Request::is('settings')):?>header-transparent<?php else:?><?php endif?>">
+    <header id="header" class="<?php if (Request::is('/')):?>header-transparent<?php else:?><?php endif?>">
         <div id="header-wrap">
             <div class="container">
                 <!--Logo-->

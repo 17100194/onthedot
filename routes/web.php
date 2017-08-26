@@ -75,3 +75,5 @@ Route::get('/checkrequests', 'HomeController@checkRequests')->middleware('auth')
 Route::get('/group/requests','GroupController@requests')->middleware('auth');
 Route::get('/group/requestdetails', 'GroupController@requestDetails')->middleware('auth');
 Route::get('/settings','HomeController@Settings')->middleware('auth');
+Route::post('/updatePassword','HomeController@updatePassword')->middleware('auth');
+Route::post('/deleteAccount','HomeController@deleteAccount')->middleware('auth');

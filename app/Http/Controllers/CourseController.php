@@ -36,7 +36,7 @@ class CourseController extends Controller
     public function makeform()
     {
         $active = 'addcourse';
-        if (Auth::user()->type == 'Student'){
+        if (Auth::user()->type == 'student'){
             return redirect()->to('course/enroll');
         }
         return view('course.make', compact('active'));
@@ -44,7 +44,7 @@ class CourseController extends Controller
 
     public function enroll(){
         $active = 'addcourse';
-        if (Auth::user()->type == 'Teacher'){
+        if (Auth::user()->type == 'teacher'){
             return redirect()->to('course/make');
         }
         return view('course.enroll', compact('active'));
