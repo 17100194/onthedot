@@ -28,7 +28,7 @@ class CourseController extends Controller
         $course = DB::table('courses')
             ->join('users', 'users.id', '=', 'courses.instructorid')
             ->where('courses.courseid', '=', $request->courseid)
-            ->select('courses.courseid as courseid','courses.instructorid as instructorid','courses.coursecode as coursecode', 'courses.name as name', 'courses.section as section', 'courses.timing as timing', 'courses.days as days', 'users.name as instructor')
+            ->select('courses.venue as venue','courses.courseid as courseid','courses.instructorid as instructorid','courses.coursecode as coursecode', 'courses.name as name', 'courses.section as section', 'courses.timing as timing', 'courses.days as days', 'users.name as instructor')
             ->first();
         return view('course.course_details',['course'=>$course])->render();
     }
@@ -136,9 +136,10 @@ class CourseController extends Controller
             'course_code'=>'required|regex:/^\w*\s\d+$/',
             'course_name'=>'required',
             'section'=>'required',
-            'start_time'=>'required',
-            'end_time'=>'required',
+            'start_time'=>'required|after:09:00AM|before:06:00PM',
+            'end_time'=>'required|after:09:00AM|before:06:00PM',
             'days'=>'required|min:1',
+            'venue'=>'required'
         ]);
         if($validation->fails()){
             return redirect()->back()->withInput()->withErrors($validation);
@@ -149,6 +150,7 @@ class CourseController extends Controller
         $starttime = $request->start_time;
         $endtime = $request->end_time;
         $days = $request->days;
+        $venue = $request->venue;
         $dayStr = implode(',', $days);
 
         if($this->course_exists($coursecode) == true){
@@ -161,6 +163,7 @@ class CourseController extends Controller
             'section'=>$section,
             'coursecode'=>$coursecode,
             'timing'=>date('H:i', strtotime($starttime)).'-'.date('H:i', strtotime($endtime)),
+            'venue'=>$venue,
             'instructorid'=>Auth::id()));
         $courseId = DB::table('courses')->where('coursecode', '=', $coursecode)->get()[0]->courseid;
 
@@ -179,6 +182,7 @@ class CourseController extends Controller
             'section'=>'required',
             'time'=>'required|date_format:h:iA-h:iA',
             'days'=>'required',
+            'venue'=>'required'
         ]);
         if ($validation->fails()){
             return response()->json(['success' => false, 'errors' => $validation->getMessageBag()->toArray()]);
@@ -188,6 +192,7 @@ class CourseController extends Controller
         $coursecode = $request->code;
         $time = $request->time;
         $days = $request->days;
+        $venue = $request->venue;
         $courseid = $request->courseid;
 
         DB::table('courses')->where('courseid', '=', $courseid)->update(array(
@@ -195,6 +200,7 @@ class CourseController extends Controller
             'days' => $days,
             'section'=>$section,
             'coursecode'=>$coursecode,
+            'venue'=>$venue,
             'timing'=>date('H:i', strtotime(explode('-',$time)[0])).'-'.date('H:i', strtotime(explode('-',$time)[1]))));
 
         return response()->json(array('success' => 'Changes saved successfully!'));

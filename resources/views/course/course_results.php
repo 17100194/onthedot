@@ -11,6 +11,7 @@
             <td>Section</td>
             <td>Time</td>
             <td>Days</td>
+            <td>Venue</td>
             <td></td>
         </tr>
         </thead>
@@ -28,6 +29,7 @@
                     ?>
                     <td><?= $strt .' - '.$endt ?></td>
                     <td><?= $course->days ?></td>
+                    <td><?= $course->venue ?></td>
                     <td>
                         <button data-courseid="<?= $course->courseid ?>" class="<?php if($course->enrolled): ?>btn disabled<?php else: ?>btn enroll btn-outline<?php endif; ?>"><?php if($course->enrolled): ?> Enrolled <?php else: ?> Enroll <?php endif; ?></button>
                     </td>

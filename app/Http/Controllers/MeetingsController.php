@@ -159,7 +159,7 @@ class MeetingsController extends Controller
         $thursday = $request->thursday;
         $friday = $request->friday;
         if ($monday == null){
-            $monday = date('Y-m-d',strtotime('monday',strtotime('previous saturday')));
+            $monday = date('Y-m-d',strtotime('monday',strtotime('saturday')));
         } else{
             if ($request->button == 'next'){
                 $monday = date('Y-m-d', strtotime($monday. ' + 7 days'));
@@ -168,7 +168,7 @@ class MeetingsController extends Controller
             }
         }
         if ($tuesday == null){
-            $tuesday = date('Y-m-d',strtotime('tuesday',strtotime('previous saturday')));
+            $tuesday = date('Y-m-d',strtotime('tuesday',strtotime('saturday')));
         } else {
             if ($request->button == 'next'){
                 $tuesday = date('Y-m-d', strtotime($tuesday. ' + 7 days'));
@@ -177,7 +177,7 @@ class MeetingsController extends Controller
             }
         }
         if ($wednesday == null){
-            $wednesday = date('Y-m-d',strtotime('wednesday',strtotime('previous saturday')));
+            $wednesday = date('Y-m-d',strtotime('wednesday',strtotime('saturday')));
         } else {
             if ($request->button == 'next'){
                 $wednesday = date('Y-m-d', strtotime($wednesday. ' + 7 days'));
@@ -186,7 +186,7 @@ class MeetingsController extends Controller
             }
         }
         if ($thursday == null){
-            $thursday = date('Y-m-d',strtotime('thursday',strtotime('previous saturday')));
+            $thursday = date('Y-m-d',strtotime('thursday',strtotime('saturday')));
         } else {
             if ($request->button == 'next'){
                 $thursday = date('Y-m-d', strtotime($thursday. ' + 7 days'));
@@ -195,7 +195,7 @@ class MeetingsController extends Controller
             }
         }
         if ($friday == null){
-            $friday = date('Y-m-d',strtotime('friday',strtotime('previous saturday')));
+            $friday = date('Y-m-d',strtotime('friday',strtotime('saturday')));
         } else {
             if ($request->button == 'next'){
                 $friday = date('Y-m-d', strtotime($friday. ' + 7 days'));

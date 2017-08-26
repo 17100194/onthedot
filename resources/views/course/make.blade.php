@@ -24,8 +24,8 @@
                         @if ($errors->has('course_code'))
                             <span class="fa fa-close form-control-feedback" aria-hidden="true"></span>
                             <span class="help-block">
-                        <strong>{{ $errors->first('course_code') }}</strong>
-                    </span>
+                                <strong>{{ $errors->first('course_code') }}</strong>
+                            </span>
                         @endif
                     </div>
 
@@ -35,8 +35,8 @@
                         @if ($errors->has('course_name'))
                             <span class="fa fa-close form-control-feedback" aria-hidden="true"></span>
                             <span class="help-block">
-                        <strong>{{ $errors->first('course_name') }}</strong>
-                    </span>
+                                <strong>{{ $errors->first('course_name') }}</strong>
+                            </span>
                         @endif
                     </div>
 
@@ -46,8 +46,8 @@
                         @if ($errors->has('section'))
                             <span class="fa fa-close form-control-feedback" aria-hidden="true"></span>
                             <span class="help-block">
-                        <strong>{{ $errors->first('section') }}</strong>
-                    </span>
+                                <strong>{{ $errors->first('section') }}</strong>
+                            </span>
                         @endif
                     </div>
 
@@ -58,8 +58,8 @@
                             @if ($errors->has('start_time'))
                                 <span class="fa fa-close form-control-feedback" aria-hidden="true"></span>
                                 <span class="help-block">
-                                <strong>{{ $errors->first('start_time') }}</strong>
-                            </span>
+                                    <strong>{{ $errors->first('start_time') }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -70,8 +70,8 @@
                             @if ($errors->has('end_time'))
                                 <span class="fa fa-close form-control-feedback" aria-hidden="true"></span>
                                 <span class="help-block">
-                                <strong>{{ $errors->first('end_time') }}</strong>
-                            </span>
+                                    <strong>{{ $errors->first('end_time') }}</strong>
+                                </span>
                             @endif
                         </div>
                     </div>
@@ -88,6 +88,16 @@
                     </span>
                     @endif
                     <div class="space"></div>
+                    <div class="form-group{{ $errors->has('venue') ? ' has-error has-feedback' : '' }}">
+                        <label for="venue">Venue</label>
+                        <input id="venue" name="venue" class="form-control" type="text" required>
+                        @if ($errors->has('venue'))
+                            <span class="fa fa-close form-control-feedback" aria-hidden="true"></span>
+                            <span class="help-block">
+                                <strong>{{ $errors->first('venue') }}</strong>
+                            </span>
+                        @endif
+                    </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-block btn-shadow">Add Course</button>
                     </div>

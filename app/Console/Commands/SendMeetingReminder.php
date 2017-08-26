@@ -40,13 +40,17 @@ class SendMeetingReminder extends Command
             ->select('meetings.date as date','meetings.id as id', 'meetings.time as time', 'meetings.day as day', 'user_has_meeting.reminders as reminders', 'users.email as email','users.name as name', 'users.id as userid')
             ->get();
         foreach ($this->meetings as $meeting){
-            $with = DB::table('user_has_meeting')
+            $with = array();
+            $query = DB::table('user_has_meeting')
                 ->join('users', 'users.id','=','user_has_meeting.userid')
                 ->where('user_has_meeting.userid','!=',$meeting->userid)
                 ->where('user_has_meeting.meetingid','=',$meeting->id)
                 ->select('users.name as name')
-                ->first();
-            $meeting->with = $with->name;
+                ->get();
+            foreach ($query as $participant){
+                $with[] = $participant->name;
+            }
+            $meeting->with = implode(',',$with);
             $meeting->start = Carbon::createFromFormat('Y-m-d H:i', $meeting->date.' '.explode('-',$meeting->time)[0]);
             $meeting->end = Carbon::createFromFormat('Y-m-d H:i', $meeting->date.' '.explode('-',$meeting->time)[1]);
         }

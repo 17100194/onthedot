@@ -94,7 +94,7 @@ class HomeController extends Controller
         $thursday = $request->thursday;
         $friday = $request->friday;
         if ($monday == null){
-            $monday = date('Y-m-d',strtotime('monday',strtotime('previous saturday')));
+            $monday = date('Y-m-d',strtotime('monday',strtotime('saturday')));
         } else{
             if ($request->button == 'next'){
                 $monday = date('Y-m-d', strtotime($monday. ' + 7 days'));
@@ -103,7 +103,7 @@ class HomeController extends Controller
             }
         }
         if ($tuesday == null){
-            $tuesday = date('Y-m-d',strtotime('tuesday',strtotime('previous saturday')));
+            $tuesday = date('Y-m-d',strtotime('tuesday',strtotime('saturday')));
         } else {
             if ($request->button == 'next'){
                 $tuesday = date('Y-m-d', strtotime($tuesday. ' + 7 days'));
@@ -112,7 +112,7 @@ class HomeController extends Controller
             }
         }
         if ($wednesday == null){
-            $wednesday = date('Y-m-d',strtotime('wednesday',strtotime('previous saturday')));
+            $wednesday = date('Y-m-d',strtotime('wednesday',strtotime('saturday')));
         } else {
             if ($request->button == 'next'){
                 $wednesday = date('Y-m-d', strtotime($wednesday. ' + 7 days'));
@@ -121,7 +121,7 @@ class HomeController extends Controller
             }
         }
         if ($thursday == null){
-            $thursday = date('Y-m-d',strtotime('thursday',strtotime('previous saturday')));
+            $thursday = date('Y-m-d',strtotime('thursday',strtotime('saturday')));
         } else {
             if ($request->button == 'next'){
                 $thursday = date('Y-m-d', strtotime($thursday. ' + 7 days'));
@@ -130,7 +130,7 @@ class HomeController extends Controller
             }
         }
         if ($friday == null){
-            $friday = date('Y-m-d',strtotime('friday',strtotime('previous saturday')));
+            $friday = date('Y-m-d',strtotime('friday',strtotime('saturday')));
         } else {
             if ($request->button == 'next'){
                 $friday = date('Y-m-d', strtotime($friday. ' + 7 days'));
@@ -152,7 +152,7 @@ class HomeController extends Controller
             $courseData = $app->make('stdClass');
             $courseData->type = 'course';
             $time = date("g:i a", strtotime(explode('-',$course->timing)[0])).'-'.date("g:i a", strtotime(explode('-',$course->timing)[1]));
-            $courseData->content = "<div class='text-center'><h3 class='text-shadow-dark'>$course->name ($course->coursecode)</h3><div class='separator'><span>Course Details</span></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Instructor</label> $instructor->name</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Section</label> $course->section</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Timing</label> $time</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Days</label> $course->days</h3></div></div></div>";
+            $courseData->content = "<div class='text-left'><h3 class='text-shadow-dark'>$course->name ($course->coursecode)</h3><div class='separator'><span>Course Details</span></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Instructor</label> $instructor->name</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Section</label> $course->section</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Timing</label> $time</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Days</label> $course->days</h3></div></div></div>";
             $courseData->meetingid = "";
             $courseData->code = $course->coursecode;
             $courseData->with = "";
