@@ -15,7 +15,7 @@ return [
 
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-    'fail_activation' => 'Your account needs to be activated',
+    'fail_activation' => 'Your account hasn\'t been activated. Please check your email for activation link',
     'no_user'=>"We can't find a user with this email address",
 
 ];
