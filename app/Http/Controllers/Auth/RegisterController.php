@@ -106,7 +106,7 @@ class RegisterController extends Controller
             $email = new EmailVerification(new User(['email_token' => $user->email_token, 'name' => $user->name]));
             Mail::to($user->email)->send($email);
             DB::commit();
-            return back()->with('message', 'An activation email has been sent to your email');
+            return back()->with('message', '<strong>Account created successfully!</strong> Activation link has been sent to your email');
         }
         catch(Exception $e)
         {

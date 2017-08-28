@@ -14,8 +14,9 @@
                     <div class="col-md-4 center p-30 background-white b-r-6">
                         <h3>Register New Account</h3>
                         @if(session()->has('message'))
-                            <div class="alert alert-success">
-                                <i class="fa fa-check-circle"></i> {{ session()->pull('message') }}
+                            <div class="alert alert-success alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                <i class="fa fa-check-circle"></i> <?php echo session()->pull('message') ?>
                             </div>
                         @endif
                         <form class="form-transparent-grey" method="POST" action="{{ url('/register') }}">

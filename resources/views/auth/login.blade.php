@@ -14,7 +14,8 @@
                     <div class="col-md-4 center p-30 background-white b-r-6">
                         <h3>Login to your account</h3>
                         @if(session()->has('message'))
-                            <div class="alert alert-success">
+                            <div class="alert alert-success alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span> </button>
                                 <i class="fa fa-check-circle"></i> {{ session()->pull('message') }}
                             </div>
                         @endif
