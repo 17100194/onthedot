@@ -2,14 +2,12 @@
 
 @section('main')
     <div data-animation="fadeInUp">
-        <div class="alert alert-success alert-dismissable" style="display:none;">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
-            <strong>Course Enrolled Successfully!</strong> You can now view it in your courses.
+        <div id="status">
         </div>
         <div class="heading heading-center m-b-40">
             <h2>Enroll in a Course</h2>
             <div class="separator">
-                <span>Search for a course that you're taking this semester. You may search for the course code (example, CS100) or the course name as well (example, Introduction to Computing).</span>
+                <span>You can search with both course code (example, CS100) or the course name (example, Introduction to Computing)</span>
             </div>
         </div>
         <div class="col-md-12">

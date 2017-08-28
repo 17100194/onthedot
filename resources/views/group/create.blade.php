@@ -11,7 +11,7 @@
         <div class="heading heading-center m-b-40">
             <h2>Make a Group</h2>
             <div class="separator">
-                <span>Groups are a convenient way of scheduling meetings with many members at once. Fill in the form below and make a group with the people you meet too often and reduce a step</span>
+                <span>Create a group to schedule a meeting with multiple people at once</span>
             </div>
         </div>
             <div class="col-md-12">

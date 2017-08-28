@@ -40,7 +40,10 @@
 </div>
 <?php echo $courses->render(); ?>
 <?php else:?>
-    <h4 class="text-center text-danger">No courses found regarding your query. Search again.</h4>
+    <div class="text-center">
+        <i class="fa fa-ban fa-5x"></i>
+        <h5>No results to display</h5>
+    </div>
 <?php endif?>
 
 <script type="text/javascript">
@@ -75,10 +78,12 @@
                 course_id: courseid
             },
             beforeSend:function () {
-                $('.alert').hide();
+                $('#status').html('<div class="text-center">Processing</div><img src="<?=asset('public/images/preloader.gif')?>" class="center-block">');
             },
             success: function(data) {
-                $('.alert').show();
+                $('#status').html(data);
+                $('.enroll').addClass('disabled');
+                $('.enroll').html('Enrolled');
             },
             error: function (xhr, status) {
                 console.log(status);

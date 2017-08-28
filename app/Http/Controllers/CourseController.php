@@ -77,7 +77,10 @@ class CourseController extends Controller
                 'courseid' => intval($courseid)));
         }
 
-        return 'success';
+        return '<div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
+            <strong>Course Enrolled Successfully!</strong> You can now view it in your courses.
+        </div>';
     }
 
     public function userHasCourse($userId, $courseId) {

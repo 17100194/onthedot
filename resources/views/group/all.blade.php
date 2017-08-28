@@ -42,7 +42,10 @@
                     </div>
                     <?php echo $groups->render(); ?>
                 @else
-                    <h5 class="text-center text-info">No groups to display at the moment. Please join or create a group</h5>
+                    <div class="text-center">
+                        <i class="fa fa-ban fa-5x"></i>
+                        <h5>No results to display</h5>
+                    </div>
                 @endif
             </div>
     </div>

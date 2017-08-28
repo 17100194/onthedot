@@ -42,7 +42,10 @@
                     </div>
                     <?php echo $requests->render(); ?>
                 @else
-                    <h5 class="text-center text-info">You have no pending meeting requests to display at the moment</h5>
+                    <div class="text-center">
+                        <i class="fa fa-ban fa-5x"></i>
+                        <h5>No results to display</h5>
+                    </div>
                 @endif
             </div>
     </div>
