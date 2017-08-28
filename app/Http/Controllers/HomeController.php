@@ -9,6 +9,7 @@ use DateTime;
 use DataTimeZone;
 use Validator;
 use Hash;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -39,41 +40,9 @@ class HomeController extends Controller
             ->orderBy('date','desc')
             ->limit(6)->get();
 
-        $requests = DB::table('meetings AS m')
-            ->join('user_has_meeting as um', 'm.id', '=', 'um.meetingid')
-            ->join('users AS u', 'u.id', '=', 'm.host')
-            ->where('um.userid', '=', Auth::id())
-            ->where('m.host', '!=', Auth::id())
-            ->where('m.status', '=', 'pending')->get();
-
         $courses = DB::table('user_has_course')
             ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-            ->where('user_has_course.userid', '=', Auth::id())->get();
-
-        $groupRequestAccepted = DB::table('user_has_group_request')
-            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
-            ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')
-            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'groups.created_on', 'user_has_group_request.id as requestid')
-            ->where('id_sender', '=', Auth::id())
-            ->where('status', '=', 'accepted')
-            ->get();
-
-
-        $groupRequestRejected = DB::table('user_has_group_request')
-            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
-            ->join('users', 'users.id', '=', 'user_has_group_request.id_receiver')
-            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'groups.created_on', 'user_has_group_request.id as requestid')
-            ->where('id_sender', '=', Auth::id())
-            ->where('status', '=', 'rejected')
-            ->get();
-
-        $groupRequestPending = DB::table('user_has_group_request')
-            ->join('groups', 'user_has_group_request.id_group', '=', 'groups.id')
-            ->join('users', 'users.id', '=', 'user_has_group_request.id_sender')
-            ->select('users.name AS username', 'groups.name as groupname', 'users.campusid', 'groups.created_on', 'user_has_group_request.id as requestid')
-            ->where('id_receiver', '=', Auth::id())
-            ->where('status', '=', 'pending')
-            ->get();
+            ->where('user_has_course.userid', '=', Auth::id())->limit(6)->get();
 
         $groups = DB::table('groups')
             ->join('user_has_group', 'user_has_group.id_group', '=', 'groups.id')
@@ -81,8 +50,14 @@ class HomeController extends Controller
             ->where('user_has_group.id_user', '=', Auth::id())
             ->select('groups.name as groupname', 'u2.name as creator', 'groups.created_on')
             ->orderby('groups.created_on', 'DESC')
-            ->get();
+            ->limit(6)->get();
         $active = 'dashboard';
+
+        foreach ($meetings as $key=>$meeting){
+            if (Carbon::now()->toDateString() > $meeting->date || (Carbon::now()->toDateString() == $meeting->date && Carbon::now()->toTimeString() >= Carbon::parse($meeting->time)->toTimeString())){
+                unset($meetings[$key]);
+            }
+        }
 
         return view('home',compact('meetings','courses', 'groups', 'active'));
     }

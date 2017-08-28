@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="col-md-12">
-            <h3>Meetings</h3>
+            <h3>Upcoming Meetings</h3>
             <hr>
             @if(count($meetings) > 0)
                 <div class="carousel" data-dots="true" data-margin="30" data-items="4">
@@ -44,7 +44,7 @@
                     @endif
                 </div>
             @else
-                <div class="text-center"><h4>No recent activity to display</h4></div>
+                <div class="text-center"><h4>No upcoming events to display</h4></div>
             @endif
             <h3>Courses</h3>
             <hr>
