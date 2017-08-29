@@ -40,7 +40,6 @@ if (!isset($active)) {
         <div class="logo">
             <a href="{{url('/admin/dashboard')}}"><img src="{{asset('public/images/onthedot.png')}}" class="img-responsive"></a>
         </div>
-        <p class="lead">Admin Panel</p>
         <hr style="border-width: 5px; border-color: grey;">
         <!--Navigation-->
         <div id="mainMenu" class="menu-onclick menu-vertical">

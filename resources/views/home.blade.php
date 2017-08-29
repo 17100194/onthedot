@@ -44,7 +44,10 @@
                     @endif
                 </div>
             @else
-                <div class="text-center"><h4>No upcoming events to display</h4></div>
+                <div class="text-center">
+                    <i class="fa fa-ban fa-5x"></i>
+                    <h5>No upcoming meetings to display</h5>
+                </div>
             @endif
             <h3>Courses</h3>
             <hr>
@@ -81,7 +84,10 @@
                     @endif
                 </div>
             @else
-                <div class="text-center"><h4>No courses to display</h4></div>
+                <div class="text-center">
+                    <i class="fa fa-ban fa-5x"></i>
+                    <h5>No courses to display</h5>
+                </div>
             @endif
             <h3>Groups</h3>
             <hr>
@@ -118,7 +124,10 @@
                     @endif
                 </div>
             @else
-                <div class="text-center"><h4>No groups to display</h4></div>
+                <div class="text-center">
+                    <i class="fa fa-ban fa-5x"></i>
+                    <h5>No groups to display</h5>
+                </div>
             @endif
         </div>
     </div>

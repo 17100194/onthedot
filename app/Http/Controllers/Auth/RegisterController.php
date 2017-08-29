@@ -100,7 +100,7 @@ class RegisterController extends Controller
             if(strpos($request->email, 'lums.edu.pk') !== false){
                 $user = $this->create($request->all());
             } else {
-                return back()->withInput($request->all())->withErrors(['email' => 'You must register with your LUMS campus mail']);
+                return back()->withInput($request->all())->withErrors(['email' => 'Please enter your valid campus mail']);
             }
             // After creating the user send an email with the random token generated in the create method above
             $email = new EmailVerification(new User(['email_token' => $user->email_token, 'name' => $user->name]));

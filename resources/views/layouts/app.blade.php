@@ -154,6 +154,11 @@
                                                     <i class="fa fa-cog" aria-hidden="true"></i> My Account
                                                 </a>
                                             </li>
+                                            @if(Auth::user()->isadmin == 1)
+                                            <li>
+                                                <a href="{{url('/admin/dashboard')}}"><i class="fa fa-lock"></i> Admin Panel</a>
+                                            </li>
+                                            @endif
                                             <li>
                                                 <a href="{{ url('/logout') }}"
                                                    onclick="event.preventDefault();

@@ -32,7 +32,7 @@ class GroupController extends Controller
             return json_encode([]);
         }
         $sql = "SELECT u.type, u.id, u.name, u.campusid FROM users u
-		WHERE u.name LIKE '%".$request->term."%' AND u.ID != ".Auth::id()." AND u.type != 'admin'
+		WHERE u.name LIKE '%".$request->term."%' AND u.ID != ".Auth::id()." AND u.verified == 1
 		LIMIT 10";
 
         $result = DB::select($sql);
