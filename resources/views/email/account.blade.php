@@ -35,7 +35,7 @@ $style = [
     'anchor' => 'color: #3869D4;',
     'header-1' => 'margin-top: 0; color: #2F3133; font-size: 19px; font-weight: bold; text-align: left;',
     'paragraph' => 'margin-top: 0; color: #74787E; font-size: 16px; line-height: 1.5em;',
-    'paragraph-sub' => 'margin-top: 0; color: #74787E; font-size: 12px; line-height: 1.5em;',
+    'paragraph-sub' => 'margin-top: 0; color: #74787E; font-size: 13px; line-height: 1.5em;',
     'paragraph-center' => 'text-align: center;',
     /* Buttons ------------------------------ */
     'button' => 'display: block; display: inline-block; width: 200px; min-height: 20px; padding: 10px;
@@ -80,8 +80,8 @@ $style = [
                                         This is to inform you that your account has been created successfully. Please find the details of your account below.
                                     </p>
 
-                                    <h5>Email: {{$user->email}}</h5>
-                                    <h5>Password: {{$user->password}}</h5>
+                                    <p style="{{ $style['paragraph-sub'] }}">Email: {{$user->email}}</p>
+                                    <p style="{{ $style['paragraph-sub'] }}">Password: {{$user->password}}</p>
 
 
                                     <!-- Action Button -->
