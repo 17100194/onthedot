@@ -35,7 +35,7 @@ $style = [
     'anchor' => 'color: #3869D4;',
     'header-1' => 'margin-top: 0; color: #2F3133; font-size: 19px; font-weight: bold; text-align: left;',
     'paragraph' => 'margin-top: 0; color: #74787E; font-size: 16px; line-height: 1.5em;',
-    'paragraph-sub' => 'margin-top: 0; color: #74787E; font-size: 12px; line-height: 1.5em;',
+    'paragraph-sub' => 'margin-top: 0; color: #74787E; font-size: 13px; line-height: 1.5em;',
     'paragraph-center' => 'text-align: center;',
     /* Buttons ------------------------------ */
     'button' => 'display: block; display: inline-block; width: 200px; min-height: 20px; padding: 10px;
@@ -80,7 +80,7 @@ $style = [
                                         This is to remind you about your meeting scheduled on <strong>{{  $meeting->date }}</strong>. Please find the details of the meetings below
                                     </p>
 
-                                    <h3>Meeting Details</h3>
+                                    <h3 style="color: #1abc9c;">Meeting Details</h3>
                                     <hr>
                                     <p style="{{ $style['paragraph-sub'] }}">With: {{ $meeting->with }}</p>
                                     <p style="{{ $style['paragraph-sub'] }}">Time: {{ date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])) }}</p>
