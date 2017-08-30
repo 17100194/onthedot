@@ -82,8 +82,14 @@ $style = [
 
                                     <h3 style="color: #1abc9c;">Meeting Details</h3>
                                     <hr>
-                                    <p style="{{ $style['paragraph-sub'] }}">With: {{ $meeting->with }}</p>
-                                    <p style="{{ $style['paragraph-sub'] }}">Time: {{ date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])) }}</p>
+                                    <table style="{{ $style['body_sub'] }}">
+                                        <tr>
+                                            <td style="{{ $fontFamily }}">
+                                                <p style="{{ $style['paragraph-sub'] }}">With: {{ $meeting->with }}</p>
+                                                <p style="{{ $style['paragraph-sub'] }}">Time: {{ date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])) }}</p>
+                                            </td>
+                                        </tr>
+                                    </table>
 
                                     <!-- Outro -->
 
