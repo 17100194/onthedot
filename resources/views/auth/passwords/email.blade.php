@@ -14,13 +14,14 @@
                 <div >
                     <div class="col-md-4 center p-30 background-white b-r-6">
                         <h3>Forgot Password?</h3>
-                        <p class="subtitle">Enter your email to recover your password.
-                            You will receive an email with instructions. If you are experimenting problems recovering your password contact us or <a href="mailto:onthedotpk@gmail.com" class="btn-link">send us an email.</a></p>
-                        @if(session()->has('message'))
-                            <div class="alert alert-success">
-                                <i class="fa fa-check-circle"></i> {{ session()->pull('message') }}
+                        @if(session()->has('status'))
+                            <div class="alert alert-success alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span> </button>
+                                <i class="fa fa-check-circle"></i> {{ session()->pull('status') }}
                             </div>
                         @endif
+                        <p class="subtitle">Enter your email to recover your password.
+                            You will receive an email with instructions.</p>
                         <form class="form-transparent-grey" role="form" method="POST" action="{{ url('/password/email') }}">
                             {{ csrf_field() }}
                             <div class="form-group{{ $errors->has('email') ? ' has-error has-feedback' : '' }}">
