@@ -51,7 +51,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'https://onthedot.herokuapp.com/'),
+    'url' => env('APP_URL', 'http://onthedot.herokuapp.com/'),
 
     /*
     |--------------------------------------------------------------------------
