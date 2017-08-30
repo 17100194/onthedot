@@ -10,7 +10,7 @@ return array(
     ),
     "encryption"=>"tls",
     "username" => "onthedotpk@gmail.com",
-    "password" => "Google453",
+    "password" => "twjeodyxixnidoim",
     "sendmail" => "/usr/sbin/sendmail -bs",
     "pretend" => false
 );
