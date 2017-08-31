@@ -53,9 +53,9 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|max:255',
-            'email' => 'required|email|string|max:255|unique:users',
+            'email' => 'required|email|string|max:255|unique:users|regex:/^\d{8}@lums.edu.pk$/',
             'password' => 'required|min:6|confirmed',
-        ]);
+        ],['email.regex'=>'Please enter your valid campus email']);
     }
 
     // Get the user who has the same token and change his/her status to verified i.e. 1
@@ -100,7 +100,7 @@ class RegisterController extends Controller
             if(strpos($request->email, 'lums.edu.pk') !== false){
                 $user = $this->create($request->all());
             } else {
-                return back()->withInput($request->all())->withErrors(['email' => 'Please enter your valid campus mail']);
+                return back()->withInput($request->all())->withErrors(['email' => 'Please enter your valid campus email']);
             }
             // After creating the user send an email with the random token generated in the create method above
             $email = new EmailVerification(new User(['email_token' => $user->email_token, 'name' => $user->name]));
