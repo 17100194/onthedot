@@ -70,7 +70,7 @@
 </head>
 
 <body>
-<?php include_once(asset('js/analyticstracking.php')) ?>
+@include(asset('js/analyticstracking.php'))
 
 <!-- Wrapper -->
 <div id="wrapper">
