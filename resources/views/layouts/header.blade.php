@@ -24,6 +24,7 @@
     </script>
 </head>
 <body>
+<?php include_once(base_path().'\include\analyticstracking.php')?>
 <div id="wrapper">
     @yield('bodycontent')
 </div>

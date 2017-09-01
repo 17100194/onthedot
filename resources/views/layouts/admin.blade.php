@@ -30,6 +30,7 @@ if (!isset($active)) {
     </script>
 </head>
 <body class="side-panel side-panel-static">
+<?php include_once(base_path().'\include\analyticstracking.php')?>
 <!-- Side Panel -->
 <div id="side-panel" class="text-center">
     <div id="close-panel">
