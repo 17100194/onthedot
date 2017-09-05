@@ -237,7 +237,7 @@ class GroupController extends Controller
         }
         $groupid = DB::table('groups')->insertGetId(array(
             'name'=>$groupname,
-            'id_creator' => Auth::id(),'created_on'=>Carbon::now(),'updated_on'=>Carbon::now()));
+            'id_creator' => Auth::id(),'created_on'=>Carbon::now()));
 
         DB::table('user_has_group')->insert(array(
             'id_user'=>Auth::id(),
