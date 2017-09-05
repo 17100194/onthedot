@@ -51,6 +51,12 @@
                 url: './adduser',
                 dataType: 'json',
                 delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        groupid: <?=$group->id?>
+                    };
+                },
                 processResults: function (data) {
                     return {
                         results: data
