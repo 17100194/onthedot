@@ -257,7 +257,7 @@ class GroupController extends Controller
             DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group-request', 'userlist' => $notificationList, 'created_on'=>Carbon::now()));
 
         }
-        return redirect()->back()->with('message-bold', 'Group created successfully!')->with('message', 'Requests to join the group have been sent to all the members.');
+        return redirect()->back()->with('message', '<strong>Group created successfully!</strong>Requests to join the group have been sent to all the members.');
     }
 
 
@@ -270,7 +270,6 @@ class GroupController extends Controller
                 ->join('user_has_course', 'users.id', '=', 'user_has_course.userid')
                 ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
                 ->where('users.id', '=', $user)
-//                ->where('users.id', '!=', Auth::id())
                 ->select('users.name as userName', 'courses.name as courseName', 'courses.timing', 'courses.days', 'courses.section', 'users.campusid', 'users.id as userID')
                 ->orderby('courses.timing', 'DESC')
                 ->get();

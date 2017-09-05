@@ -45,6 +45,7 @@
                     <div class="text-center">
                         <i class="fa fa-ban fa-5x"></i>
                         <h5>No results to display</h5>
+                        <a href="{{url('group/make')}}" class="btn">Create a group</a>
                     </div>
                 @endif
             </div>

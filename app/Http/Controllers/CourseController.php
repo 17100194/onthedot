@@ -140,7 +140,7 @@ class CourseController extends Controller
             'course_name'=>'required',
             'section'=>'required',
             'start_time'=>'required|after:09:00AM|before:06:00PM',
-            'end_time'=>'required|after:09:00AM|before:06:00PM',
+            'end_time'=>'required|after:start_time|before:06:00PM',
             'days'=>'required|min:1',
             'venue'=>'required'
         ]);
@@ -174,7 +174,7 @@ class CourseController extends Controller
             'userid'=> Auth::id(),
             'courseid' => $courseId));
 
-        return Redirect::back()->with('message', 'Course added successfully!');;
+        return Redirect::back()->with('message', 'Course added successfully!');
     }
 
     public function updateCourse(Request $request)

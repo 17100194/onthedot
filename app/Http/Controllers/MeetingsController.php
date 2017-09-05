@@ -489,12 +489,27 @@ class MeetingsController extends Controller
         $validation = Validator::make($request->all(),[
             'start'=>'required|after:09:00AM|before:06:00PM',
             'duration'=>'required|numeric|between:1,60',
-            'date'=>'required|date|after:today',
+            'date'=>'required|date',
             'venue'=>'required'
         ]);
+        if ($date <= Carbon::now()->toDateString()){
+            if ($date == Carbon::now()->toDateString() && $start <= Carbon::now()->toTimeString()){
+                $validation->getMessageBag()->add('start','time must be after current time');
+            } else {
+                $validation->getMessageBag()->add('date','date must be after or equal to current date');
+            }
+            return response()->json(['success' => false, 'errors' => $validation->getMessageBag()->toArray()]);
+        }
         $end = date("H:i", strtotime('+'.$duration.' minutes', strtotime($start)));
         $day = date('l',strtotime($date));
         if ($validation->fails()){
+            if ($date <= Carbon::now()->toDateString()){
+                if ($date == Carbon::now()->toDateString() && $start <= Carbon::now()->toTimeString()){
+                    $validation->getMessageBag()->add('start','time must be after current time');
+                } else {
+                    $validation->getMessageBag()->add('date','date must be after or equal to current date');
+                }
+            }
             if ($day == 'Sunday' || $day == 'Saturday'){
                 $validation->getMessageBag()->add('date','date cannot be a weekend');
             }
@@ -605,12 +620,27 @@ class MeetingsController extends Controller
         $validation = Validator::make($request->all(),[
             'start'=>'required|after:09:00AM|before:06:00PM',
             'duration'=>'required|numeric|between:1,60',
-            'date'=>'required|date|after:today',
+            'date'=>'required|date',
             'venue'=>'required'
         ]);
+        if ($date <= Carbon::now()->toDateString()){
+            if ($date == Carbon::now()->toDateString() && $start <= Carbon::now()->toTimeString()){
+                $validation->getMessageBag()->add('start','time must be after current time');
+            } else {
+                $validation->getMessageBag()->add('date','date must be after or equal to current date');
+            }
+            return response()->json(['success' => false, 'errors' => $validation->getMessageBag()->toArray()]);
+        }
         $end = date("H:i", strtotime('+'.$duration.' minutes', strtotime($start)));
         $day = date('l',strtotime($date));
         if ($validation->fails()){
+            if ($date <= Carbon::now()->toDateString()){
+                if ($date == Carbon::now()->toDateString() && $start <= Carbon::now()->toTimeString()){
+                    $validation->getMessageBag()->add('start','time must be after current time');
+                } else {
+                    $validation->getMessageBag()->add('date','date must be after or equal to current date');
+                }
+            }
             if ($day == 'Sunday' || $day == 'Saturday'){
                 $validation->getMessageBag()->add('date','date cannot be a weekend');
             }

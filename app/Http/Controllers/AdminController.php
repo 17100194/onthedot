@@ -50,6 +50,22 @@ class AdminController extends Controller
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
             <strong>Account created successfully!</strong> Account details have been emailed to the user 
             </div>']);
+        } else {
+            $user = User::create([
+                'name'=>$request->name,
+                'email'=>$request->email,
+                'campusid'=>null,
+                'type'=>'student',
+                'avatar'=>'default_student.png',
+                'password'=>bcrypt($passwordstring),
+                'email_token'=>$token
+            ]);
+            $email = new AccountCreated(new User(['name'=>$request->name,'email_token'=>$token,'password'=>$passwordstring,'email'=>$request->email]));
+            Mail::to($request->email)->send($email);
+            return response()->json(['success' => '<div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
+            <strong>Account created successfully!</strong> Account details have been emailed to the user 
+            </div>']);
         }
     }
 }

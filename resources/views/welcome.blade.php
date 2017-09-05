@@ -367,7 +367,7 @@
                              data-paddingbottom="[0,0,0,0]"
                              data-paddingleft="[0,0,0,0]"
 
-                             style="z-index: 19; white-space: nowrap; font-size: 90px; line-height: 90px; font-weight: 500; color: #ffffff; letter-spacing: -4px;font-family:Rubik;">Scheduling Meetings made<br>2x faster</div>
+                             style="z-index: 19; white-space: nowrap; font-size: 90px; line-height: 90px; font-weight: 500; color: #ffffff; letter-spacing: -4px;font-family:Rubik;">Scheduling Meetings has<br>never been easier</div>
 
                         <!-- LAYER NR. 33 -->
                         <div class="tp-caption   tp-resizeme"

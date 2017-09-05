@@ -51,6 +51,7 @@
                     <div class="text-center">
                         <i class="fa fa-ban fa-5x"></i>
                         <h5>No results to display</h5>
+                        <a href="{{url('meeting/schedule')}}" class="btn">Send a meeting request</a>
                     </div>
                 @endif
             </div>

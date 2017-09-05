@@ -53,7 +53,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|max:255',
-            'email' => 'required|email|string|max:255|unique:users',
+            'email' => 'required|email|string|max:255|unique:users|regex:/^\d{8}@lums.edu.pk$/',
             'password' => 'required|min:6|confirmed',
         ],['email.regex'=>'Please enter your valid campus email']);
     }

@@ -45,6 +45,11 @@
                     <div class="text-center">
                         <i class="fa fa-ban fa-5x"></i>
                         <h5>No results to display</h5>
+                        @if(Auth::user()->type == 'teacher')
+                            <a href="{{url('course/make')}}" class="btn">Make a new course</a>
+                        @else
+                            <a href="{{url('course/enroll')}}" class="btn">Enroll in a course</a>
+                        @endif
                     </div>
                 @endif
             </div>
