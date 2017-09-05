@@ -53,8 +53,7 @@
                 delay: 250,
                 data: function (params) {
                     return {
-                        term: params.term,
-                        groupid: <?=$group->id?>
+                        term: params.term
                     };
                 },
                 processResults: function (data) {
