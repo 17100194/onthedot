@@ -20,6 +20,7 @@ class MeetingsController extends Controller
             ->join('users', 'u2.userid', '=', 'users.id')
             ->join('meetings', 'u2.meetingid', '=', 'meetings.id')
             ->where('meetings.status', '=', 'accepted')
+            ->where('u1.status_meeting','=','accepted')
             ->where('u1.userid', '=', Auth::id())
             ->where('u2.userid', '!=', Auth::id())
             ->orderBy('meetings.created_on','desc')
@@ -125,10 +126,12 @@ class MeetingsController extends Controller
             DB::table('user_has_meeting')->where('meetingid', '=', intval($meetingid))->delete();
             DB::table('meetings')->where('id', '=', intval($meetingid))->delete();
             foreach ($userlist as $user) {
-                $notificationList = $user->userid;
-                $loggedIn = $this->getUserById(Auth::id());
-                $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> has cancelled the meeting hosted on <span class="label label-info">'.date('F d,Y',strtotime($meeting->date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])).'</span>';
-                DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'meeting', 'userid' => $notificationList,'created_on'=>Carbon::now()));
+                if ($user->userid != Auth::id()){
+                    $notificationList = $user->userid;
+                    $loggedIn = $this->getUserById(Auth::id());
+                    $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> has cancelled the meeting hosted on <span class="label label-info">'.date('F d,Y',strtotime($meeting->date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])).'</span>';
+                    DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'meeting', 'userid' => $notificationList,'created_on'=>Carbon::now()));
+                }
             }
             return;
         } else {
@@ -417,7 +420,13 @@ class MeetingsController extends Controller
             ->join('users AS u', 'u.id', '=', 'm.host')
             ->where('um.userid', '=', Auth::id())
             ->where('m.host', '!=', Auth::id())
-            ->where('m.status', '=', 'pending')->paginate(10);
+            ->where('m.status', '=', 'pending')
+            ->where('um.status_meeting','=','pending')
+            ->orwhere('um.userid', '=', Auth::id())
+            ->where('m.host', '!=', Auth::id())
+            ->where('m.status', '=', 'accepted')
+            ->where('um.status_meeting','=','pending')
+            ->paginate(10);
         $active = 'requests';
         return view('meetings.requests', compact('requests', 'active','requested'));
     }
