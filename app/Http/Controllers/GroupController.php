@@ -132,10 +132,10 @@ class GroupController extends Controller
                 'id_sender' => Auth::id(),
                 'id_receiver'=>$user,
                 'status'=>'pending','created_on'=>Carbon::now()));
-            $notificationList = ','.$user.',';
+            $notificationList = $user;
             $loggedIn = $this->getUserById(Auth::id());
             $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span>'. ' has requested you to join their group <span class="label label-info">'.$group->name.'</span>';
-            DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group-request', 'userlist' => $notificationList, 'created_on'=>Carbon::now()));
+            DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group-request', 'userid' => $notificationList, 'created_on'=>Carbon::now()));
         }
         return '<div class="alert alert-success alert-dismissable">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
@@ -150,7 +150,7 @@ class GroupController extends Controller
         $loggedIn = $this->getUserById(Auth::id());
         $group = $this->getGroupById($groupid);
         $txt = '<span class="label label-info">'.$loggedIn->name.'</span> has removed you from the group <span class="label label-info">'.$group->name.'</span>';
-        DB::table('user_notifications')->insert(array('notification_content' => $txt, 'type'=>'group', 'userlist'=> ','.$userid.',','created_on'=>Carbon::now()));
+        DB::table('user_notifications')->insert(array('notification_content' => $txt, 'type'=>'group', 'userid'=> $userid,'created_on'=>Carbon::now()));
         return 'success';
     }
 
@@ -167,10 +167,11 @@ class GroupController extends Controller
             DB::table('user_has_group')->where('id_user', '=', Auth::id())->where('id_group', '=', intval($groupid))->delete();
             $group = $this->getGroupById($groupid);
             if (count($group->members) > 0){
-                $notificationList = implode(',', $group->members);
                 $loggedIn = $this->getUserById(Auth::id());
                 $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> has left the group <span class="label label-info">'. $group->name .'</span>';
-                DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => ','.$notificationList.',','created_on'=>Carbon::now()));
+                foreach ($group->members as $member){
+                    DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userid' => $member,'created_on'=>Carbon::now()));
+                }
                 session(['message' => 'You have left the group successfully!']);
                 return 'success';
             } else {
@@ -184,10 +185,11 @@ class GroupController extends Controller
         $group = $this->getGroupById($groupid);
 
         if (count($group->members) > 0) {
-            $notificationList = ','.implode(',', $group->members).',';
             $loggedIn = $this->getUserById(Auth::id());
             $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> has left the group <span class="label label-info">'. $group->name .'</span>';
-            DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => ','.$notificationList.',','created_on'=>Carbon::now()));
+            foreach ($group->members as $member){
+                DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userid' => $member,'created_on'=>Carbon::now()));
+            }
         }
         session(['message' => 'You have left the group successfully!']);
         return 'success';
@@ -200,10 +202,10 @@ class GroupController extends Controller
 
         $groupid = DB::table('user_has_group_request')->where('id', $requestid)->get()[0]->id_group;
         $group = $this->getGroupById($groupid);
-        $notificationList = ','.$group->idcreator.',';
+        $notificationList = $group->idcreator;
         $loggedIn = $this->getUserById(Auth::id());
         $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> has accepted the request to join your group <span class="label label-info">'.$group->name .'</span>';
-        DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => $notificationList,'created_on'=>Carbon::now()));
+        DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userid' => $notificationList,'created_on'=>Carbon::now()));
 
         DB::table('user_has_group')->insert(array(
             'id_user'=>Auth::id(),
@@ -219,10 +221,10 @@ class GroupController extends Controller
                 'status' => 'rejected'
             ]);
         $group = $this->getGroupByRequestId($requestid);
-        $notificationList = ','.$group->idcreator.',';
+        $notificationList = $group->idcreator;
         $loggedIn = $this->getUserById(Auth::id());
         $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> has rejected the request to join your group <span class="label label-info">'.$group->name .'</span>';
-        DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userlist' => $notificationList,'created_on'=>Carbon::now()));
+        DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'group', 'userid' => $notificationList,'created_on'=>Carbon::now()));
         $request->session()->flash('message','Request Rejected! The user will be notified');
         return;
     }
@@ -250,11 +252,10 @@ class GroupController extends Controller
                 'id_receiver'=>$user,
                 'status'=>'pending','created_on'=>Carbon::now()));
 
-            $notificationList = ','.strval($user).',';
             $loggedIn = $this->getUserById(Auth::id());
             $url = url("/notification?type=group-pending&id=". strval($insert));
             $html = '<span class="label label-info">'.$loggedIn->name . ' ('.$loggedIn->campusid.')</span> has requested you to join their group <span class="label label-info">'.$groupname.'</span>';
-            DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group-request', 'userlist' => $notificationList, 'created_on'=>Carbon::now()));
+            DB::table('user_notifications')->insert(array('notification_content'=> $html, 'type'=>'group-request', 'userid' => $user, 'created_on'=>Carbon::now()));
 
         }
         return redirect()->back()->with('message', '<strong>Group created successfully!</strong>Requests to join the group have been sent to all the members.');

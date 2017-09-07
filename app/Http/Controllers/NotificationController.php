@@ -12,14 +12,14 @@ class NotificationController extends Controller
 {
     public function getNotifications(){
         $notifications = DB::table('user_notifications')
-            ->where('userlist', 'LIKE', '%'.Auth::id().'%')
+            ->where('userid', '=', Auth::id())
             ->orderBy('created_on', 'desc')
             ->paginate(5);
         DB::table('user_notifications')
-            ->where('userlist', 'LIKE', '%'.Auth::id().'%')
+            ->where('userid', '=', Auth::id())
             ->update(['posted'=>1]);
         $count = DB::table('user_notifications')
-            ->where('userlist', 'LIKE', '%'.Auth::id().'%')
+            ->where('userid', '=', Auth::id())
             ->where('seen','=',0)
             ->where('posted','=',1)
             ->orderBy('created_on', 'desc')
@@ -30,23 +30,23 @@ class NotificationController extends Controller
 
     public function seeNotifications(Request $request){
         DB::table('user_notifications')
-            ->where('userlist', 'LIKE', '%'.Auth::id().'%')
+            ->where('userid', '=', Auth::id())
             ->where('seen', '=', 0)
             ->update(['seen'=>1]);
     }
 
     public function checkNotifications(){
         $notifications = DB::table('user_notifications')
-            ->where('userlist', 'LIKE', '%'.Auth::id().'%')
+            ->where('userid', '=', Auth::id())
             ->where('seen','=',0)
             ->where('posted','=',0)
             ->orderBy('created_on', 'desc')
             ->get();
         DB::table('user_notifications')
-            ->where('userlist', 'LIKE', '%'.Auth::id().'%')
+            ->where('userid', '=', Auth::id())
             ->update(['posted'=>1]);
         $count = DB::table('user_notifications')
-            ->where('userlist', 'LIKE', '%'.Auth::id().'%')
+            ->where('userid', '=', Auth::id())
             ->where('seen','=',0)
             ->where('posted','=',1)
             ->orderBy('created_on', 'desc')
