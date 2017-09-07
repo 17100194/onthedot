@@ -112,7 +112,14 @@ class MeetingsController extends Controller
     public function cancelMeeting(Request $request) {
         $meetingid = $request->meetingid;
         $meeting = $this->getMeetingById($meetingid);
-        DB::table('user_has_meeting')->where('userid', '=', Auth::id())->where('meetingid', '=', intval($meetingid))->delete();
+        if ($meeting->type == 'group') {
+            DB::table('user_has_meeting')
+                ->where('userid', '=', Auth::id())
+                ->where('meetingid', '=', $meetingid)
+                ->update(['status_meeting' => 'cancelled']);
+        } else {
+            DB::table('user_has_meeting')->where('userid', '=', Auth::id())->where('meetingid', '=', intval($meetingid))->delete();
+        }
         $userlist = DB::table('user_has_meeting')->where('meetingid', '=', intval($meetingid))->get();
         if ($meeting->type == 'group' && $meeting->host == Auth::id()){
             DB::table('user_has_meeting')->where('meetingid', '=', intval($meetingid))->delete();

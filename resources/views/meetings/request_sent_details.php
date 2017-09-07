@@ -41,7 +41,7 @@ use App\Http\Controllers\MeetingsController;
                                 <td><?=$user->name?></td>
                                 <td><?=$user->campusid?></td>
                                 <td><?=$user->type?></td>
-                                <td><?php if ($user->status_meeting == 'accepted'):?><label class="label label-success">Accepted</label><?php elseif ($user->status_meeting == 'rejected'):?><label class="label label-default">Rejected</label><?php else:?><label class="label label-info">Pending</label><?php endif;?></td>
+                                <td><?php if ($user->status_meeting == 'accepted'):?><label class="label label-success">Accepted</label><?php elseif ($user->status_meeting == 'rejected'):?><label class="label label-default">Rejected</label><?php elseif ($user->status_meeting == 'cancelled'):?><label class="label label-primary">Cancelled</label><?php else:?><label class="label label-info">Pending</label><?php endif;?></td>
                             </tr>
                         <?php endforeach;?>
                         </tbody>
