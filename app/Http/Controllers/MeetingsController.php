@@ -136,16 +136,18 @@ class MeetingsController extends Controller
             return;
         } else {
             foreach ($userlist as $user) {
-                $notificationList = $user->userid;
-                $loggedIn = $this->getUserById(Auth::id());
-                $txt = '<span class="label label-info">'.$loggedIn->name.' (' . $loggedIn->campusid . ')</span> will not be able to attend the meeting hosted on <span class="label label-info">'.date('F d,Y',strtotime($meeting->date)).'</span> at <span class="label label-info">'.date('h:iA',strtotime(explode('-',$meeting->time)[0])).' - '.date('h:iA',strtotime(explode('-',$meeting->time)[1])).'</span>';
-                DB::table('user_notifications')->insert(array('notification_content'=> $txt, 'type'=>'meeting', 'userid' => $notificationList,'created_on'=>Carbon::now()));
+                if ($user->userid != Auth::id()) {
+                    $notificationList = $user->userid;
+                    $loggedIn = $this->getUserById(Auth::id());
+                    $txt = '<span class="label label-info">' . $loggedIn->name . ' (' . $loggedIn->campusid . ')</span> will not be able to attend the meeting hosted on <span class="label label-info">' . date('F d,Y', strtotime($meeting->date)) . '</span> at <span class="label label-info">' . date('h:iA', strtotime(explode('-', $meeting->time)[0])) . ' - ' . date('h:iA', strtotime(explode('-', $meeting->time)[1])) . '</span>';
+                    DB::table('user_notifications')->insert(array('notification_content' => $txt, 'type' => 'meeting', 'userid' => $notificationList, 'created_on' => Carbon::now()));
+                }
             }
             if(count($userlist) < 2) {
                 DB::table('meetings')->where('id', '=', intval($meetingid))->delete();
                 DB::table('user_has_meeting')->where('meetingid','=',intval($meetingid))->delete();
             }
-            $request->session()->flash('message', 'Meeting request cancelled successfully!');
+            $request->session()->flash('message', 'Meeting cancelled successfully!');
             return;
         }
     }

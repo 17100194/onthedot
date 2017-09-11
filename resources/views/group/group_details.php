@@ -49,18 +49,48 @@ use Illuminate\Support\Facades\Auth;
     <?php endif?>
 </div>
 <div class="modal-footer">
-    <div class="row">
-        <div class="col-sm-8">
-            <?php if($group->id_creator == Auth::id()):?>
-            <p class="text-left text-warning"><strong>Note!</strong> Please select an admin to replace you before you leave the group. If group has no members then your group will automatically be deleted on leaving.</p>
-            <?php endif?>
-        </div>
-        <div class="col-sm-4">
-            <button type="button" class="btn btn-outline leavegroup">Leave Group</button>
+    <?php if($group->id_creator == Auth::id()):?>
+        <p class="text-left text-warning"><strong>Note!</strong> Please select an admin to replace you before you leave the group. If group has no members then your group will automatically be deleted on leaving.</p>
+    <?php endif?>
+    <button type="button" class="btn btn-outline timetable" data-target="#grouptimetable" data-id="<?=$group->id?>" data-toggle="modal" data-dismiss="modal">Set a Meeting</button>
+    <button type="button" class="btn btn-outline leavegroup">Leave Group</button>
+</div>
+<div class="modal fade" id="grouptimetable" tabindex="-1" role="modal" aria-labelledby="modal-label" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content group">
+
         </div>
     </div>
 </div>
 <script>
+    $('body').on('hidden.bs.modal', function (e) {
+        if($('.modal').hasClass('in')) {
+            $('body').addClass('modal-open');
+        }
+    });
+    $('.timetable').on('click',function (e) {
+        $('.group').html('<h3 class="text-center">Loading...</h3><img style="width:200px;" class="center-block" src="<?= asset('public/images/three-dots.svg')?>">');
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            method: "GET",
+            url: "<?= url('/meeting/gettimetable')?>",
+            data: {
+                id: $(this).data('id'),
+                type: 'group'
+            },
+            success: function(data) {
+                $('.group').html(data);
+            },
+            error: function (xhr, status) {
+                console.log(status);
+                console.log(xhr.responseText);
+            }
+        });
+    });
     $('.leavegroup').on('click', function () {
         var adminid = $('input[name=admin]:checked').val();
         if(adminid == null && $('input[name=admin]').length){

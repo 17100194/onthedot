@@ -23,7 +23,7 @@
                             @foreach($meeting as $value)
                                 <?php $users[] = $value->name;?>
                             @endforeach
-                            @if($key == 2)
+                            @if($key == 3)
                                 <?php $key = 0;?>
                                 <div class="space"></div>
                             @endif

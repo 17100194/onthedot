@@ -3,11 +3,12 @@ use Illuminate\Support\Facades\Auth;
 ?>
 
 <div class="modal-header">
+    <button aria-hidden="true" data-dismiss="modal" class="close" type="button"><i class="fa fa-times"></i></button>
+</div>
+<div>
     <div class="hr-title center">
         <abbr>Combined Timetable</abbr>
     </div>
-</div>
-<div>
     <div class="row">
         <div class="col-xs-12 text-center">
             <span class="text-shadow-dark text-orange" style="font-size: 2rem;"><?=date('F d,Y', strtotime($monday)).' - '.date('F d,Y', strtotime($friday))?></span> <button class="prevweek btn"><i class="fa fa-arrow-left fa-lg"></i></button><button class="nextweek btn"><i class="fa fa-arrow-right fa-lg"></i></button>
