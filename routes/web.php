@@ -78,4 +78,4 @@ Route::get('/settings','HomeController@Settings')->middleware('auth');
 Route::post('/updatePassword','HomeController@updatePassword')->middleware('auth');
 Route::post('/deleteAccount','HomeController@deleteAccount')->middleware('auth');
 Route::post('/addNewUser','AdminController@addNewUser')->middleware('auth','admin');
-Route::post('/sendcontactform','HomeController@SendContactForm')->middleware('guest','auth','admin');
+Route::post('/sendcontactform','HomeController@SendContactForm');
