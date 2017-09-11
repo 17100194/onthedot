@@ -227,6 +227,15 @@
 
 <!-- Go to top button -->
 <a id="goToTop"><i class="fa fa-angle-up top-icon"></i><i class="fa fa-angle-up"></i></a>
+<button type="button" class="btn btn-dark btn-shadow btn-outline btn-icon-holder mainContactForm" style="opacity: 1;
+    position: fixed;
+    right: -63px;
+    bottom: 200px;
+    cursor: pointer;
+    z-index: 999; -moz-transform:rotate(-90deg);
+    -ms-transform:rotate(-90deg);
+    -o-transform:rotate(-90deg);
+    -webkit-transform:rotate(-90deg);">Contact Us<i class="fa fa-caret-up"></i></button>
 
 <!--Plugins-->
 <script src="{{asset('js/plugins.js')}}"></script>
@@ -241,6 +250,53 @@
     $(document).ready(function () {
         $('#notification-content').slimScroll({
             height: '350px'
+        });
+        $('.mainContactForm').popover({
+            html: true,
+            placement: 'left',
+            title: '24/7 Feedback System',
+            content: "<div id='contact_status'></div><form id='contact_form'><div class='form-group'><label>Name</label><input class='form-control' id='contact_name' name='contact_name' type='text'></div><div class='form-group'><label>Email</label><input class='form-control' id='contact_email' name='contact_email' type='email'></div><div class='form-group'><label>Message</label><textarea style='height:100px;' class='form-control' id='contact_message' name='contact_message'></textarea></div><div class='form-group'><button id='contact_send' type='button' class='btn btn-default btn-shadow'><i class='fa fa-paper-plane'></i>Send Message</button></div></form>"
+        }).parent().delegate('button#contact_send', 'click', function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                method: "POST",
+                url: "<?= url('/sendcontactform')?>",
+                data: $('#contact_form').serialize(),
+                beforeSend: function() {
+                    $('.form-group').removeClass('has-error');
+                    $('.help-block').remove();
+                    $('#contact_status').html('<div class="text-center">Processing</div><img src="<?=asset('public/images/preloader.gif')?>" class="center-block">');
+                },
+                success: function(data) {
+                    $('#contact_status').html('');
+                    if(data.success == false)
+                    {
+                        var arr = data.errors;
+                        $.each(arr, function(index, value)
+                        {
+                            if (value.length != 0)
+                            {
+                                if (index == 'contact_message'){
+                                    $('textarea[name='+index+']').parent().addClass('has-error');
+                                    $('textarea[name='+index+']').after('<span class="help-block"><strong>'+ value +'</strong></span>');
+                                }
+                                $('input[name='+index+']').parent().addClass('has-error');
+                                $('input[name='+index+']').after('<span class="help-block"><strong>'+ value +'</strong></span>');
+                            }
+                        });
+                    } else {
+                        $('#contact_status').html(data);
+                    }
+                },
+                error: function (xhr, status) {
+                    console.log(status);
+                    console.log(xhr.responseText);
+                }
+            });
         });
         $('#notification-content').on('scroll', function() {
             if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {

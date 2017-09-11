@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactForm;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,6 +10,7 @@ use DateTime;
 use DataTimeZone;
 use Validator;
 use Hash;
+use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
 
 class HomeController extends Controller
@@ -205,5 +207,20 @@ class HomeController extends Controller
     public  function Timetable(){
         $active = 'timetable';
         return view('timetable', compact('active'));
+    }
+
+    public function SendContactForm(Request $request){
+        $validation = Validator::make($request->all(),[
+            'contact_name'=>'required',
+            'contact_email'=>'required|email',
+            'contact_message'=>'required'
+
+        ]);
+        if ($validation->fails()){
+            return response()->json(['success' => false, 'errors' => $validation->getMessageBag()->toArray()]);
+        }
+        $email = new ContactForm($request);
+        Mail::to('fahadcreed@gmail.com')->send($email);
+        return '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-check-circle"></i> <strong>Thank you!</strong> Your message has been successfully sent. We will contact you very soon!</div>';
     }
 }
