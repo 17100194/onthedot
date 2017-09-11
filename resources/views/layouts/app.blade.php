@@ -404,7 +404,7 @@
             }
         });
         $.ajax({
-            method: "POST",
+            method: "GET",
             url: "<?= url('/sendcontactform')?>",
             data: $('#contact_form').serialize(),
             beforeSend: function() {
