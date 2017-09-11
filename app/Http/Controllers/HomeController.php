@@ -10,7 +10,7 @@ use DateTime;
 use DataTimeZone;
 use Validator;
 use Hash;
-use Illuminate\Support\Facades\Mail;
+use Mail;
 use Carbon\Carbon;
 
 class HomeController extends Controller
