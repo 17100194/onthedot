@@ -42,9 +42,13 @@
                                 @endif
                             </div>
                             <div class="form-group form-inline text-left">
-                                <div class="checkbox">
+                                <div class="checkbox checkbox-creative">
                                     <label>
-                                        <input type="checkbox" name="remember"><small> Remember me</small>
+                                        <input type="checkbox" name="remember">
+                                        <span class="checkbox-item">
+                                            <span class="check"></span>
+                                        </span>
+                                        <small> Remember me</small>
                                     </label>
                                 </div>
                                 <a href="{{ url('/password/reset') }}" class="float-right"><small>Lost your Password?</small></a>

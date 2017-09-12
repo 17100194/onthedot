@@ -271,9 +271,10 @@
                 button: 'next'
             },
             beforeSend: function () {
-                $('#timetable').html('<h3 class="text-center">Loading...</h3><img style="width:200px;" class="center-block" src="<?= asset('public/images/three-dots.svg')?>">');
+                $.LoadingOverlay('show');
             },
             success: function(data) {
+                $.LoadingOverlay('hide',true);
                 $('#timetable').html(data);
             },
             error: function (xhr, status) {
@@ -299,9 +300,10 @@
                 friday: $('.friday').val()
             },
             beforeSend: function () {
-                $('#timetable').html('<h3 class="text-center">Loading...</h3><img style="width:200px;" class="center-block" src="<?= asset('public/images/three-dots.svg')?>">');
+                $.LoadingOverlay('show');
             },
             success: function(data) {
+                $.LoadingOverlay('hide',true);
                 $('#timetable').html(data);
             },
             error: function (xhr, status) {

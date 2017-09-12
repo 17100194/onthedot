@@ -22,7 +22,6 @@
     </div>
     <script>
         $(document).ready(function () {
-            $('#timetable').html('<h3 class="text-center">Loading...</h3><img style="width:200px;" class="center-block" src="{{asset('public/images/three-dots.svg')}}">');
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -32,7 +31,11 @@
                 method: "GET",
                 url: "./showtimetable",
                 data: {},
+                beforeSend: function () {
+                  $.LoadingOverlay('show');
+                },
                 success: function(data) {
+                    $.LoadingOverlay('hide',true);
                     $('#timetable').html(data);
                 },
                 error: function (xhr, status) {
