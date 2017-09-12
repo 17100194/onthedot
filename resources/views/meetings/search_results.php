@@ -91,7 +91,6 @@ use App\Http\Controllers\MeetingsController;
         });
     }
     $('#students').on('click','.btn-rounded',function (e) {
-        $('.student').html('<h3 class="text-center">Loading...</h3><img style="width:200px;" class="center-block" src="<?= asset('public/images/three-dots.svg')?>">');
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -99,12 +98,16 @@ use App\Http\Controllers\MeetingsController;
         });
         $.ajax({
             method: "GET",
-            url: "./gettimetable",
+            url: "<?=url('/meeting/gettimetable')?>",
             data: {
                 id: $(this).data('id'),
                 type: 'student'
             },
+            beforeSend: function () {
+                $.LoadingOverlay('show');
+            },
             success: function(data) {
+                $.LoadingOverlay('hide',true);
                 $('.student').html(data);
             },
             error: function (xhr, status) {
@@ -114,7 +117,6 @@ use App\Http\Controllers\MeetingsController;
         });
     });
     $('#instructors').on('click','.btn-rounded',function (e) {
-        $('.instructor').html('<h3 class="text-center">Loading...</h3><img style="width:200px;" class="center-block" src="<?= asset('public/images/three-dots.svg')?>">');
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -122,12 +124,16 @@ use App\Http\Controllers\MeetingsController;
         });
         $.ajax({
             method: "GET",
-            url: "./gettimetable",
+            url: "<?=url('/meeting/gettimetable')?>",
             data: {
                 id: $(this).data('id'),
                 type: 'instructor'
             },
+            beforeSend: function () {
+                $.LoadingOverlay('show');
+            },
             success: function(data) {
+                $.LoadingOverlay('hide',true);
                 $('.instructor').html(data);
             },
             error: function (xhr, status) {
@@ -139,15 +145,18 @@ use App\Http\Controllers\MeetingsController;
     $('#students').on('click', '.pagination li>a', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
-        $('#students').html('<img style="width:200px;" class="center-block" src=<?= asset('public/images/three-dots.svg')?>>');
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
         $.ajax({
-            url : url
+            url : url,
+            beforeSend: function () {
+                $('#students').LoadingOverlay('show');
+            }
         }).done(function (data) {
+            $('#tabs').LoadingOverlay('hide',true);
             $('#tabs').html(data);
         }).fail(function () {
             alert('No students found.')
@@ -156,15 +165,18 @@ use App\Http\Controllers\MeetingsController;
     $('#instructors').on('click', '.pagination li>a', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
-        $('#instructors').html('<img style="width:200px;" class="center-block" src=<?= asset('public/images/three-dots.svg')?>>');
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
         $.ajax({
-            url : url
+            url : url,
+            beforeSend: function () {
+                $('#instructors').LoadingOverlay('show');
+            }
         }).done(function (data) {
+            $('#tabs').LoadingOverlay('hide',true);
             $('#tabs').html(data);
         }).fail(function () {
             alert('No instructors found.')

@@ -69,7 +69,6 @@ use Illuminate\Support\Facades\Auth;
         }
     });
     $('.timetable').on('click',function (e) {
-        $('.group').html('<h3 class="text-center">Loading...</h3><img style="width:200px;" class="center-block" src="<?= asset('public/images/three-dots.svg')?>">');
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -82,7 +81,12 @@ use Illuminate\Support\Facades\Auth;
                 id: $(this).data('id'),
                 type: 'group'
             },
+            beforeSend: function () {
+                $('.group').html('');
+                $.LoadingOverlay('show');
+            },
             success: function(data) {
+                $.LoadingOverlay('hide',true);
                 $('.group').html(data);
             },
             error: function (xhr, status) {
@@ -112,10 +116,10 @@ use Illuminate\Support\Facades\Auth;
                 adminid: adminid
             },
             beforeSend: function () {
-                $('.status').html('<div class="text-center">Processing</div><img src="<?=asset('public/images/preloader.gif')?>" class="center-block">');
+                $('#groupDetails').find('.modal-content').LoadingOverlay('show');
             },
             success: function(data) {
-                $('.status').html('');
+                $('#groupDetails').find('.modal-content').LoadingOverlay('hide',true);
                 if (data == 'success'){
                     location.reload();
                 } else {
@@ -169,7 +173,6 @@ use Illuminate\Support\Facades\Auth;
         });
 
         $('.adduser').on('click' , function() {
-            $('.help-block').remove();
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -183,10 +186,10 @@ use Illuminate\Support\Facades\Auth;
                     groupid: <?=$group->id?>
                 },
                 beforeSend: function () {
-                    $('.status').html('<div class="text-center">Processing</div><img src="<?=asset('public/images/preloader.gif')?>" class="center-block">');
+                    $('#groupDetails').find('.modal-content').LoadingOverlay('show');
                 },
                 success: function(data) {
-                    $('.status').html('');
+                    $('#groupDetails').find('.modal-content').LoadingOverlay('hide',true);
                     if (data == 'error'){
                         $('.status').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-times-circle"></i> You must select at least one user</div>');
                     } else {

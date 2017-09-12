@@ -28,7 +28,6 @@
     <script type="text/javascript">
         $('#search-button').on('click', function(){
             var search_term = $('#searchterm').val();
-            $('#searchcourse').html('<img style="width:200px;" class="center-block" src="{{asset('public/images/three-dots.svg')}}">');
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -43,8 +42,10 @@
                 beforeSend: function() {
                     $('.input-group').removeClass('has-error');
                     $('.help-block').remove();
+                    $.LoadingOverlay('show');
                 },
                 success: function(data) {
+                    $.LoadingOverlay('hide',true);
                     if(data.success == false)
                     {
                         $('#searchcourse').empty();

@@ -63,7 +63,11 @@
                 data: {
                     requestid: <?=$requestid?>
                 },
+                beforeSend: function () {
+                    $('#groupDetails').find('.modal-content').LoadingOverlay('show');
+                },
                 success: function(data) {
+                    $('#groupDetails').find('.modal-content').LoadingOverlay('hide',true);
                     location.reload();
                 },
                 error: function (xhr, status) {
@@ -83,7 +87,11 @@
                 data: {
                     requestid: <?=$requestid?>
                 },
+                beforeSend: function () {
+                    $('#groupDetails').find('.modal-content').LoadingOverlay('show');
+                },
                 success: function(data) {
+                    $('#groupDetails').find('.modal-content').LoadingOverlay('hide',true);
                     location.reload();
                 },
                 error: function (xhr, status) {

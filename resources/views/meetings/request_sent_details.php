@@ -69,7 +69,11 @@ use App\Http\Controllers\MeetingsController;
                 data: {
                     meetingid: meetingid
                 },
+                beforeSend: function () {
+                    $(this).parents('.modal-content').LoadingOverlay('show');
+                },
                 success: function(data) {
+                    $(this).parents('.modal-content').LoadingOverlay('hide',true);
                     location.reload();
                 },
                 error: function (xhr, status) {

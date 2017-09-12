@@ -88,10 +88,10 @@
                 beforeSend: function () {
                     $('.form-group').removeClass('has-error');
                     $('.help-block').remove();
-                    $('#changePassword').find('.status').html('<div class="text-center">Processing</div><img src="<?=asset('public/images/preloader.gif')?>" class="center-block">');
+                    $.LoadingOverlay('show');
                 },
                 success: function(data) {
-                    $('#changePassword').find('.status').html('');
+                    $.LoadingOverlay('hide',true);
                     if(data.success == false) {
                         var arr = data.errors;
                         $.each(arr, function(index, value)

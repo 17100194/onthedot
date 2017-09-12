@@ -57,7 +57,6 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('.text-box').on('click', function () {
-                $('.modal-content').html('<h3 class="text-center">Loading...</h3><img style="width:200px;" class="center-block" src="{{asset('public/images/three-dots.svg')}}">')
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -69,7 +68,12 @@
                     data: {
                         courseid: $(this).data('id')
                     },
+                    beforeSend: function () {
+                        $('.modal-content').html('');
+                        $.LoadingOverlay('show');
+                    },
                     success: function(data) {
+                        $.LoadingOverlay('hide',true);
                         $('.modal-content').html(data);
                     },
                     error: function (xhr, status) {

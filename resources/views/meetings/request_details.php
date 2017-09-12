@@ -54,7 +54,11 @@ use App\Http\Controllers\MeetingsController;
                 data: {
                     meetingid: $(this).data('id')
                 },
+                beforeSend: function () {
+                    $(this).parents('.modal-content').LoadingOverlay('show');
+                },
                 success: function(data) {
+                    $(this).parents('.modal-content').LoadingOverlay('hide',true);
                     location.reload();
                 },
                 error: function (xhr, status) {
@@ -79,8 +83,10 @@ use App\Http\Controllers\MeetingsController;
                 beforeSend:function () {
                     $('.help-block').remove();
                     $('.form-group').removeClass('has-error');
+                    $(this).parents('.modal-content').LoadingOverlay('show');
                 },
                 success: function(data) {
+                    $(this).parents('.modal-content').LoadingOverlay('hide',true);
                     if(data.success == false)
                     {
                         var arr = data.errors;

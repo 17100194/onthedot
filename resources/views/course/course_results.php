@@ -50,15 +50,18 @@
     $('.pagination li>a').on('click', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
-        $('#searchcourse').html('<img style="width:200px;" class="center-block" src=<?= asset('public/images/three-dots.svg')?>>');
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
         $.ajax({
-            url : url
+            url : url,
+            beforeSend: function () {
+              $('#searchcourse').LoadingOverlay('show');
+            }
         }).done(function (data) {
+            $('#searchcourse').LoadingOverlay('hide',true);
             $('#searchcourse').html(data);
         }).fail(function () {
             alert('No Courses found.')
@@ -78,9 +81,10 @@
                 course_id: courseid
             },
             beforeSend:function () {
-                $('#status').html('<div class="text-center">Processing</div><img src="<?=asset('public/images/preloader.gif')?>" class="center-block">');
+                $('#searchcourse').LoadingOverlay('show');
             },
             success: function(data) {
+                $('#searchcourse').LoadingOverlay('hide',true);
                 $('#status').html(data);
                 $('.enroll').addClass('disabled');
                 $('.enroll').html('Enrolled');

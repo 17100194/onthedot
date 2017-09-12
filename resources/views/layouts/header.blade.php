@@ -53,6 +53,8 @@
 <!--Plugins-->
 <script src="{{asset('js/jquery.js')}}"></script>
 <script src="{{asset('js/plugins.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.5.3/src/loadingoverlay.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@1.5.3/extras/loadingoverlay_progress/loadingoverlay_progress.min.js"></script>
 
 <!--Template functions-->
 <script src="{{asset('js/functions.js')}}"></script>
@@ -76,10 +78,10 @@
             beforeSend: function() {
                 $('.form-group').removeClass('has-error');
                 $('.help-block').remove();
-                $('#contact_status').html('<div class="text-center">Processing</div><img src="<?=asset('public/images/preloader.gif')?>" class="center-block">');
+                $('#contact_form').LoadingOverlay("show");
             },
             success: function(data) {
-                $('#contact_status').html('');
+                $('#contact_form').LoadingOverlay("hide",true);
                 if(data.success == false)
                 {
                     var arr = data.errors;

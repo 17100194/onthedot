@@ -52,8 +52,12 @@ use Illuminate\Support\Facades\Auth;
                     userid: userid,
                     groupid: <?=$groupid?>
                 },
+                beforeSend: function () {
+                    $('#groupDetails').find('.modal-content').LoadingOverlay('show');
+                },
                 success: function(data) {
                     showMembers();
+                    $('#groupDetails').find('.modal-content').LoadingOverlay('hide',true);
                 },
                 error: function (xhr, status) {
                     console.log(status);
@@ -63,7 +67,6 @@ use Illuminate\Support\Facades\Auth;
         }
     });
     function showMembers() {
-        $('.table-responsive').html("<img src='<?= asset('public/images/preloader.gif')?>' class='center-block'>");
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -81,7 +84,6 @@ use Illuminate\Support\Facades\Auth;
     }
     $('.pagination li>a').on('click', function(e) {
         e.preventDefault();
-        $('.table-responsive').html("<img src='<?= asset('public/images/preloader.gif')?>' class='center-block'>");
         var url = $(this).attr('href');
         $.ajaxSetup({
             headers: {
@@ -90,9 +92,12 @@ use Illuminate\Support\Facades\Auth;
         });
         $.ajax({
             url : url,
-            data: {idcreator: <?=$idcreator?>, groupid: <?=$groupid?>}
+            data: {idcreator: <?=$idcreator?>, groupid: <?=$groupid?>},
+            beforeSend: function () {
+                $('#groupDetails').find('.modal-content').LoadingOverlay('show');
+            }
         }).done(function (data) {
-            console.log(data);
+            $('#groupDetails').find('.modal-content').LoadingOverlay('hide',true);
             $('.table-responsive').html(data);
         }).fail(function () {
             alert('No Users found.')

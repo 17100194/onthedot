@@ -77,7 +77,11 @@ use Illuminate\Support\Facades\Auth;
                 data: {
                     courseid: courseid
                 },
+                beforeSend: function () {
+                    $('#courseDetails').find('.modal-content').LoadingOverlay('show');
+                },
                 success: function(data) {
+                    $('#courseDetails').find('.modal-content').LoadingOverlay('hide',true);
                     location.reload();
                 },
                 error: function (xhr, status) {
@@ -100,8 +104,10 @@ use Illuminate\Support\Facades\Auth;
                     $('.form-group').removeClass('has-error');
                     $('.help-block').remove();
                     $('.alert').remove();
+                    $('#courseDetails').find('.modal-content').LoadingOverlay('show');
                 },
                 success: function(data) {
+                    $('#courseDetails').find('.modal-content').LoadingOverlay('hide',true);
                     if(data.success == false)
                     {
                         var arr = data.errors;
@@ -114,7 +120,7 @@ use Illuminate\Support\Facades\Auth;
                             }
                         });
                     } else {
-                        $('.text-left').prepend('<div class="alert alert-success">'+data.success+'</div>');
+                        $('.text-left').prepend('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button>'+data.success+'</div>');
                     }
                 },
                 error: function (xhr, status) {

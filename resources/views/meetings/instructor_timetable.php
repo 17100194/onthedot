@@ -251,7 +251,7 @@ use Illuminate\Support\Facades\Auth;
         $('.instructor').find('.scheduleform').popover({
             html: true,
             placement: 'bottom',
-            content: "<div id='status'></div><div class='form-group'><label>Start Time</label><input type='time' class='form-control' id='start' name='start'></div><div class='form-group'><label>Date</label><input type='date' class='form-control' id='date' name='date'></div><div class='form-group'><label>Duration (Minutes)</label><input type='text' class='form-control' id='duration' name='duration'></div><div class='form-group'><label>Venue</label><input type='text' class='form-control' id='venue' name='venue'></div><div class='form-group'><button id='send' class='btn'>Send Meeting Request</button></div>"
+            content: "<div><div id='status'></div><div class='form-group'><label>Start Time</label><input type='time' class='form-control' id='start' name='start'></div><div class='form-group'><label>Date</label><input type='date' class='form-control' id='date' name='date'></div><div class='form-group'><label>Duration (Minutes)</label><input type='text' class='form-control' id='duration' name='duration'></div><div class='form-group'><label>Venue</label><input type='text' class='form-control' id='venue' name='venue'></div><div class='form-group'><button id='send' class='btn'>Send Meeting Request</button></div></div>"
         }).parent().delegate('button#send', 'click', function() {
             var start = $('.instructor').find('#start').val();
             var date = $('.instructor').find('#date').val();
@@ -275,10 +275,10 @@ use Illuminate\Support\Facades\Auth;
                 beforeSend: function() {
                     $('.form-group').removeClass('has-error');
                     $('.help-block').remove();
-                    $('.instructor').find('#status').html('<div class="text-center">Processing</div><img src="<?=asset('public/images/preloader.gif')?>" class="center-block">');
+                    $('.instructor').find('#status').parent().LoadingOverlay('show');
                 },
                 success: function(data) {
-                    $('.instructor').find('#status').html('');
+                    $('.instructor').find('#status').parent().LoadingOverlay('hide',true);
                     if(data.success == false)
                     {
                         var arr = data.errors;
@@ -325,9 +325,10 @@ use Illuminate\Support\Facades\Auth;
                 type: 'instructor'
             },
             beforeSend: function () {
-                $('.instructor').html('<h3 class="text-center">Loading...</h3><img style="width:200px;" class="center-block" src="<?= asset('public/images/three-dots.svg')?>">');
+                $.LoadingOverlay('show');
             },
             success: function(data) {
+                $.LoadingOverlay('hide',true);
                 $('.instructor').html(data);
             },
             error: function (xhr, status) {
@@ -355,9 +356,10 @@ use Illuminate\Support\Facades\Auth;
                 type: 'instructor'
             },
             beforeSend: function () {
-                $('.instructor').html('<h3 class="text-center">Loading...</h3><img style="width:200px;" class="center-block" src="<?= asset('public/images/three-dots.svg')?>">');
+                $.LoadingOverlay('show');
             },
             success: function(data) {
+                $.LoadingOverlay('hide',true);
                 $('.instructor').html(data);
             },
             error: function (xhr, status) {
