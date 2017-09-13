@@ -72,7 +72,7 @@ use Illuminate\Support\Facades\Auth;
 <div class="modal-footer">
     <div class="row">
         <div class="col-sm-12">
-            <button type="button" data-id="<?= $meeting->first()->id?>" class="btn btn-outline cancel">Cancel</button>
+            <button type="button" data-id="<?= $meeting->first()->id?>" class="btn btn-outline cancel">Cancel Meeting</button>
         </div>
     </div>
 </div>
