@@ -229,7 +229,7 @@
 
 <!-- Go to top button -->
 <a id="goToTop"><i class="fa fa-angle-up top-icon"></i><i class="fa fa-angle-up"></i></a>
-<button type="button" class="btn btn-dark btn-shadow btn-icon-holder mainContactForm" style="opacity: 1;
+<button type="button" class="btn btn-dark btn-icon-holder mainContactForm" style="opacity: 1;
     position: fixed;
     right: -63px;
     bottom: 200px;
