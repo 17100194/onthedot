@@ -1,3 +1,4 @@
+<?php use Jenssegers\Agent\Agent; $agent = new Agent();?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -141,10 +142,6 @@
                                     <li class="visible-sm visible-xs"><a href="{{url('register')}}">Sign Up</a></li>
                                 @else
                                     <li class="dropdown">
-                                        <?php
-                                        use Jenssegers\Agent\Agent;
-                                        $agent = new Agent();
-                                        ?>
                                         <a id="notification-dropdown" href="#"><i class="fa fa-bell fa-4x" aria-hidden="true"></i><?php if ($agent->isMobile()):?><span id="notificationCounter" class="label label-default"></span><?php else:?><span id="notificationCounter" style="display: none;"></span><?php endif;?></a>
                                         <ul class="dropdown-menu" style="text-align: center; min-width: 400px; right: 4px; left: auto;">
                                             <h6 style="border-bottom: 2px solid grey; text-align: left; margin: 0;">Notifications</h6>
