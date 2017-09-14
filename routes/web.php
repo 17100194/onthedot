@@ -18,8 +18,8 @@ Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
 Route::get('login', function() {
 
-})->name('login')->middleware('minify');
-Auth::routes()->middleware('minify');
+})->name('login');
+Auth::routes();
 Route::get('register/verify/{token}', 'Auth\RegisterController@verify');
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::get('/dashboard', 'HomeController@index')->middleware('auth','minify');
