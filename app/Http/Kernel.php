@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\HttpsProtocol;
+use HTMLMin\HTMLMin\Http\Middleware\MinifyMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -55,5 +56,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'admin' => \App\Http\Middleware\Admin::class,
+        'minify' => MinifyMiddleware::class,
     ];
 }

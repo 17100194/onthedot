@@ -140,6 +140,7 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
+        HTMLMin\HTMLMin\HTMLMinServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
@@ -194,6 +195,7 @@ return [
 
     'aliases' => [
 
+        'HTMLMin' => HTMLMin\HTMLMin\Facades\HTMLMin::class,
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
