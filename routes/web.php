@@ -13,13 +13,13 @@
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->middleware('minify');
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
 Route::get('login', function() {
 
-})->name('login');
-Auth::routes();
+})->name('login')->middleware('minify');
+Auth::routes()->middleware('minify');
 Route::get('register/verify/{token}', 'Auth\RegisterController@verify');
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::get('/dashboard', 'HomeController@index')->middleware('auth','minify');
