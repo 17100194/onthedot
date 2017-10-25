@@ -216,33 +216,6 @@ class MeetingsController extends Controller
             }
         }
         if ($type == 'student'){
-            $courses = DB::table('user_has_course')
-                ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-                ->where('user_has_course.userid', '=', Auth::id())
-                ->orwhere('user_has_course.userid', '=', $id)
-                ->get();
-            $courses = $courses->toArray();
-            $tmp1 = array();
-            foreach($courses as $key => $value) {
-                if(!array_key_exists($value->coursecode,$tmp1)) {
-                    $tmp1[$value->coursecode] = $value;
-                    $tmp1[$value->coursecode]->who = '';
-                } else {
-                    $tmp1[$value->coursecode]->who = 'common';
-                }
-            }
-            $courses = array_values($tmp1);
-            foreach ($courses as $course){
-                $course->type = 'course';
-                $course->days = explode(',',$course->days);
-                if ($course->userid == Auth::id() && $course->who != 'common'){
-                    $course->who = 'me';
-                } else {
-                    if ($course->who != 'common'){
-                        $course->who = 'user';
-                    }
-                }
-            }
             $meetings = DB::table('user_has_meeting')
                 ->join('meetings', 'user_has_meeting.meetingid', '=', 'meetings.id')
                 ->where('user_has_meeting.userid', '=', Auth::id())
@@ -274,37 +247,10 @@ class MeetingsController extends Controller
                     }
                 }
             }
-            $allevents = array_merge($courses,$meetings);
+            $allevents = array_merge($meetings);
             return view('meetings.student_timetable',['id'=>$id,'allevents'=>$allevents,'monday'=>$monday,'tuesday'=>$tuesday,'wednesday'=>$wednesday,'thursday'=>$thursday,'friday'=>$friday])->render();
         }
         if ($type == 'instructor'){
-            $courses = DB::table('user_has_course')
-                ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-                ->where('user_has_course.userid', '=', Auth::id())
-                ->orwhere('user_has_course.userid', '=', $id)
-                ->get();
-            $courses = $courses->toArray();
-            $tmp1 = array();
-            foreach($courses as $key => $value) {
-                if(!array_key_exists($value->coursecode,$tmp1)) {
-                    $tmp1[$value->coursecode] = $value;
-                    $tmp1[$value->coursecode]->who = '';
-                } else {
-                    $tmp1[$value->coursecode]->who = 'common';
-                }
-            }
-            $courses = array_values($tmp1);
-            foreach ($courses as $course){
-                $course->type = 'course';
-                $course->days = explode(',',$course->days);
-                if ($course->userid == Auth::id() && $course->who != 'common'){
-                    $course->who = 'me';
-                } else {
-                    if ($course->who != 'common'){
-                        $course->who = 'user';
-                    }
-                }
-            }
             $meetings = DB::table('user_has_meeting')
                 ->join('meetings', 'user_has_meeting.meetingid', '=', 'meetings.id')
                 ->where('user_has_meeting.userid', '=', Auth::id())
@@ -336,17 +282,12 @@ class MeetingsController extends Controller
                     }
                 }
             }
-            $allevents = array_merge($courses,$meetings);
+            $allevents = array_merge($meetings);
             return view('meetings.instructor_timetable',['id'=>$id,'allevents'=>$allevents,'monday'=>$monday,'tuesday'=>$tuesday,'wednesday'=>$wednesday,'thursday'=>$thursday,'friday'=>$friday])->render();
         }
         if ($type == 'group'){
             $group = $this->getGroupById($id);
             foreach ($group->members as $member){
-                $results[] = DB::table('user_has_course')
-                    ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-                    ->where('user_has_course.userid', '=', Auth::id())
-                    ->orwhere('user_has_course.userid', '=', $member)
-                    ->get()->toArray();
                 $results2[] = DB::table('user_has_meeting')
                     ->join('meetings', 'user_has_meeting.meetingid', '=', 'meetings.id')
                     ->where('user_has_meeting.userid', '=', Auth::id())
@@ -357,37 +298,10 @@ class MeetingsController extends Controller
                     ->where('user_has_meeting.status_meeting','=','accepted')
                     ->get()->toArray();
             }
-            $courses = [];
             $meetings = [];
-            foreach ($results as $result){
-                foreach ($result as $value){
-                    $courses[] = $value;
-                }
-            }
             foreach ($results2 as $result2){
                 foreach ($result2 as $value2){
                     $meetings[] = $value2;
-                }
-            }
-            $tmp1 = array();
-            foreach($courses as $key => $value) {
-                if(!array_key_exists($value->coursecode,$tmp1)) {
-                    $tmp1[$value->coursecode] = $value;
-                    $tmp1[$value->coursecode]->who = '';
-                } else {
-                    $tmp1[$value->coursecode]->who = 'common';
-                }
-            }
-            $courses = array_values($tmp1);
-            foreach ($courses as $course){
-                $course->type = 'course';
-                $course->days = explode(',',$course->days);
-                if ($course->userid == Auth::id() && $course->who != 'common'){
-                    $course->who = 'me';
-                } else {
-                    if ($course->who != 'common'){
-                        $course->who = 'user';
-                    }
                 }
             }
             $tmp2 = array();
@@ -411,7 +325,7 @@ class MeetingsController extends Controller
                     }
                 }
             }
-            $allevents = array_merge($courses,$meetings);
+            $allevents = array_merge($meetings);
             return view('meetings.group_timetable',['id'=>$id,'allevents'=>$allevents,'monday'=>$monday,'tuesday'=>$tuesday,'wednesday'=>$wednesday,'thursday'=>$thursday,'friday'=>$friday])->render();
         }
     }
@@ -550,25 +464,6 @@ class MeetingsController extends Controller
         if (count($request) > 0){
             return response()->json(['conflict'=>'<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-times-circle"></i> You have already sent a pending meeting request to this user at the suggested slot. Try another slot</div>']);
         }
-        $courses = DB::table('user_has_course')
-            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-            ->where('user_has_course.userid', '=', Auth::id())
-            ->orwhere('user_has_course.userid', '=', $userid)
-            ->get();
-        $courses = $courses->toArray();
-        $tmp1 = array();
-        foreach($courses as $key => $value) {
-            if(!array_key_exists($value->coursecode,$tmp1)) {
-                $tmp1[$value->coursecode] = $value;
-            }
-        }
-        $courses = array_values($tmp1);
-        foreach ($courses as $course){
-            $course->days = explode(',',$course->days);
-            $course->starttime = explode('-',$course->timing)[0];
-            $course->endtime = explode('-',$course->timing)[1];
-            $course->type = 'course';
-        }
         $meetings = DB::table('user_has_meeting')
             ->join('meetings', 'user_has_meeting.meetingid', '=', 'meetings.id')
             ->where('user_has_meeting.userid', '=', Auth::id())
@@ -592,7 +487,7 @@ class MeetingsController extends Controller
             $meeting->endtime = date('H:i',strtotime(explode('-',$meeting->time)[1]));
             $meeting->type = 'meeting';
         }
-        $allevents = array_merge($courses,$meetings);
+        $allevents = array_merge($meetings);
         foreach ($allevents as $event){
             if ($event->type == 'course'){
                 foreach ($event->days as $eventday){
@@ -683,11 +578,6 @@ class MeetingsController extends Controller
             if (count($request) > 0){
                 return response()->json(['conflict'=>'<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span> </button> <i class="fa fa-times-circle"></i> You have already sent a pending meeting request to this group at the suggested slot. Try another slot</div>']);
             }
-            $results[] = DB::table('user_has_course')
-                ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-                ->where('user_has_course.userid', '=', Auth::id())
-                ->orwhere('user_has_course.userid', '=', $member)
-                ->get()->toArray();
             $results2[] = DB::table('user_has_meeting')
                 ->join('meetings', 'user_has_meeting.meetingid', '=', 'meetings.id')
                 ->where('user_has_meeting.userid', '=', Auth::id())
@@ -698,30 +588,11 @@ class MeetingsController extends Controller
                 ->where('user_has_meeting.status_meeting','=','accepted')
                 ->get()->toArray();
         }
-        $courses = [];
         $meetings = [];
-        foreach ($results as $result){
-            foreach ($result as $value){
-                $courses[] = $value;
-            }
-        }
         foreach ($results2 as $result2){
             foreach ($result2 as $value2){
                 $meetings[] = $value2;
             }
-        }
-        $tmp1 = array();
-        foreach($courses as $key => $value) {
-            if(!array_key_exists($value->coursecode,$tmp1)) {
-                $tmp1[$value->coursecode] = $value;
-            }
-        }
-        $courses = array_values($tmp1);
-        foreach ($courses as $course){
-            $course->type = 'course';
-            $course->starttime = explode('-',$course->timing)[0];
-            $course->endtime = explode('-',$course->timing)[1];
-            $course->days = explode(',',$course->days);
         }
         $tmp2 = array();
         foreach($meetings as $key => $value) {
@@ -736,7 +607,7 @@ class MeetingsController extends Controller
             $meeting->endtime = date('H:i',strtotime(explode('-',$meeting->time)[1]));
             $meeting->days = array($meeting->day);
         }
-        $allevents = array_merge($courses,$meetings);
+        $allevents = array_merge($meetings);
         foreach ($allevents as $event){
             if ($event->type == 'course'){
                 foreach ($event->days as $eventday){

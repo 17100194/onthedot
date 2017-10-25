@@ -41,10 +41,6 @@ class HomeController extends Controller
             ->orderBy('date','desc')
             ->limit(6)->get();
 
-        $courses = DB::table('user_has_course')
-            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-            ->where('user_has_course.userid', '=', Auth::id())->limit(6)->get();
-
         $groups = DB::table('groups')
             ->join('user_has_group', 'user_has_group.id_group', '=', 'groups.id')
             ->join('users as u2', 'u2.id', '=', 'groups.id_creator')
@@ -60,7 +56,7 @@ class HomeController extends Controller
             }
         }
 
-        return view('home',compact('meetings','courses', 'groups', 'active'));
+        return view('home',compact('meetings', 'groups', 'active'));
     }
 
     public function showTimetable(Request $request){
@@ -115,29 +111,10 @@ class HomeController extends Controller
             }
         }
         $allCourses[] = array();
-        $courses = DB::table('user_has_course')
-            ->join('courses', 'user_has_course.courseid', '=', 'courses.courseid')
-            ->where('user_has_course.userid', '=', Auth::id())->get();
         $app = app();
 
         $meetings = $this->getUserMeetings(Auth::id());
         $meetingsObject = $this->getUserMeetingsObject(Auth::id());
-
-        foreach ($courses as $course) {
-            $instructor = $this->getUserById($course->instructorid);
-            $courseData = $app->make('stdClass');
-            $courseData->type = 'course';
-            $time = date("g:i a", strtotime(explode('-',$course->timing)[0])).'-'.date("g:i a", strtotime(explode('-',$course->timing)[1]));
-            $courseData->content = "<div class='text-left'><h3 class='text-shadow-dark'>$course->name ($course->coursecode)</h3><div class='separator'><span>Course Details</span></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Instructor</label> $instructor->name</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Section</label> $course->section</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Timing</label> $time</h3></div></div><div class='row'><div class='col-xs-12'><h3><label class='label label-info'>Days</label> $course->days</h3></div></div></div>";
-            $courseData->meetingid = "";
-            $courseData->code = $course->coursecode;
-            $courseData->with = "";
-            $courseData->name = $course->name;
-            $courseData->timing = $course->timing;
-            $courseData->section = $course->section;
-            $courseData->days = explode(',', $course->days);
-            $allCourses[] = $courseData;
-        }
 
         foreach ($meetings as $meeting) {
             $with = array();
