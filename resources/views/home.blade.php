@@ -49,46 +49,6 @@
                     <h5>No upcoming meetings to display</h5>
                 </div>
             @endif
-            <h3>Courses</h3>
-            <hr>
-            @if(count($courses) > 0)
-                <div class="carousel" data-dots="true" data-margin="30" data-items="4">
-                    @foreach($courses as $course)
-                        <div class="portfolio-item img-zoom pf-illustrations pf-uielements pf-media">
-                            <div class="portfolio-item-wrap">
-                                <div class="portfolio-image">
-                                    <a href="#"><img src="{{asset('public/images/books.jpg')}}" alt=""></a>
-                                </div>
-                                <div class="portfolio-description" style="width: 100%;">
-                                    <a>
-                                        <h3>{{$course->name}}</h3>
-                                        <span><label class="label label-info">Days</label> {{$course->days}}</span>
-                                        <br>
-                                        <span><label class="label label-info">Time</label> {{date('h:iA',strtotime(explode('-',$course->timing)[0])).'-'.date('h:iA',strtotime(explode('-',$course->timing)[1]))}}</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                    @if(count($courses) > 6)
-                        <div class="portfolio-item img-zoom pf-illustrations pf-uielements pf-media">
-                            <div class="portfolio-item-wrap">
-                                <div class="portfolio-image">
-                                    <a href="#"><img src="{{asset('public/images/books.jpg')}}" alt=""></a>
-                                </div>
-                                <div class="portfolio-description" style="width: 100%;">
-                                    <a href="{{url('/course/all')}}" class="btn btn-default">View All</a>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            @else
-                <div class="text-center">
-                    <i class="fa fa-ban fa-5x"></i>
-                    <h5>No courses to display</h5>
-                </div>
-            @endif
             <h3>Groups</h3>
             <hr>
             @if(count($groups) > 0)

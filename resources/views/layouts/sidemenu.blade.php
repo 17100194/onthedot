@@ -53,15 +53,9 @@
                                 <li class="<?php if ($active == "requested"): ?>active<?php endif; ?>"><a href='<?php echo url('/requested') ?>' >Sent Requests</a></li>
                                 <li class="<?php if ($active == "requests"): ?>active<?php endif; ?>"><a href="<?php echo url('/meetings/requests') ?>" >Meeting Requests</a></li>
                                 <li class="<?php if ($active == "group-requests"): ?>active<?php endif; ?>"><a href="<?php echo url('/group/requests') ?>" >Group Requests</a></li>
-                                <li class="<?php if ($active == "courses"): ?>active<?php endif; ?>"><a href="<?php echo url('/course/all') ?>" >My Courses</a></li>
                                 <li class="<?php if ($active == "view-meeting"): ?>active<?php endif; ?>"><a href="<?php echo url('/meetings') ?>" >My Meetings</a></li>
                                 <li class="<?php if ($active == "mygroups"): ?>active<?php endif; ?>"><a href="<?php echo url('/group/all') ?>" >My Groups</a></li>
                                 <li class="<?php if ($active == "group"): ?>active<?php endif; ?>"><a href="<?php echo url('/group/make') ?>" >Make a Group</a></li>
-                                <?php if(Auth::user()->type != 'teacher'): ?>
-                                <li class="<?php if ($active == "addcourse"): ?>active<?php endif; ?>"><a href="<?php echo url('/course/enroll') ?>" >Enroll in a Course</a></li>
-                                <?php else: ?>
-                                <li class="<?php if ($active == "addcourse"): ?>active<?php endif; ?>"><a href="<?php echo url('/course/make') ?>" >Add a Course</a></li>
-                                <?php endif; ?>
                                 <li class="<?php if ($active == "timetable"): ?>active<?php endif; ?>"><a href="<?php echo url('/timetable') ?>" >My Timetable</a></li>
                             </ul>
                         </div>
